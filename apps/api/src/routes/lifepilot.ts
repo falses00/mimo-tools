@@ -85,6 +85,48 @@ function parseEntry(text: string): ParseEntryResult {
     const trimmed = segment.trim();
     if (!trimmed) continue;
 
+    // 检查是否是账单（优先检查，因为账单可能同时包含其他关键词）
+    const isBill = BILL_KEYWORDS.some(kw => trimmed.includes(kw)) || /\d+\s*(元|块|¥)/.test(trimmed);
+    if (isBill) {
+      const item: LifeItem = {
+        title: trimmed,
+        category: '账单',
+        status: 'bill',
+        confidence: 0.85,
+      };
+      const amountMatch = trimmed.match(/(\d+)\s*(元|块|¥)/);
+      if (amountMatch) {
+        item.amount = parseInt(amountMatch[1]);
+      }
+      bills.push(item);
+      
+      // 如果也包含完成关键词，也加入完成列表
+      const isDone = DONE_KEYWORDS.some(kw => trimmed.includes(kw));
+      if (isDone) {
+        done.push({ ...item, status: 'done' });
+      }
+      continue;
+    }
+
+    // 检查是否是习惯（优先检查，因为习惯可能同时包含完成关键词）
+    const isHabit = HABIT_KEYWORDS.some(kw => trimmed.includes(kw));
+    if (isHabit && DONE_KEYWORDS.some(kw => trimmed.includes(kw))) {
+      const item: LifeItem = {
+        title: trimmed,
+        category: '健康',
+        status: 'habit',
+        confidence: 0.9,
+        habit: HABIT_KEYWORDS.find(kw => trimmed.includes(kw)),
+      };
+      const valueMatch = trimmed.match(/(\d+)\s*(公里|分钟|小时|页|次|个)/);
+      if (valueMatch) {
+        item.value = `${valueMatch[1]}${valueMatch[2]}`;
+      }
+      habits.push(item);
+      done.push({ ...item, status: 'done' });
+      continue;
+    }
+
     // 检查已完成
     const isDone = DONE_KEYWORDS.some(kw => trimmed.includes(kw));
     if (isDone) {
@@ -94,31 +136,6 @@ function parseEntry(text: string): ParseEntryResult {
         status: 'done',
         confidence: 0.9,
       };
-
-      // 检查是否是习惯
-      const isHabit = HABIT_KEYWORDS.some(kw => trimmed.includes(kw));
-      if (isHabit) {
-        item.status = 'habit';
-        item.habit = HABIT_KEYWORDS.find(kw => trimmed.includes(kw));
-        // 提取数值
-        const valueMatch = trimmed.match(/(\d+)\s*(公里|分钟|小时|页|次|个)/);
-        if (valueMatch) {
-          item.value = `${valueMatch[1]}${valueMatch[2]}`;
-        }
-        habits.push(item);
-      }
-
-      // 检查是否是账单
-      const isBill = BILL_KEYWORDS.some(kw => trimmed.includes(kw));
-      if (isBill) {
-        item.status = 'bill';
-        const amountMatch = trimmed.match(/(\d+)\s*(元|块|¥)/);
-        if (amountMatch) {
-          item.amount = parseInt(amountMatch[1]);
-        }
-        bills.push(item);
-      }
-
       done.push(item);
       continue;
     }
@@ -143,6 +160,23 @@ function parseEntry(text: string): ParseEntryResult {
       }
 
       todos.push(item);
+      continue;
+    }
+
+    // 检查习惯（不包含完成关键词的习惯）
+    if (isHabit) {
+      const item: LifeItem = {
+        title: trimmed,
+        category: '健康',
+        status: 'habit',
+        confidence: 0.8,
+        habit: HABIT_KEYWORDS.find(kw => trimmed.includes(kw)),
+      };
+      const valueMatch = trimmed.match(/(\d+)\s*(公里|分钟|小时|页|次|个)/);
+      if (valueMatch) {
+        item.value = `${valueMatch[1]}${valueMatch[2]}`;
+      }
+      habits.push(item);
       continue;
     }
 
