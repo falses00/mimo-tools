@@ -3,32 +3,82 @@ import Layout from '../layouts/Layout.astro';
 import { getCollection } from 'astro:content';
 
 const posts = await getCollection('blog');
-const sortedPosts = posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+const sortedPosts = posts.sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
 ---
 
 <Layout title="博客 - MIMO">
-  <main class="min-h-screen bg-background">
-    <div class="container mx-auto px-4 py-12">
-      <div class="text-center mb-12">
-        <h1 class="text-4xl font-bold mb-4">博客</h1>
-        <p class="text-muted-foreground text-lg">技术文章与经验分享</p>
+  <div class="section">
+    <div class="container">
+      {/* Header */}
+      <div class="text-center mb-16">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full mb-4" style="background: var(--gold-subtle); border: 1px solid var(--gold-border);">
+          <span class="text-xs font-medium" style="color: var(--gold-soft);">博客</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl font-bold mb-4" style="color: var(--text-primary);">
+          技术博客
+        </h1>
+        <p class="text-lg max-w-2xl mx-auto" style="color: var(--text-muted);">
+          分享开发经验、技术思考和最佳实践
+        </p>
       </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+      {/* Blog Posts Grid */}
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {sortedPosts.map(post => (
-          <a href={`/blog/${post.slug}`} class="group block p-6 rounded-xl border border-border hover:border-primary hover:shadow-lg transition-all duration-200">
-            <h2 class="text-xl font-semibold mb-2 group-hover:text-primary transition-colors">{post.data.title}</h2>
-            <p class="text-muted-foreground text-sm mb-4">{post.data.description}</p>
-            <div class="flex flex-wrap gap-1">
-              {post.data.tags.map(tag => (
-                <span class="text-xs bg-secondary/50 px-2 py-0.5 rounded">{tag}</span>
-              ))}
+          <a
+            href={`/blog/${post.slug}`}
+            class="group block rounded-xl overflow-hidden transition-all duration-300"
+            style="background: var(--bg-card); border: 1px solid var(--border-subtle);"
+          >
+            {/* Content */}
+            <div class="p-6">
+              {/* Date */}
+              <div class="flex items-center gap-2 mb-3">
+                <time class="text-xs" style="color: var(--text-muted);" datetime={post.data.date}>
+                  {new Date(post.data.date).toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })}
+                </time>
+              </div>
+
+              {/* Title */}
+              <h2 class="text-xl font-semibold mb-3 transition-colors duration-200 group-hover:text-[var(--gold-primary)]" style="color: var(--text-primary);">
+                {post.data.title}
+              </h2>
+
+              {/* Description */}
+              <p class="text-sm mb-4 line-clamp-2" style="color: var(--text-muted);">
+                {post.data.description}
+              </p>
+
+              {/* Tags */}
+              <div class="flex flex-wrap gap-2">
+                {post.data.tags?.map(tag => (
+                  <span class="badge text-xs" style="background: var(--bg-elevated); border-color: var(--border-subtle); color: var(--text-muted);">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+
+              {/* Read More */}
+              <div class="mt-4 flex items-center gap-1 text-sm font-medium opacity-0 group-hover:opacity-100 transition-all duration-200 translate-x-0 group-hover:translate-x-1" style="color: var(--gold-primary);">
+                <span>阅读全文</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M5 12h14" />
+                  <path d="m12 5 7 7-7 7" />
+                </svg>
+              </div>
             </div>
-            <time class="text-xs text-muted-foreground mt-2 block">
-              {post.data.pubDate.toLocaleDateString('zh-CN')}
-            </time>
           </a>
         ))}
       </div>
+
+      {/* Empty State */}
+      {sortedPosts.length === 0 && (
+        <div class="text-center py-16">
+          <div class="text-6xl mb-4">📝</div>
+          <h3 class="text-xl font-semibold mb-2" style="color: var(--text-primary);">暂无文章</h3>
+          <p style="color: var(--text-muted);">敬请期待更多内容</p>
+        </div>
+      )}
     </div>
-  </main>
+  </div>
 </Layout>
