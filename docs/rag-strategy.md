@@ -146,10 +146,23 @@ LIMIT 5;
 SUPABASE_URL=https://<project-ref>.supabase.co
 SUPABASE_ANON_KEY=<anon-key>
 
-# OpenAI (可选，用于 pgvector embeddings)
-OPENAI_API_KEY=<openai-key>
+# MiMo v2.5 API (小米，推荐)
+MIMO_API_BASE_URL=https://token-plan-sgp.xiaomimimo.com/v1
+MIMO_API_KEY=<your-mimo-api-key>
+
+# 或使用标准 OpenAI 配置
+OPENAI_API_KEY=<your-mimo-api-key>
+OPENAI_BASE_URL=https://token-plan-sgp.xiaomimimo.com/v1
+
+# Embedding Model
 EMBEDDING_MODEL=text-embedding-3-small
 ```
+
+### MiMo v2.5 配置说明
+- **Base URL**: `https://token-plan-sgp.xiaomimimo.com/v1` (OpenAI 兼容)
+- **Anthropic 协议**: `https://token-plan-sgp.xiaomimimo.com/anthropic`
+- **API Key**: 从小米 MiMo 平台获取
+- **兼容性**: 完全兼容 OpenAI API 协议
 
 ### 前端配置
 ```typescript
