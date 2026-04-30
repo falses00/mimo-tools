@@ -35,13 +35,20 @@ export async function knowledgebaseRoutes(fastify: FastifyInstance) {
     const { question, documents } = request.body;
     if (!question || !documents) return { error: '请提供问题和文档' };
 
-    const keywords = question.toLowerCase().split(/\s+/);
+    // Extract keywords, remove punctuation, convert to lowercase
+    const keywords = question.toLowerCase()
+      .replace(/[^\w\s]/g, '')
+      .split(/\s+/)
+      .filter(k => k.length > 1); // Filter out single characters
+    
     const chunks = documents.flatMap(doc => {
-      const sentences = doc.content.split(/[.!?。！？]+/).filter(s => s.trim());
-      return sentences.map((sentence, i) => ({
-        docId: doc.id,
+      // Split by sentences, newlines, or just use the whole content if no split points
+      const sentences = doc.content.split(/[.!?。！？\n]+/).filter(s => s.trim());
+      const chunks = sentences.length > 0 ? sentences : [doc.content];
+      return chunks.map((sentence, i) => ({
+        docId: doc.id || 'unknown',
         docTitle: doc.title,
-        chunkId: `${doc.id}-${i}`,
+        chunkId: `${doc.id || 'unknown'}-${i}`,
         content: sentence.trim(),
       }));
     });

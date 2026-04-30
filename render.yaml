@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: mimo-tools-api
+    runtime: node
+    plan: free
+    buildCommand: npm ci && npm run build:api
+    startCommand: npm run start:api
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: MIMO_DATA_DIR
+        value: /tmp/mimo-data
+      - key: CORS_ORIGIN
+        value: https://falses00.github.io
+    healthCheckPath: /api/health
+    autoDeploy: true
