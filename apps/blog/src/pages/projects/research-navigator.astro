@@ -1,0 +1,283 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="AI Research Navigator - MIMO">
+  <div class="section">
+    <div class="container">
+      {/* Header */}
+      <div class="mb-8">
+        <a href="/projects" class="inline-flex items-center gap-2 text-sm mb-4 transition-colors duration-200" style="color: var(--text-muted);">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m12 19-7-7 7-7" />
+            <path d="M19 12H5" />
+          </svg>
+          返回旗舰项目
+        </a>
+        <div class="flex items-center gap-4">
+          <div class="flex items-center justify-center w-16 h-16 rounded-2xl" style="background: var(--gold-subtle); border: 1px solid var(--gold-border);">
+            <span class="text-3xl">🔬</span>
+          </div>
+          <div>
+            <h1 class="text-3xl font-bold" style="color: var(--text-primary);">AI Research Navigator</h1>
+            <p style="color: var(--text-muted);">基于 RAG 的学术论文检索与问答系统</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Search Section */}
+      <div class="p-6 rounded-xl mb-8" style="background: var(--bg-card); border: 1px solid var(--border-subtle);">
+        <div class="flex flex-col sm:flex-row gap-4">
+          <input
+            type="text"
+            id="input-search"
+            class="input flex-1"
+            placeholder="搜索论文，例如: machine learning, transformer, RAG"
+          />
+          <button id="btn-search" class="btn btn-primary px-8">
+            🔍 搜索
+          </button>
+        </div>
+      </div>
+
+      {/* Ask Section */}
+      <div class="p-6 rounded-xl mb-8" style="background: var(--bg-card); border: 1px solid var(--gold-border);">
+        <h3 class="text-lg font-semibold mb-4" style="color: var(--text-primary);">💬 研究问答</h3>
+        <textarea
+          id="input-question"
+          class="textarea mb-4"
+          style="min-height: 6rem;"
+          placeholder="输入研究问题，例如: What are the latest advances in RAG?"
+        ></textarea>
+        <button id="btn-ask" class="btn btn-gold-outline">
+          🤖 获取答案
+        </button>
+      </div>
+
+      {/* Results */}
+      <div id="search-results" class="hidden space-y-4 mb-8">
+        <h3 class="text-lg font-semibold" style="color: var(--text-primary);">📄 搜索结果</h3>
+        <div id="papers-list" class="space-y-4"></div>
+      </div>
+
+      {/* Answer */}
+      <div id="answer-section" class="hidden p-6 rounded-xl mb-8" style="background: var(--bg-card); border: 1px solid var(--gold-border);">
+        <h3 class="text-lg font-semibold mb-4" style="color: var(--text-primary);">🤖 AI 回答</h3>
+        <div id="answer-content" class="prose-custom" style="color: var(--text-secondary);"></div>
+        <div id="answer-sources" class="mt-4 pt-4" style="border-top: 1px solid var(--border-subtle);">
+          <h4 class="text-sm font-semibold mb-2" style="color: var(--text-primary);">📚 参考来源</h4>
+          <div id="sources-list" class="space-y-2"></div>
+        </div>
+      </div>
+
+      {/* Empty State */}
+      <div id="empty-state" class="p-12 rounded-xl text-center" style="background: var(--bg-card); border: 1px solid var(--border-subtle);">
+        <div class="text-6xl mb-4">🔬</div>
+        <h3 class="text-xl font-semibold mb-2" style="color: var(--text-primary);">开始探索</h3>
+        <p style="color: var(--text-muted);">搜索论文或输入研究问题</p>
+      </div>
+
+      {/* Status Bar */}
+      <div id="status-bar" class="mt-6 p-3 rounded-lg text-sm hidden"></div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  // Sample papers database
+  const samplePapers = [
+    {
+      id: '1',
+      title: 'Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks',
+      abstract: 'Large pre-trained language models have been shown to store factual knowledge in their parameters, and achieve state-of-the-art results when fine-tuned on downstream NLP tasks. However, their ability to access and precisely manipulate knowledge is still limited.',
+      authors: ['Patrick Lewis', 'Ethan Perez', 'Aleksandra Piktus'],
+      categories: ['cs.CL', 'cs.AI'],
+      published: '2020-05-22',
+      url: 'https://arxiv.org/abs/2005.11401',
+    },
+    {
+      id: '2',
+      title: 'Attention Is All You Need',
+      abstract: 'The dominant sequence transduction models are based on complex recurrent or convolutional neural networks that include an encoder and a decoder. The best performing models also connect the encoder and decoder through an attention mechanism.',
+      authors: ['Ashish Vaswani', 'Noam Shazeer', 'Niki Parmar'],
+      categories: ['cs.CL', 'cs.LG'],
+      published: '2017-06-12',
+      url: 'https://arxiv.org/abs/1706.03762',
+    },
+    {
+      id: '3',
+      title: 'BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding',
+      abstract: 'We introduce a new language representation model called BERT, which stands for Bidirectional Encoder Representations from Transformers. BERT is designed to pre-train deep bidirectional representations.',
+      authors: ['Jacob Devlin', 'Ming-Wei Chang', 'Kenton Lee'],
+      categories: ['cs.CL'],
+      published: '2018-10-11',
+      url: 'https://arxiv.org/abs/1810.04805',
+    },
+    {
+      id: '4',
+      title: 'Language Models are Few-Shot Learners',
+      abstract: 'Recent work has demonstrated substantial gains on many NLP tasks and benchmarks by pre-training on a large corpus of text followed by fine-tuning on a specific task. We show that scaling up language models greatly improves task-agnostic, few-shot performance.',
+      authors: ['Tom Brown', 'Benjamin Mann', 'Nick Ryder'],
+      categories: ['cs.CL'],
+      published: '2020-05-28',
+      url: 'https://arxiv.org/abs/2005.14165',
+    },
+    {
+      id: '5',
+      title: 'Dense Passage Retrieval for Open-Domain Question Answering',
+      abstract: 'Open-domain question answering relies on efficient passage retrieval to select candidate contexts, where traditional sparse vector space models are the dominant approach. We show that retrieval can be practically implemented using dense representations.',
+      authors: ['Vladimir Karpukhin', 'Barlas Oguz', 'Sewon Min'],
+      categories: ['cs.CL', 'cs.IR'],
+      published: '2020-04-10',
+      url: 'https://arxiv.org/abs/2004.04906',
+    },
+  ];
+
+  const inputSearch = document.getElementById('input-search') as HTMLInputElement;
+  const inputQuestion = document.getElementById('input-question') as HTMLTextAreaElement;
+  const btnSearch = document.getElementById('btn-search') as HTMLButtonElement;
+  const btnAsk = document.getElementById('btn-ask') as HTMLButtonElement;
+  const searchResults = document.getElementById('search-results') as HTMLDivElement;
+  const papersList = document.getElementById('papers-list') as HTMLDivElement;
+  const answerSection = document.getElementById('answer-section') as HTMLDivElement;
+  const answerContent = document.getElementById('answer-content') as HTMLDivElement;
+  const answerSources = document.getElementById('answer-sources') as HTMLDivElement;
+  const sourcesList = document.getElementById('sources-list') as HTMLDivElement;
+  const emptyState = document.getElementById('empty-state') as HTMLDivElement;
+  const statusBar = document.getElementById('status-bar') as HTMLDivElement;
+
+  function showStatus(msg: string, type: 'success' | 'error' | 'info') {
+    statusBar.className = 'mt-6 p-3 rounded-lg text-sm block';
+    statusBar.style.background = type === 'success' ? 'var(--success-muted)' : type === 'error' ? 'var(--error-muted)' : 'var(--info-muted)';
+    statusBar.style.color = type === 'success' ? 'var(--success)' : type === 'error' ? 'var(--error)' : 'var(--info)';
+    statusBar.textContent = msg;
+  }
+
+  function searchPapers(query: string) {
+    const lowerQuery = query.toLowerCase();
+    return samplePapers.filter(paper => 
+      paper.title.toLowerCase().includes(lowerQuery) ||
+      paper.abstract.toLowerCase().includes(lowerQuery) ||
+      paper.categories.some(cat => cat.toLowerCase().includes(lowerQuery)) ||
+      paper.authors.some(author => author.toLowerCase().includes(lowerQuery))
+    );
+  }
+
+  function displayPapers(papers: typeof samplePapers) {
+    emptyState.classList.add('hidden');
+    answerSection.classList.add('hidden');
+    searchResults.classList.remove('hidden');
+    
+    papersList.innerHTML = papers.map(paper => `
+      <div class="p-6 rounded-xl transition-all duration-200" style="background: var(--bg-card); border: 1px solid var(--border-subtle);">
+        <h4 class="text-lg font-semibold mb-2" style="color: var(--text-primary);">
+          <a href="${paper.url}" target="_blank" rel="noopener noreferrer" class="hover:text-[var(--gold-primary)] transition-colors">
+            ${paper.title}
+          </a>
+        </h4>
+        <p class="text-sm mb-3 line-clamp-3" style="color: var(--text-secondary);">
+          ${paper.abstract}
+        </p>
+        <div class="flex flex-wrap gap-2 mb-3">
+          ${paper.categories.map(cat => `<span class="badge badge-gold text-xs">${cat}</span>`).join('')}
+        </div>
+        <div class="flex items-center justify-between text-xs" style="color: var(--text-muted);">
+          <span>${paper.authors.slice(0, 3).join(', ')}${paper.authors.length > 3 ? ' et al.' : ''}</span>
+          <span>${paper.published}</span>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function generateAnswer(question: string, papers: typeof samplePapers) {
+    // Simple keyword-based answer generation
+    const lowerQ = question.toLowerCase();
+    let answer = '';
+    const relevantPapers = papers.slice(0, 3);
+    
+    if (lowerQ.includes('rag') || lowerQ.includes('retrieval')) {
+      answer = `<p>Based on the retrieved papers, <strong>Retrieval-Augmented Generation (RAG)</strong> is a technique that combines pre-trained language models with external knowledge retrieval.</p>
+      <p>Key findings from the literature:</p>
+      <ul>
+        <li>RAG models can access and manipulate knowledge more precisely than pure parametric models</li>
+        <li>Dense passage retrieval has shown to be effective for open-domain question answering</li>
+        <li>Combining retrieval with generation improves factual accuracy</li>
+      </ul>
+      <p><em>Note: This answer is based on retrieved metadata and may be incomplete.</em></p>`;
+    } else if (lowerQ.includes('transformer') || lowerQ.includes('attention')) {
+      answer = `<p><strong>Transformers</strong> have become the dominant architecture in NLP and beyond. Key insights:</p>
+      <ul>
+        <li>Self-attention mechanisms allow models to capture long-range dependencies</li>
+        <li>Pre-training on large corpora followed by fine-tuning is highly effective</li>
+        <li>Scaling up models improves few-shot performance</li>
+      </ul>
+      <p><em>Note: This answer is based on retrieved metadata and may be incomplete.</em></p>`;
+    } else {
+      answer = `<p>Based on the retrieved papers, here are the key findings:</p>
+      <ul>
+        ${relevantPapers.map(p => `<li><strong>${p.title}</strong>: ${p.abstract.substring(0, 100)}...</li>`).join('')}
+      </ul>
+      <p><em>Note: This answer is based on retrieved metadata and may be incomplete.</em></p>`;
+    }
+    
+    return { answer, sources: relevantPapers };
+  }
+
+  btnSearch.addEventListener('click', () => {
+    const query = inputSearch.value.trim();
+    if (!query) {
+      showStatus('请输入搜索关键词', 'error');
+      return;
+    }
+    
+    showStatus('搜索中...', 'info');
+    
+    setTimeout(() => {
+      const results = searchPapers(query);
+      if (results.length === 0) {
+        showStatus('未找到匹配的论文', 'info');
+        searchResults.classList.add('hidden');
+        emptyState.classList.remove('hidden');
+      } else {
+        displayPapers(results);
+        showStatus(`找到 ${results.length} 篇相关论文`, 'success');
+      }
+    }, 500);
+  });
+
+  btnAsk.addEventListener('click', () => {
+    const question = inputQuestion.value.trim();
+    if (!question) {
+      showStatus('请输入研究问题', 'error');
+      return;
+    }
+    
+    showStatus('生成回答...', 'info');
+    
+    setTimeout(() => {
+      const papers = searchPapers(question);
+      const { answer, sources } = generateAnswer(question, papers.length > 0 ? papers : samplePapers);
+      
+      emptyState.classList.add('hidden');
+      searchResults.classList.add('hidden');
+      answerSection.classList.remove('hidden');
+      
+      answerContent.innerHTML = answer;
+      
+      sourcesList.innerHTML = sources.map(paper => `
+        <div class="p-3 rounded-lg" style="background: var(--bg-elevated);">
+          <a href="${paper.url}" target="_blank" rel="noopener noreferrer" class="text-sm font-medium hover:text-[var(--gold-primary)] transition-colors" style="color: var(--text-primary);">
+            ${paper.title}
+          </a>
+          <div class="text-xs mt-1" style="color: var(--text-muted);">${paper.authors.slice(0, 2).join(', ')}</div>
+        </div>
+      `).join('');
+      
+      showStatus('回答生成完成', 'success');
+    }, 1000);
+  });
+
+  inputSearch.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') btnSearch.click();
+  });
+</script>

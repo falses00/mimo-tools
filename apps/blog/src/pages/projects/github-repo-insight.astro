@@ -1,0 +1,338 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="GitHub Repo Insight - MIMO">
+  <div class="section">
+    <div class="container">
+      {/* Header */}
+      <div class="mb-8">
+        <a href="/projects" class="inline-flex items-center gap-2 text-sm mb-4 transition-colors duration-200" style="color: var(--text-muted);">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m12 19-7-7 7-7" />
+            <path d="M19 12H5" />
+          </svg>
+          返回旗舰项目
+        </a>
+        <div class="flex items-center gap-4">
+          <div class="flex items-center justify-center w-16 h-16 rounded-2xl" style="background: var(--gold-subtle); border: 1px solid var(--gold-border);">
+            <span class="text-3xl">📊</span>
+          </div>
+          <div>
+            <h1 class="text-3xl font-bold" style="color: var(--text-primary);">GitHub Repo Insight</h1>
+            <p style="color: var(--text-muted);">输入 GitHub 仓库 URL，生成项目质量分析报告</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Input Section */}
+      <div class="p-6 rounded-xl mb-8" style="background: var(--bg-card); border: 1px solid var(--border-subtle);">
+        <div class="flex flex-col sm:flex-row gap-4">
+          <input
+            type="text"
+            id="input-repo"
+            class="input flex-1"
+            placeholder="输入仓库，例如: falses00/mimo-tools"
+            value="falses00/mimo-tools"
+          />
+          <button id="btn-analyze" class="btn btn-primary px-8">
+            🔍 分析仓库
+          </button>
+          <button id="btn-sample" class="btn btn-secondary">
+            示例
+          </button>
+        </div>
+      </div>
+
+      {/* Loading State */}
+      <div id="loading-state" class="hidden p-12 rounded-xl text-center" style="background: var(--bg-card); border: 1px solid var(--border-subtle);">
+        <div class="animate-spin text-4xl mb-4" style="color: var(--gold-primary);">⏳</div>
+        <p style="color: var(--text-muted);">正在分析仓库...</p>
+      </div>
+
+      {/* Results */}
+      <div id="results" class="hidden space-y-6">
+        {/* Overview Cards */}
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div class="p-4 rounded-xl text-center" style="background: var(--bg-card); border: 1px solid var(--border-subtle);">
+            <div class="text-3xl font-bold" style="color: var(--gold-primary);" id="stat-stars">0</div>
+            <div class="text-xs mt-1" style="color: var(--text-muted);">Stars</div>
+          </div>
+          <div class="p-4 rounded-xl text-center" style="background: var(--bg-card); border: 1px solid var(--border-subtle);">
+            <div class="text-3xl font-bold" style="color: var(--gold-primary);" id="stat-forks">0</div>
+            <div class="text-xs mt-1" style="color: var(--text-muted);">Forks</div>
+          </div>
+          <div class="p-4 rounded-xl text-center" style="background: var(--bg-card); border: 1px solid var(--border-subtle);">
+            <div class="text-3xl font-bold" style="color: var(--gold-primary);" id="stat-issues">0</div>
+            <div class="text-xs mt-1" style="color: var(--text-muted);">Issues</div>
+          </div>
+          <div class="p-4 rounded-xl text-center" style="background: var(--bg-card); border: 1px solid var(--border-subtle);">
+            <div class="text-3xl font-bold" style="color: var(--gold-primary);" id="stat-score">0</div>
+            <div class="text-xs mt-1" style="color: var(--text-muted);">健康评分</div>
+          </div>
+        </div>
+
+        {/* Health Score */}
+        <div class="p-6 rounded-xl" style="background: var(--bg-card); border: 1px solid var(--gold-border);">
+          <h3 class="text-lg font-semibold mb-4" style="color: var(--text-primary);">📊 项目健康评分</h3>
+          <div class="w-full h-4 rounded-full" style="background: var(--bg-elevated);">
+            <div id="score-bar" class="h-4 rounded-full transition-all duration-500" style="background: var(--gold-primary); width: 0%;"></div>
+          </div>
+          <div class="flex justify-between mt-2 text-xs" style="color: var(--text-muted);">
+            <span>0</span>
+            <span>50</span>
+            <span>100</span>
+          </div>
+        </div>
+
+        {/* Details */}
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Info */}
+          <div class="p-6 rounded-xl" style="background: var(--bg-card); border: 1px solid var(--border-subtle);">
+            <h3 class="text-lg font-semibold mb-4" style="color: var(--text-primary);">📋 基本信息</h3>
+            <div id="repo-info" class="space-y-3 text-sm" style="color: var(--text-secondary);"></div>
+          </div>
+
+          {/* Languages */}
+          <div class="p-6 rounded-xl" style="background: var(--bg-card); border: 1px solid var(--border-subtle);">
+            <h3 class="text-lg font-semibold mb-4" style="color: var(--text-primary);">💻 语言分布</h3>
+            <div id="languages" class="space-y-3"></div>
+          </div>
+        </div>
+
+        {/* Checklist */}
+        <div class="p-6 rounded-xl" style="background: var(--bg-card); border: 1px solid var(--border-subtle);">
+          <h3 class="text-lg font-semibold mb-4" style="color: var(--text-primary);">✅ 项目检查清单</h3>
+          <div id="checklist" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+        </div>
+
+        {/* Suggestions */}
+        <div class="p-6 rounded-xl" style="background: var(--bg-card); border: 1px solid var(--border-subtle);">
+          <h3 class="text-lg font-semibold mb-4" style="color: var(--text-primary);">💡 改进建议</h3>
+          <ul id="suggestions" class="space-y-2 text-sm" style="color: var(--text-secondary);"></ul>
+        </div>
+      </div>
+
+      {/* Empty State */}
+      <div id="empty-state" class="p-12 rounded-xl text-center" style="background: var(--bg-card); border: 1px solid var(--border-subtle);">
+        <div class="text-6xl mb-4">📊</div>
+        <h3 class="text-xl font-semibold mb-2" style="color: var(--text-primary);">开始分析</h3>
+        <p style="color: var(--text-muted);">输入 GitHub 仓库地址，分析项目质量</p>
+      </div>
+
+      {/* Status Bar */}
+      <div id="status-bar" class="mt-6 p-3 rounded-lg text-sm hidden"></div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  const inputRepo = document.getElementById('input-repo') as HTMLInputElement;
+  const btnAnalyze = document.getElementById('btn-analyze') as HTMLButtonElement;
+  const btnSample = document.getElementById('btn-sample') as HTMLButtonElement;
+  const loadingState = document.getElementById('loading-state') as HTMLDivElement;
+  const results = document.getElementById('results') as HTMLDivElement;
+  const emptyState = document.getElementById('empty-state') as HTMLDivElement;
+  const statusBar = document.getElementById('status-bar') as HTMLDivElement;
+
+  function showStatus(msg: string, type: 'success' | 'error' | 'info') {
+    statusBar.className = 'mt-6 p-3 rounded-lg text-sm block';
+    statusBar.style.background = type === 'success' ? 'var(--success-muted)' : type === 'error' ? 'var(--error-muted)' : 'var(--info-muted)';
+    statusBar.style.color = type === 'success' ? 'var(--success)' : type === 'error' ? 'var(--error)' : 'var(--info)';
+    statusBar.textContent = msg;
+  }
+
+  // Mock data for demo
+  function getMockData(repo: string) {
+    const [owner, name] = repo.split('/');
+    return {
+      name: name || 'unknown',
+      owner: owner || 'unknown',
+      description: 'A sample repository for demonstration',
+      stars: Math.floor(Math.random() * 1000),
+      forks: Math.floor(Math.random() * 200),
+      issues: Math.floor(Math.random() * 50),
+      language: 'TypeScript',
+      languages: {
+        'TypeScript': 65,
+        'JavaScript': 20,
+        'CSS': 10,
+        'HTML': 5,
+      },
+      hasReadme: true,
+      hasLicense: true,
+      hasTests: Math.random() > 0.3,
+      hasCI: Math.random() > 0.4,
+      lastCommit: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString(),
+      score: Math.floor(Math.random() * 40) + 60,
+    };
+  }
+
+  function calculateScore(data: any): number {
+    let score = 0;
+    
+    // Stars bonus
+    if (data.stars > 100) score += 20;
+    else if (data.stars > 10) score += 10;
+    else score += 5;
+    
+    // Has readme
+    if (data.hasReadme) score += 15;
+    
+    // Has license
+    if (data.hasLicense) score += 10;
+    
+    // Has tests
+    if (data.hasTests) score += 20;
+    
+    // Has CI
+    if (data.hasCI) score += 20;
+    
+    // Recent activity
+    const daysSinceLastCommit = (Date.now() - new Date(data.lastCommit).getTime()) / (1000 * 60 * 60 * 24);
+    if (daysSinceLastCommit < 7) score += 15;
+    else if (daysSinceLastCommit < 30) score += 10;
+    else if (daysSinceLastCommit < 90) score += 5;
+    
+    return Math.min(100, score);
+  }
+
+  function generateSuggestions(data: any): string[] {
+    const suggestions: string[] = [];
+    
+    if (!data.hasReadme) suggestions.push('添加 README.md 文件，包含项目说明和使用方法');
+    if (!data.hasLicense) suggestions.push('添加 LICENSE 文件，明确开源协议');
+    if (!data.hasTests) suggestions.push('添加单元测试，提高代码质量和可维护性');
+    if (!data.hasCI) suggestions.push('配置 GitHub Actions，实现自动化测试和部署');
+    if (data.issues > 20) suggestions.push('处理积压的 Issues，提高项目响应速度');
+    if (data.stars < 10) suggestions.push('完善项目文档，推广项目以获得更多关注');
+    
+    suggestions.push('添加 CONTRIBUTING.md，欢迎社区贡献');
+    suggestions.push('使用 GitHub Projects 管理任务和进度');
+    
+    return suggestions;
+  }
+
+  async function analyzeRepo() {
+    const repo = inputRepo.value.trim();
+    
+    if (!repo || !repo.includes('/')) {
+      showStatus('请输入有效的仓库地址，例如: owner/repo', 'error');
+      return;
+    }
+    
+    // Show loading
+    emptyState.classList.add('hidden');
+    results.classList.add('hidden');
+    loadingState.classList.remove('hidden');
+    showStatus('正在分析...', 'info');
+    
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    
+    // Get mock data
+    const data = getMockData(repo);
+    data.score = calculateScore(data);
+    
+    // Hide loading, show results
+    loadingState.classList.add('hidden');
+    results.classList.remove('hidden');
+    
+    // Update stats
+    document.getElementById('stat-stars')!.textContent = data.stars.toLocaleString();
+    document.getElementById('stat-forks')!.textContent = data.forks.toLocaleString();
+    document.getElementById('stat-issues')!.textContent = data.issues.toLocaleString();
+    document.getElementById('stat-score')!.textContent = data.score.toString();
+    
+    // Update score bar
+    const scoreBar = document.getElementById('score-bar') as HTMLDivElement;
+    scoreBar.style.width = `${data.score}%`;
+    
+    // Update repo info
+    const repoInfo = document.getElementById('repo-info') as HTMLDivElement;
+    repoInfo.innerHTML = `
+      <div class="flex justify-between">
+        <span>仓库名称</span>
+        <span class="font-medium" style="color: var(--text-primary);">${data.owner}/${data.name}</span>
+      </div>
+      <div class="flex justify-between">
+        <span>描述</span>
+        <span class="font-medium" style="color: var(--text-primary);">${data.description}</span>
+      </div>
+      <div class="flex justify-between">
+        <span>主要语言</span>
+        <span class="font-medium" style="color: var(--text-primary);">${data.language}</span>
+      </div>
+      <div class="flex justify-between">
+        <span>最后提交</span>
+        <span class="font-medium" style="color: var(--text-primary);">${new Date(data.lastCommit).toLocaleDateString('zh-CN')}</span>
+      </div>
+    `;
+    
+    // Update languages
+    const languages = document.getElementById('languages') as HTMLDivElement;
+    languages.innerHTML = Object.entries(data.languages).map(([lang, percent]) => `
+      <div>
+        <div class="flex justify-between text-sm mb-1">
+          <span style="color: var(--text-secondary);">${lang}</span>
+          <span style="color: var(--text-muted);">${percent}%</span>
+        </div>
+        <div class="w-full h-2 rounded-full" style="background: var(--bg-elevated);">
+          <div class="h-2 rounded-full" style="background: var(--gold-primary); width: ${percent}%;"></div>
+        </div>
+      </div>
+    `).join('');
+    
+    // Update checklist
+    const checklist = document.getElementById('checklist') as HTMLDivElement;
+    const checks = [
+      { label: 'README 文件', value: data.hasReadme },
+      { label: 'LICENSE 文件', value: data.hasLicense },
+      { label: '单元测试', value: data.hasTests },
+      { label: 'CI/CD 配置', value: data.hasCI },
+    ];
+    checklist.innerHTML = checks.map(check => `
+      <div class="flex items-center gap-3 p-3 rounded-lg" style="background: var(--bg-elevated);">
+        <span style="color: ${check.value ? 'var(--success)' : 'var(--error)'};">${check.value ? '✓' : '✗'}</span>
+        <span class="text-sm" style="color: var(--text-secondary);">${check.label}</span>
+      </div>
+    `).join('');
+    
+    // Update suggestions
+    const suggestions = document.getElementById('suggestions') as HTMLUListElement;
+    const suggestionList = generateSuggestions(data);
+    suggestions.innerHTML = suggestionList.map(s => `
+      <li class="flex items-start gap-2">
+        <span style="color: var(--gold-primary);">•</span>
+        <span>${s}</span>
+      </li>
+    `).join('');
+    
+    showStatus('分析完成', 'success');
+    
+    // Save to localStorage
+    localStorage.setItem('lastRepoAnalysis', JSON.stringify({ repo, data, timestamp: new Date().toISOString() }));
+  }
+
+  btnAnalyze.addEventListener('click', analyzeRepo);
+  
+  btnSample.addEventListener('click', () => {
+    inputRepo.value = 'falses00/mimo-tools';
+    showStatus('已加载示例仓库', 'info');
+  });
+  
+  inputRepo.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') analyzeRepo();
+  });
+  
+  // Load last analysis
+  const lastAnalysis = localStorage.getItem('lastRepoAnalysis');
+  if (lastAnalysis) {
+    try {
+      const { repo } = JSON.parse(lastAnalysis);
+      inputRepo.value = repo;
+    } catch (e) {
+      // Ignore
+    }
+  }
+</script>

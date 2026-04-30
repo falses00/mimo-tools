@@ -1,0 +1,418 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="AI Interview Studio - MIMO">
+  <div class="section">
+    <div class="container">
+      {/* Header */}
+      <div class="mb-8">
+        <a href="/projects" class="inline-flex items-center gap-2 text-sm mb-4 transition-colors duration-200" style="color: var(--text-muted);">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m12 19-7-7 7-7" />
+            <path d="M19 12H5" />
+          </svg>
+          返回旗舰项目
+        </a>
+        <div class="flex items-center gap-4">
+          <div class="flex items-center justify-center w-16 h-16 rounded-2xl" style="background: var(--gold-subtle); border: 1px solid var(--gold-border);">
+            <span class="text-3xl">🎯</span>
+          </div>
+          <div>
+            <h1 class="text-3xl font-bold" style="color: var(--text-primary);">AI Interview Studio</h1>
+            <p style="color: var(--text-muted);">AI 驱动的面试准备平台，分析简历与岗位匹配度</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {/* Input Section */}
+        <div class="space-y-6">
+          {/* Resume Input */}
+          <div class="p-6 rounded-xl" style="background: var(--bg-card); border: 1px solid var(--border-subtle);">
+            <div class="flex items-center justify-between mb-4">
+              <label class="text-sm font-semibold" style="color: var(--text-primary);">📄 简历文本</label>
+              <button id="btn-sample-resume" class="btn btn-ghost text-xs">加载示例</button>
+            </div>
+            <textarea
+              id="input-resume"
+              class="textarea"
+              style="min-height: 12rem;"
+              placeholder="粘贴您的简历内容..."
+            ></textarea>
+          </div>
+
+          {/* JD Input */}
+          <div class="p-6 rounded-xl" style="background: var(--bg-card); border: 1px solid var(--border-subtle);">
+            <div class="flex items-center justify-between mb-4">
+              <label class="text-sm font-semibold" style="color: var(--text-primary);">💼 岗位 JD</label>
+              <button id="btn-sample-jd" class="btn btn-ghost text-xs">加载示例</button>
+            </div>
+            <textarea
+              id="input-jd"
+              class="textarea"
+              style="min-height: 12rem;"
+              placeholder="粘贴岗位描述..."
+            ></textarea>
+          </div>
+
+          {/* Action Buttons */}
+          <div class="flex gap-4">
+            <button id="btn-analyze" class="btn btn-primary flex-1 py-3">
+              🚀 开始分析
+            </button>
+            <button id="btn-clear" class="btn btn-secondary py-3">
+              清空
+            </button>
+            <button id="btn-copy" class="btn btn-secondary py-3">
+              复制结果
+            </button>
+          </div>
+        </div>
+
+        {/* Result Section */}
+        <div class="space-y-6">
+          {/* Score */}
+          <div id="result-score" class="hidden p-6 rounded-xl" style="background: var(--bg-card); border: 1px solid var(--gold-border);">
+            <h3 class="text-sm font-semibold mb-4" style="color: var(--text-primary);">📊 匹配分数</h3>
+            <div class="text-center">
+              <div id="score-value" class="text-6xl font-bold" style="color: var(--gold-primary);">0</div>
+              <div class="text-sm mt-2" style="color: var(--text-muted);">匹配度</div>
+            </div>
+          </div>
+
+          {/* Skills Coverage */}
+          <div id="result-skills" class="hidden p-6 rounded-xl" style="background: var(--bg-card); border: 1px solid var(--border-subtle);">
+            <h3 class="text-sm font-semibold mb-4" style="color: var(--text-primary);">✅ 技能覆盖</h3>
+            <div id="skills-list" class="flex flex-wrap gap-2"></div>
+          </div>
+
+          {/* Missing Skills */}
+          <div id="result-missing" class="hidden p-6 rounded-xl" style="background: var(--bg-card); border: 1px solid var(--border-subtle);">
+            <h3 class="text-sm font-semibold mb-4" style="color: var(--text-primary);">⚠️ 缺口技能</h3>
+            <div id="missing-list" class="flex flex-wrap gap-2"></div>
+          </div>
+
+          {/* Suggestions */}
+          <div id="result-suggestions" class="hidden p-6 rounded-xl" style="background: var(--bg-card); border: 1px solid var(--border-subtle);">
+            <h3 class="text-sm font-semibold mb-4" style="color: var(--text-primary);">💡 简历改进建议</h3>
+            <ul id="suggestions-list" class="space-y-2 text-sm" style="color: var(--text-secondary);"></ul>
+          </div>
+
+          {/* Interview Questions */}
+          <div id="result-questions" class="hidden p-6 rounded-xl" style="background: var(--bg-card); border: 1px solid var(--border-subtle);">
+            <h3 class="text-sm font-semibold mb-4" style="color: var(--text-primary);">❓ 面试问题</h3>
+            <div id="questions-list" class="space-y-4"></div>
+          </div>
+
+          {/* Empty State */}
+          <div id="empty-state" class="p-12 rounded-xl text-center" style="background: var(--bg-card); border: 1px solid var(--border-subtle);">
+            <div class="text-6xl mb-4">🎯</div>
+            <h3 class="text-xl font-semibold mb-2" style="color: var(--text-primary);">开始分析</h3>
+            <p style="color: var(--text-muted);">粘贴简历和岗位 JD，AI 将分析匹配度并提供建议</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Status Bar */}
+      <div id="status-bar" class="mt-6 p-3 rounded-lg text-sm hidden"></div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  // Sample data
+  const sampleResume = `张三
+高级前端工程师 | 5年经验
+
+技能：
+- JavaScript/TypeScript, React, Vue, Angular
+- Node.js, Express, Fastify
+- HTML5, CSS3, Tailwind CSS
+- Git, CI/CD, Docker
+- REST API, GraphQL
+- MongoDB, PostgreSQL
+
+工作经历：
+ABC 科技公司 - 高级前端工程师 (2021-至今)
+- 负责公司核心产品的前端架构设计和开发
+- 使用 React + TypeScript 构建复杂的单页应用
+- 优化前端性能，页面加载速度提升 40%
+- 带领 3 人前端团队完成多个项目
+
+XYZ 互联网公司 - 前端工程师 (2019-2021)
+- 参与电商平台前端开发
+- 使用 Vue.js 构建响应式页面
+- 与后端团队协作完成 API 对接
+
+教育背景：
+某大学 - 计算机科学学士 (2015-2019)`;
+
+  const sampleJD = `高级前端工程师 - 某科技公司
+
+职位要求：
+- 5年以上前端开发经验
+- 精通 React 或 Vue.js
+- 熟悉 TypeScript
+- 有 Node.js 后端开发经验
+- 了解微前端架构
+- 熟悉 CI/CD 流程
+- 有团队管理经验优先
+
+加分项：
+- 了解 AI/ML 基础
+- 有开源项目贡献
+- 熟悉 Web3 技术
+- 有性能优化经验
+
+职责：
+- 负责公司核心产品的前端架构设计
+- 带领前端团队完成项目开发
+- 与产品、设计、后端团队协作
+- 推动前端工程化和自动化`;
+
+  // Elements
+  const inputResume = document.getElementById('input-resume') as HTMLTextAreaElement;
+  const inputJD = document.getElementById('input-jd') as HTMLTextAreaElement;
+  const btnAnalyze = document.getElementById('btn-analyze') as HTMLButtonElement;
+  const btnClear = document.getElementById('btn-clear') as HTMLButtonElement;
+  const btnCopy = document.getElementById('btn-copy') as HTMLButtonElement;
+  const btnSampleResume = document.getElementById('btn-sample-resume') as HTMLButtonElement;
+  const btnSampleJD = document.getElementById('btn-sample-jd') as HTMLButtonElement;
+  const statusBar = document.getElementById('status-bar') as HTMLDivElement;
+
+  // Result elements
+  const resultScore = document.getElementById('result-score') as HTMLDivElement;
+  const resultSkills = document.getElementById('result-skills') as HTMLDivElement;
+  const resultMissing = document.getElementById('result-missing') as HTMLDivElement;
+  const resultSuggestions = document.getElementById('result-suggestions') as HTMLDivElement;
+  const resultQuestions = document.getElementById('result-questions') as HTMLDivElement;
+  const emptyState = document.getElementById('empty-state') as HTMLDivElement;
+
+  function showStatus(msg: string, type: 'success' | 'error' | 'info') {
+    statusBar.className = 'mt-6 p-3 rounded-lg text-sm block';
+    statusBar.style.background = type === 'success' ? 'var(--success-muted)' : type === 'error' ? 'var(--error-muted)' : 'var(--info-muted)';
+    statusBar.style.color = type === 'success' ? 'var(--success)' : type === 'error' ? 'var(--error)' : 'var(--info)';
+    statusBar.textContent = msg;
+  }
+
+  // Skill extraction
+  function extractSkills(text: string): string[] {
+    const skillPatterns = [
+      'javascript', 'typescript', 'react', 'vue', 'angular', 'node.js', 'express', 'fastify',
+      'html', 'css', 'tailwind', 'git', 'docker', 'rest', 'graphql', 'mongodb', 'postgresql',
+      'python', 'java', 'go', 'rust', 'c++', 'sql', 'nosql', 'redis', 'aws', 'azure', 'gcp',
+      'ci/cd', 'microservices', 'agile', 'scrum', 'machine learning', 'ai', 'tensorflow',
+      'pytorch', 'data analysis', 'figma', 'sketch', 'ui/ux', 'testing', 'jest', 'cypress',
+      'webpack', 'vite', 'next.js', 'nuxt', 'svelte', 'flutter', 'react native', 'swift',
+      'kotlin', 'blockchain', 'web3', 'solidity', 'devops', 'kubernetes', 'linux',
+    ];
+    
+    const lowerText = text.toLowerCase();
+    return skillPatterns.filter(skill => lowerText.includes(skill));
+  }
+
+  // Skill matching
+  function matchSkills(resumeSkills: string[], jdSkills: string[]): { matched: string[]; missing: string[] } {
+    const matched = resumeSkills.filter(skill => jdSkills.includes(skill));
+    const missing = jdSkills.filter(skill => !resumeSkills.includes(skill));
+    return { matched, missing };
+  }
+
+  // Score calculation
+  function calculateScore(matched: number, total: number): number {
+    if (total === 0) return 0;
+    return Math.round((matched / total) * 100);
+  }
+
+  // Generate suggestions
+  function generateSuggestions(missingSkills: string[]): string[] {
+    const suggestions: string[] = [];
+    
+    if (missingSkills.length > 0) {
+      suggestions.push(`考虑学习以下技能：${missingSkills.slice(0, 3).join('、')}`);
+    }
+    
+    suggestions.push('在简历中添加具体的项目成果和数据指标');
+    suggestions.push('突出与岗位要求匹配的工作经验');
+    suggestions.push('添加技术博客或开源项目链接');
+    
+    return suggestions;
+  }
+
+  // Generate interview questions
+  function generateQuestions(matchedSkills: string[], missingSkills: string[]): Array<{ question: string; type: string }> {
+    const questions: Array<{ question: string; type: string }> = [];
+    
+    // Technical questions based on matched skills
+    matchedSkills.slice(0, 3).forEach(skill => {
+      questions.push({
+        question: `请描述您在 ${skill} 方面的项目经验和技术深度`,
+        type: '技术深度'
+      });
+    });
+    
+    // Behavioral questions
+    questions.push({
+      question: '请描述一个您解决过的最有挑战性的技术问题',
+      type: '行为面试'
+    });
+    
+    questions.push({
+      question: '您如何保持技术学习和更新？',
+      type: '学习能力'
+    });
+    
+    // Gap questions
+    if (missingSkills.length > 0) {
+      questions.push({
+        question: `岗位需要 ${missingSkills[0]}，您打算如何学习和应用？`,
+        type: '学习意愿'
+      });
+    }
+    
+    return questions;
+  }
+
+  // Analyze
+  function analyze() {
+    const resume = inputResume.value.trim();
+    const jd = inputJD.value.trim();
+    
+    if (!resume || !jd) {
+      showStatus('请填写简历和岗位 JD', 'error');
+      return;
+    }
+    
+    showStatus('正在分析...', 'info');
+    
+    // Extract skills
+    const resumeSkills = extractSkills(resume);
+    const jdSkills = extractSkills(jd);
+    
+    // Match skills
+    const { matched, missing } = matchSkills(resumeSkills, jdSkills);
+    
+    // Calculate score
+    const score = calculateScore(matched.length, jdSkills.length);
+    
+    // Generate suggestions
+    const suggestions = generateSuggestions(missing);
+    
+    // Generate questions
+    const questions = generateQuestions(matched, missing);
+    
+    // Display results
+    displayResults(score, matched, missing, suggestions, questions);
+    
+    // Save to localStorage
+    localStorage.setItem('lastAnalysis', JSON.stringify({
+      resume, jd, score, matched, missing, suggestions, questions,
+      timestamp: new Date().toISOString()
+    }));
+    
+    showStatus('分析完成', 'success');
+  }
+
+  // Display results
+  function displayResults(
+    score: number,
+    matched: string[],
+    missing: string[],
+    suggestions: string[],
+    questions: Array<{ question: string; type: string }>
+  ) {
+    // Hide empty state
+    emptyState.classList.add('hidden');
+    
+    // Show score
+    resultScore.classList.remove('hidden');
+    const scoreValue = document.getElementById('score-value') as HTMLDivElement;
+    scoreValue.textContent = score.toString();
+    
+    // Show matched skills
+    resultSkills.classList.remove('hidden');
+    const skillsList = document.getElementById('skills-list') as HTMLDivElement;
+    skillsList.innerHTML = matched.map(skill => 
+      `<span class="badge badge-success text-xs">${skill}</span>`
+    ).join('');
+    
+    // Show missing skills
+    resultMissing.classList.remove('hidden');
+    const missingList = document.getElementById('missing-list') as HTMLDivElement;
+    missingList.innerHTML = missing.map(skill => 
+      `<span class="badge badge-error text-xs">${skill}</span>`
+    ).join('');
+    
+    // Show suggestions
+    resultSuggestions.classList.remove('hidden');
+    const suggestionsList = document.getElementById('suggestions-list') as HTMLUListElement;
+    suggestionsList.innerHTML = suggestions.map(s => 
+      `<li class="flex items-start gap-2">
+        <span style="color: var(--gold-primary);">•</span>
+        <span>${s}</span>
+      </li>`
+    ).join('');
+    
+    // Show questions
+    resultQuestions.classList.remove('hidden');
+    const questionsList = document.getElementById('questions-list') as HTMLDivElement;
+    questionsList.innerHTML = questions.map((q, i) => 
+      `<div class="p-4 rounded-lg" style="background: var(--bg-elevated); border: 1px solid var(--border-subtle);">
+        <div class="flex items-center gap-2 mb-2">
+          <span class="badge badge-gold text-xs">${q.type}</span>
+        </div>
+        <p class="text-sm" style="color: var(--text-secondary);">${i + 1}. ${q.question}</p>
+      </div>`
+    ).join('');
+  }
+
+  // Event listeners
+  btnAnalyze.addEventListener('click', analyze);
+  
+  btnSampleResume.addEventListener('click', () => {
+    inputResume.value = sampleResume;
+    showStatus('已加载示例简历', 'info');
+  });
+  
+  btnSampleJD.addEventListener('click', () => {
+    inputJD.value = sampleJD;
+    showStatus('已加载示例 JD', 'info');
+  });
+  
+  btnClear.addEventListener('click', () => {
+    inputResume.value = '';
+    inputJD.value = '';
+    emptyState.classList.remove('hidden');
+    resultScore.classList.add('hidden');
+    resultSkills.classList.add('hidden');
+    resultMissing.classList.add('hidden');
+    resultSuggestions.classList.add('hidden');
+    resultQuestions.classList.add('hidden');
+    statusBar.className = 'mt-6 p-3 rounded-lg text-sm hidden';
+  });
+  
+  btnCopy.addEventListener('click', () => {
+    const score = document.getElementById('score-value')?.textContent || '0';
+    const skills = Array.from(document.querySelectorAll('#skills-list .badge')).map(b => b.textContent).join(', ');
+    const missing = Array.from(document.querySelectorAll('#missing-list .badge')).map(b => b.textContent).join(', ');
+    
+    const text = `AI Interview Studio 分析结果\n\n匹配分数: ${score}%\n覆盖技能: ${skills}\n缺口技能: ${missing}`;
+    
+    navigator.clipboard.writeText(text);
+    showStatus('已复制到剪贴板', 'success');
+  });
+  
+  // Load last analysis
+  const lastAnalysis = localStorage.getItem('lastAnalysis');
+  if (lastAnalysis) {
+    try {
+      const data = JSON.parse(lastAnalysis);
+      inputResume.value = data.resume || '';
+      inputJD.value = data.jd || '';
+    } catch (e) {
+      // Ignore
+    }
+  }
+</script>
