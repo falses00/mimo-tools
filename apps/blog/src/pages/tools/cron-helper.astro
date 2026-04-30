@@ -1,0 +1,34 @@
+---
+import Layout from "../../layouts/Layout.astro";
+---
+
+<Layout title="Cron Helper - MIMO">
+  <main class="min-h-screen bg-background">
+    <div class="container mx-auto px-4 py-8">
+      <div class="mb-8">
+        <a href="/tools" class="text-primary hover:underline text-sm">&larr; 返回工具箱</a>
+        <h1 class="text-3xl font-bold mt-2">Cron Helper</h1>
+        <p class="text-muted-foreground mt-1">可视化生成 Cron 表达式</p>
+      </div>
+      <div class="mb-6">
+        <label class="text-sm font-medium mb-1 block">Cron 表达式</label>
+        <input id="cron-input" type="text" class="w-full px-4 py-3 font-mono text-lg border border-input rounded-lg bg-background" value="0 9 * * 1-5" />
+      </div>
+      <div id="result" class="mb-6 p-4 rounded-lg border border-border bg-card">
+        <p id="human-readable" class="text-lg"></p>
+      </div>
+    </div>
+  </main>
+</Layout>
+
+<script>
+  var input = document.getElementById("cron-input");
+  var result = document.getElementById("human-readable");
+  input.addEventListener("input", function() {
+    var parts = input.value.trim().split(/s+/);
+    if (parts.length === 5) {
+      result.textContent = "每天 " + parts[1] + ":" + parts[0];
+    }
+  });
+  input.dispatchEvent(new Event("input"));
+</script>

@@ -1,0 +1,141 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { tools, categories } from '../data/tools';
+
+const allCategories = ['all', ...categories.map(c => c.id)];
+---
+
+<Layout title="工具箱 - MIMO">
+  <main class="min-h-screen bg-background">
+    <div class="container mx-auto px-4 py-12">
+      <div class="text-center mb-12">
+        <h1 class="text-4xl font-bold mb-4">🛠️ 工具箱</h1>
+        <p class="text-muted-foreground text-lg max-w-2xl mx-auto">
+          实用开发工具集合，所有工具纯前端处理，数据不离开浏览器
+        </p>
+      </div>
+
+      <div class="flex flex-wrap justify-center gap-2 mb-8">
+        <button class="category-btn active px-4 py-2 rounded-full text-sm font-medium transition-colors" data-category="all">
+          全部
+        </button>
+        {categories.map(cat => (
+          <button class="category-btn px-4 py-2 rounded-full text-sm font-medium transition-colors" data-category={cat.id}>
+            {cat.icon} {cat.name}
+          </button>
+        ))}
+      </div>
+
+      <div class="mb-8 max-w-md mx-auto">
+        <input
+          type="text"
+          id="search-input"
+          placeholder="搜索工具..."
+          class="w-full px-4 py-3 rounded-lg border border-input bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+        />
+      </div>
+
+      <div id="tools-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {tools.map(tool => (
+          <a
+            href={tool.status === 'available' ? tool.path : '#'}
+            class={`tool-card group block p-6 rounded-xl border transition-all duration-200 ${
+              tool.status === 'available'
+                ? 'border-border hover:border-primary hover:shadow-lg hover:shadow-primary/10 cursor-pointer'
+                : 'border-border/50 opacity-60 cursor-not-allowed'
+            }`}
+            data-category={tool.category}
+            data-name={tool.name.toLowerCase()}
+            data-tags={tool.tags.join(',').toLowerCase()}
+          >
+            <div class="flex items-start justify-between mb-4">
+              <span class="text-3xl">{tool.icon}</span>
+              {tool.status === 'coming-soon' && (
+                <span class="text-xs bg-secondary text-secondary-foreground px-2 py-1 rounded-full">
+                  即将推出
+                </span>
+              )}
+              {tool.featured && tool.status === 'available' && (
+                <span class="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">
+                  推荐
+                </span>
+              )}
+            </div>
+            <h3 class="text-lg font-semibold mb-2 group-hover:text-primary transition-colors">
+              {tool.name}
+            </h3>
+            <p class="text-muted-foreground text-sm mb-4">
+              {tool.description}
+            </p>
+            <div class="flex flex-wrap gap-1">
+              {tool.tags.map(tag => (
+                <span class="text-xs bg-secondary/50 text-secondary-foreground px-2 py-0.5 rounded">
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </a>
+        ))}
+      </div>
+
+      <div id="no-results" class="hidden text-center py-12">
+        <p class="text-muted-foreground text-lg">没有找到匹配的工具</p>
+      </div>
+    </div>
+  </main>
+</Layout>
+
+<script>
+  const searchInput = document.getElementById('search-input') as HTMLInputElement;
+  const toolCards = document.querySelectorAll('.tool-card');
+  const categoryBtns = document.querySelectorAll('.category-btn');
+  const noResults = document.getElementById('no-results');
+
+  let activeCategory = 'all';
+
+  function filterTools() {
+    const query = searchInput?.value.toLowerCase() || '';
+    let visibleCount = 0;
+
+    toolCards.forEach(card => {
+      const el = card as HTMLElement;
+      const category = el.dataset.category || '';
+      const name = el.dataset.name || '';
+      const tags = el.dataset.tags || '';
+
+      const matchesCategory = activeCategory === 'all' || category === activeCategory;
+      const matchesSearch = !query || name.includes(query) || tags.includes(query) || category.includes(query);
+
+      if (matchesCategory && matchesSearch) {
+        el.style.display = '';
+        visibleCount++;
+      } else {
+        el.style.display = 'none';
+      }
+    });
+
+    if (noResults) {
+      noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+    }
+  }
+
+  categoryBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      categoryBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeCategory = (btn as HTMLElement).dataset.category || 'all';
+      filterTools();
+    });
+  });
+
+  searchInput?.addEventListener('input', filterTools);
+</script>
+
+<style>
+  .category-btn {
+    @apply bg-secondary/50 text-secondary-foreground hover:bg-secondary;
+  }
+  .category-btn.active {
+    @apply bg-primary text-primary-foreground;
+  }
+</style>

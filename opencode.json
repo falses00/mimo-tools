@@ -1,0 +1,122 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "permission": {
+    "*": "allow",
+    "edit": "allow",
+    "webfetch": "allow",
+    "websearch": "allow",
+    "skill": { "*": "allow" },
+    "task": { "*": "allow" },
+    "bash": {
+      "*": "allow",
+      "git status*": "allow",
+      "git diff*": "allow",
+      "git log*": "allow",
+      "git add*": "allow",
+      "git commit*": "allow",
+      "git branch*": "allow",
+      "git checkout*": "allow",
+      "git switch*": "allow",
+      "git pull*": "allow",
+      "git push*": "ask",
+      "npm *": "allow",
+      "pnpm *": "allow",
+      "bun *": "allow",
+      "npx *": "allow",
+      "gh auth status*": "allow",
+      "gh repo view*": "allow",
+      "gh repo create*": "ask",
+      "gh repo edit*": "ask",
+      "gh workflow*": "ask",
+      "gh api*": "ask",
+      "rm -rf *": "ask",
+      "sudo *": "ask",
+      "chmod -R *": "ask",
+      "chown -R *": "ask",
+      "curl * | sh*": "ask",
+      "wget * | sh*": "ask",
+      "npm publish*": "ask",
+      "pnpm publish*": "ask",
+      "bun publish*": "ask"
+    }
+  },
+  "agent": {
+    "swarm-master": {
+      "description": "主控多 Agent 编排器：循环规划、审核、分派、执行、测试、部署，直到项目验收通过。",
+      "mode": "primary",
+      "temperature": 0.15,
+      "steps": 120,
+      "prompt": "{file:.opencode/prompts/swarm-master.md}",
+      "permission": {
+        "*": "allow",
+        "task": { "*": "allow" },
+        "bash": {
+          "*": "allow",
+          "git push*": "ask",
+          "gh repo create*": "ask",
+          "gh repo delete*": "ask",
+          "rm -rf *": "ask",
+          "sudo *": "ask",
+          "curl * | sh*": "ask",
+          "wget * | sh*": "ask"
+        }
+      }
+    },
+    "planner-agent": {
+      "description": "负责读取项目状态、PRD、架构文档和任务文档，生成下一轮 3-7 个可执行任务。",
+      "mode": "subagent",
+      "temperature": 0.1,
+      "steps": 40,
+      "prompt": "{file:.opencode/prompts/planner-agent.md}"
+    },
+    "critic-agent": {
+      "description": "负责审核规划、代码变更、架构一致性、验收标准是否满足。",
+      "mode": "subagent",
+      "temperature": 0.05,
+      "steps": 40,
+      "prompt": "{file:.opencode/prompts/critic-agent.md}"
+    },
+    "task-dispatcher": {
+      "description": "负责把审核通过的计划拆成可执行任务，写入 TASKS.md。",
+      "mode": "subagent",
+      "temperature": 0.1,
+      "steps": 40,
+      "prompt": "{file:.opencode/prompts/task-dispatcher.md}"
+    },
+    "builder-agent": {
+      "description": "负责实现功能、写代码、修复构建错误、补测试，不负责最终发布。",
+      "mode": "subagent",
+      "temperature": 0.2,
+      "steps": 80,
+      "prompt": "{file:.opencode/prompts/builder-agent.md}"
+    },
+    "ui-agent": {
+      "description": "负责精美前端、响应式布局、暗色模式、组件一致性、可访问性。",
+      "mode": "subagent",
+      "temperature": 0.25,
+      "steps": 60,
+      "prompt": "{file:.opencode/prompts/ui-agent.md}"
+    },
+    "qa-agent": {
+      "description": "负责 typecheck、lint、test、build、Playwright 验收和失败修复建议。",
+      "mode": "subagent",
+      "temperature": 0.05,
+      "steps": 60,
+      "prompt": "{file:.opencode/prompts/qa-agent.md}"
+    },
+    "security-agent": {
+      "description": "负责检查 .env、token、密钥泄露、危险命令、GitHub 发布风险。",
+      "mode": "subagent",
+      "temperature": 0.05,
+      "steps": 40,
+      "prompt": "{file:.opencode/prompts/security-agent.md}"
+    },
+    "release-agent": {
+      "description": "负责 changelog、commit、GitHub repo、GitHub Pages、Actions 部署；高风险步骤需确认。",
+      "mode": "subagent",
+      "temperature": 0.1,
+      "steps": 60,
+      "prompt": "{file:.opencode/prompts/release-agent.md}"
+    }
+  }
+}

@@ -1,0 +1,65 @@
+---
+import Layout from "../../layouts/Layout.astro";
+---
+
+<Layout title="Color Palette - MIMO">
+  <main class="min-h-screen bg-background">
+    <div class="container mx-auto px-4 py-8">
+      <div class="mb-8">
+        <a href="/tools" class="text-primary hover:underline text-sm">&larr; 返回工具箱</a>
+        <h1 class="text-3xl font-bold mt-2">Color Palette</h1>
+        <p class="text-muted-foreground mt-1">生成协调调色板</p>
+      </div>
+      <div class="mb-6">
+        <label class="text-sm font-medium mb-1 block">基础颜色</label>
+        <div class="flex gap-2 items-center">
+          <input id="color" type="color" value="#3b82f6" class="w-12 h-12 border border-input rounded cursor-pointer" />
+          <input id="hex" type="text" value="#3b82f6" class="px-3 py-2 font-mono border border-input rounded-lg bg-background w-32" />
+        </div>
+      </div>
+      <div id="palette" class="grid grid-cols-5 gap-2 mb-6"></div>
+    </div>
+  </main>
+</Layout>
+
+<script>
+  var colorInput = document.getElementById("color");
+  var hexInput = document.getElementById("hex");
+  var palette = document.getElementById("palette");
+  function update() {
+    var hex = hexInput.value;
+    if (!/^#[0-9a-fA-F]{6}$/.test(hex)) return;
+    colorInput.value = hex;
+    var r = parseInt(hex.slice(1,3), 16);
+    var g = parseInt(hex.slice(3,5), 16);
+    var b = parseInt(hex.slice(5,7), 16);
+    var colors = [];
+    for (var i = 0; i < 5; i++) {
+      var factor = 0.5 + (i * 0.15);
+      var nr = Math.min(255, Math.round(r * factor));
+      var ng = Math.min(255, Math.round(g * factor));
+      var nb = Math.min(255, Math.round(b * factor));
+      colors.push("#" + [nr,ng,nb].map(function(v){return v.toString(16).padStart(2,"0")}).join(""));
+    }
+    palette.innerHTML = "";
+    colors.forEach(function(c) {
+      var div = document.createElement("div");
+      div.className = "rounded-lg overflow-hidden cursor-pointer";
+      var colorDiv = document.createElement("div");
+      colorDiv.style.height = "80px";
+      colorDiv.style.backgroundColor = c;
+      var textDiv = document.createElement("div");
+      textDiv.className = "p-2 text-xs font-mono";
+      textDiv.textContent = c;
+      div.appendChild(colorDiv);
+      div.appendChild(textDiv);
+      div.addEventListener("click", function() {
+        navigator.clipboard.writeText(c);
+      });
+      palette.appendChild(div);
+    });
+  }
+  colorInput.addEventListener("input", function() { hexInput.value = colorInput.value; update(); });
+  hexInput.addEventListener("input", update);
+  update();
+</script>

@@ -1,0 +1,69 @@
+---
+import Layout from "../../layouts/Layout.astro";
+---
+
+<Layout title="Regex Tester - MIMO">
+  <main class="min-h-screen bg-background">
+    <div class="container mx-auto px-4 py-8">
+      <div class="mb-8">
+        <a href="/tools" class="text-primary hover:underline text-sm">&larr; 返回工具箱</a>
+        <h1 class="text-3xl font-bold mt-2">Regex Tester</h1>
+        <p class="text-muted-foreground mt-1">实时测试正则表达式</p>
+      </div>
+      <div class="mb-4">
+        <label class="text-sm font-medium mb-1 block">正则表达式</label>
+        <input id="regex" type="text" class="w-full px-4 py-2 font-mono border border-input rounded-lg bg-background" value="w+@w+.w+" />
+      </div>
+      <div class="mb-4">
+        <label class="text-sm font-medium mb-1 block">测试文本</label>
+        <textarea id="text" class="w-full h-32 p-4 font-mono text-sm border border-input rounded-lg bg-background">test@example.com 和 user@domain.org</textarea>
+      </div>
+      <div class="mb-4">
+        <label class="text-sm font-medium mb-1 block">匹配结果</label>
+        <div id="result" class="w-full min-h-[80px] p-4 font-mono text-sm border border-input rounded-lg bg-background whitespace-pre-wrap"></div>
+      </div>
+      <div id="info" class="text-sm text-muted-foreground"></div>
+    </div>
+  </main>
+</Layout>
+
+<script>
+  var regexInput = document.getElementById("regex");
+  var textInput = document.getElementById("text");
+  var result = document.getElementById("result");
+  var info = document.getElementById("info");
+  function escapeHtml(str) {
+    return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
+  function update() {
+    var pattern = regexInput.value;
+    var text = textInput.value;
+    if (!pattern || !text) { result.innerHTML = escapeHtml(text); info.textContent = ""; return; }
+    try {
+      var regex = new RegExp(pattern, "gi");
+      var matches = text.match(regex);
+      if (matches) {
+        info.textContent = "找到 " + matches.length + " 个匹配";
+        var html = "";
+        var lastIndex = 0;
+        text.replace(regex, function(match, offset) {
+          html += escapeHtml(text.substring(lastIndex, offset));
+          html += "<span class='bg-yellow-200 dark:bg-yellow-800'>" + escapeHtml(match) + "</span>";
+          lastIndex = offset + match.length;
+          return match;
+        });
+        html += escapeHtml(text.substring(lastIndex));
+        result.innerHTML = html;
+      } else {
+        info.textContent = "无匹配";
+        result.innerHTML = escapeHtml(text);
+      }
+    } catch (e) {
+      info.textContent = "正则错误: " + e.message;
+      result.innerHTML = escapeHtml(text);
+    }
+  }
+  regexInput.addEventListener("input", update);
+  textInput.addEventListener("input", update);
+  update();
+</script>

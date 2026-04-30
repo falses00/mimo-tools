@@ -1,0 +1,38 @@
+{
+  "name": "mimo",
+  "version": "1.0.0",
+  "description": "个人工具生态：包含多个实用工具、博客和导航站",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace=apps/blog",
+    "build": "npm run build --workspace=apps/blog",
+    "test": "npx vitest run",
+    "lint": "echo \"lint not configured yet\"",
+    "typecheck": "npx tsc --noEmit --project apps/blog/tsconfig.json",
+    "test:watch": "npx vitest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yourusername/mimo.git"
+  },
+  "keywords": [
+    "tools",
+    "blog",
+    "astro",
+    "react",
+    "tailwind"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/yourusername/mimo/issues"
+  },
+  "homepage": "https://yourusername.github.io/mimo",
+  "devDependencies": {
+    "vitest": "^4.1.5"
+  }
+}

@@ -1,0 +1,48 @@
+---
+import Layout from "../../layouts/Layout.astro";
+---
+
+<Layout title="Markdown Previewer - MIMO">
+  <main class="min-h-screen bg-background">
+    <div class="container mx-auto px-4 py-8">
+      <div class="mb-8">
+        <a href="/tools" class="text-primary hover:underline text-sm">&larr; 返回工具箱</a>
+        <h1 class="text-3xl font-bold mt-2">Markdown Previewer</h1>
+        <p class="text-muted-foreground mt-1">实时预览 Markdown</p>
+      </div>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div>
+          <label class="text-sm font-medium mb-1 block">输入</label>
+          <textarea id="input" class="w-full h-96 p-4 font-mono text-sm border border-input rounded-lg bg-background" placeholder="输入 Markdown..."></textarea>
+        </div>
+        <div>
+          <label class="text-sm font-medium mb-1 block">预览</label>
+          <div id="preview" class="w-full h-96 p-4 overflow-auto border border-input rounded-lg bg-background prose dark:prose-invert"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+</Layout>
+
+<script>
+  var input = document.getElementById("input");
+  var preview = document.getElementById("preview");
+  function render(md) {
+    var lines = md.split(String.fromCharCode(10));
+    var html = "";
+    for (var i = 0; i < lines.length; i++) {
+      var line = lines[i];
+      if (line.startsWith("# ")) html += "<h1>" + line.substring(2) + "</h1>";
+      else if (line.startsWith("## ")) html += "<h2>" + line.substring(3) + "</h2>";
+      else if (line.startsWith("### ")) html += "<h3>" + line.substring(4) + "</h3>";
+      else if (line.startsWith("- ")) html += "<li>" + line.substring(2) + "</li>";
+      else if (line.startsWith("> ")) html += "<blockquote>" + line.substring(2) + "</blockquote>";
+      else if (line.trim() === "") html += "<br>";
+      else html += "<p>" + line + "</p>";
+    }
+    return html;
+  }
+  input.addEventListener("input", function() {
+    preview.innerHTML = render(input.value);
+  });
+</script>
