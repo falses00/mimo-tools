@@ -1,117 +1,215 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import ToolLayout from '../../components/tools/ToolLayout.astro';
 ---
 
 <Layout title="JSON Formatter - MIMO">
-  <main class="min-h-screen bg-background">
-    <div class="container mx-auto px-4 py-8">
-      <div class="mb-8">
-        <a href="/tools" class="text-primary hover:underline text-sm">&larr; 返回工具箱</a>
-        <h1 class="text-3xl font-bold mt-2">JSON Formatter</h1>
-        <p class="text-muted-foreground mt-1">格式化、压缩、验证 JSON 数据</p>
-      </div>
-      <div class="flex flex-wrap gap-2 mb-4">
-        <button id="btn-format" class="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium">格式化</button>
-        <button id="btn-minify" class="px-4 py-2 bg-secondary text-secondary-foreground rounded-lg text-sm font-medium">压缩</button>
-        <button id="btn-validate" class="px-4 py-2 bg-secondary text-secondary-foreground rounded-lg text-sm font-medium">验证</button>
-        <button id="btn-diff" class="px-4 py-2 bg-secondary text-secondary-foreground rounded-lg text-sm font-medium">差异比较</button>
-        <button id="btn-example" class="px-4 py-2 bg-secondary text-secondary-foreground rounded-lg text-sm font-medium">示例</button>
-        <button id="btn-copy" class="px-4 py-2 bg-secondary text-secondary-foreground rounded-lg text-sm font-medium">复制结果</button>
-        <button id="btn-clear" class="px-4 py-2 bg-destructive text-destructive-foreground rounded-lg text-sm font-medium">清空</button>
-      </div>
-      <div class="mb-4">
-        <label for="indent-select" class="text-sm text-muted-foreground mr-2">缩进:</label>
-        <select id="indent-select" class="px-2 py-1 rounded border border-input bg-background text-sm">
-          <option value="2" selected>2 空格</option>
-          <option value="4">4 空格</option>
-          <option value="tab">Tab</option>
-        </select>
-      </div>
-      <div id="diff-section" class="hidden mb-4">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <div><label class="text-sm font-medium mb-1 block">JSON A</label><textarea id="input-a" class="w-full h-48 p-4 font-mono text-sm border border-input rounded-lg bg-background" placeholder="粘贴第一个 JSON..."></textarea></div>
-          <div><label class="text-sm font-medium mb-1 block">JSON B</label><textarea id="input-b" class="w-full h-48 p-4 font-mono text-sm border border-input rounded-lg bg-background" placeholder="粘贴第二个 JSON..."></textarea></div>
+  <ToolLayout title="JSON Formatter" description="格式化、压缩、验证 JSON 数据" icon="{ }">
+    {/* Action Buttons */}
+    <div class="flex flex-wrap gap-2 mb-6">
+      <button id="btn-format" class="btn btn-primary">格式化</button>
+      <button id="btn-minify" class="btn btn-secondary">压缩</button>
+      <button id="btn-validate" class="btn btn-secondary">验证</button>
+      <button id="btn-diff" class="btn btn-secondary">差异比较</button>
+      <button id="btn-example" class="btn btn-ghost">示例</button>
+      <button id="btn-copy" class="btn btn-ghost">复制结果</button>
+      <button id="btn-clear" class="btn btn-ghost" style="color: var(--error);">清空</button>
+    </div>
+
+    {/* Indent Select */}
+    <div class="mb-6">
+      <label for="indent-select" class="text-sm mr-2" style="color: var(--text-muted);">缩进:</label>
+      <select id="indent-select" class="input" style="width: auto; display: inline-block;">
+        <option value="2" selected>2 空格</option>
+        <option value="4">4 空格</option>
+        <option value="tab">Tab</option>
+      </select>
+    </div>
+
+    {/* Diff Section */}
+    <div id="diff-section" class="hidden mb-6">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium mb-2" style="color: var(--text-secondary);">JSON A</label>
+          <textarea id="input-a" class="textarea" placeholder="粘贴第一个 JSON..."></textarea>
         </div>
-        <button id="btn-compare" class="mt-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium">比较</button>
+        <div>
+          <label class="block text-sm font-medium mb-2" style="color: var(--text-secondary);">JSON B</label>
+          <textarea id="input-b" class="textarea" placeholder="粘贴第二个 JSON..."></textarea>
+        </div>
       </div>
-      <div id="single-section" class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <div><label class="text-sm font-medium mb-1 block">输入</label><textarea id="input-json" class="w-full h-96 p-4 font-mono text-sm border border-input rounded-lg bg-background" placeholder="粘贴 JSON 数据..."></textarea></div>
-        <div><label class="text-sm font-medium mb-1 block">输出</label><textarea id="output-json" class="w-full h-96 p-4 font-mono text-sm border border-input rounded-lg bg-background" readonly placeholder="结果将显示在这里..."></textarea></div>
+      <button id="btn-compare" class="btn btn-primary mt-4">比较</button>
+    </div>
+
+    {/* Single Section */}
+    <div id="single-section" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div>
+        <label class="block text-sm font-medium mb-2" style="color: var(--text-secondary);">输入</label>
+        <textarea id="input-json" class="textarea" style="min-height: 20rem;" placeholder="粘贴 JSON 数据..."></textarea>
       </div>
-      <div id="status-bar" class="mt-4 p-3 rounded-lg text-sm hidden"></div>
-      <div class="mt-12 p-6 rounded-xl border border-border bg-card">
-        <h2 class="text-xl font-semibold mb-4">使用说明</h2>
-        <ul class="space-y-2 text-sm">
-          <li><strong>格式化</strong> - 将 JSON 数据美化为易读格式</li>
-          <li><strong>压缩</strong> - 移除所有空白，生成最小 JSON</li>
-          <li><strong>验证</strong> - 检查 JSON 语法是否正确</li>
-          <li><strong>差异比较</strong> - 比较两个 JSON 对象的差异</li>
-          <li><strong>示例</strong> - 加载示例 JSON 数据</li>
-          <li><strong>复制</strong> - 将输出复制到剪贴板</li>
-          <li><strong>清空</strong> - 清除所有输入和输出</li>
-        </ul>
+      <div>
+        <label class="block text-sm font-medium mb-2" style="color: var(--text-secondary);">输出</label>
+        <textarea id="output-json" class="textarea" style="min-height: 20rem;" readonly placeholder="结果将显示在这里..."></textarea>
       </div>
     </div>
-  </main>
+
+    {/* Tips */}
+    <div slot="tips" class="p-6 rounded-xl" style="background: var(--bg-elevated); border: 1px solid var(--border-subtle);">
+      <h3 class="text-lg font-semibold mb-4" style="color: var(--text-primary);">使用说明</h3>
+      <ul class="space-y-2 text-sm" style="color: var(--text-muted);">
+        <li class="flex items-start gap-2">
+          <span style="color: var(--gold-primary);">•</span>
+          <span><strong style="color: var(--text-secondary);">格式化</strong> - 将 JSON 数据美化为易读格式</span>
+        </li>
+        <li class="flex items-start gap-2">
+          <span style="color: var(--gold-primary);">•</span>
+          <span><strong style="color: var(--text-secondary);">压缩</strong> - 移除所有空白，生成最小 JSON</span>
+        </li>
+        <li class="flex items-start gap-2">
+          <span style="color: var(--gold-primary);">•</span>
+          <span><strong style="color: var(--text-secondary);">验证</strong> - 检查 JSON 语法是否正确</span>
+        </li>
+        <li class="flex items-start gap-2">
+          <span style="color: var(--gold-primary);">•</span>
+          <span><strong style="color: var(--text-secondary);">差异比较</strong> - 比较两个 JSON 对象的差异</span>
+        </li>
+      </ul>
+    </div>
+  </ToolLayout>
 </Layout>
 
 <script>
-  var inputJson = document.getElementById("input-json");
-  var outputJson = document.getElementById("output-json");
-  var inputA = document.getElementById("input-a");
-  var inputB = document.getElementById("input-b");
-  var statusBar = document.getElementById("status-bar");
-  var diffSection = document.getElementById("diff-section");
-  var singleSection = document.getElementById("single-section");
-  var indentSelect = document.getElementById("indent-select");
-  function showStatus(msg, type) {
-    statusBar.className = "mt-4 p-3 rounded-lg text-sm block " + (type === "success" ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400" : type === "error" ? "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400" : "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400");
+  const inputJson = document.getElementById('input-json') as HTMLTextAreaElement;
+  const outputJson = document.getElementById('output-json') as HTMLTextAreaElement;
+  const inputA = document.getElementById('input-a') as HTMLTextAreaElement;
+  const inputB = document.getElementById('input-b') as HTMLTextAreaElement;
+  const statusBar = document.getElementById('status-bar') as HTMLDivElement;
+  const diffSection = document.getElementById('diff-section') as HTMLDivElement;
+  const singleSection = document.getElementById('single-section') as HTMLDivElement;
+  const indentSelect = document.getElementById('indent-select') as HTMLSelectElement;
+
+  function showStatus(msg: string, type: 'success' | 'error' | 'info') {
+    if (!statusBar) return;
+    statusBar.className = `mt-4 p-3 rounded-lg text-sm block`;
+    statusBar.style.background = type === 'success' 
+      ? 'var(--success-muted)' 
+      : type === 'error' 
+        ? 'var(--error-muted)' 
+        : 'var(--info-muted)';
+    statusBar.style.color = type === 'success' 
+      ? 'var(--success)' 
+      : type === 'error' 
+        ? 'var(--error)' 
+        : 'var(--info)';
     statusBar.textContent = msg;
   }
-  function validateJson(input) {
-    if (!input.trim()) return { valid: false, error: "输入不能为空" };
-    try { JSON.parse(input); return { valid: true }; } catch (e) { return { valid: false, error: e.message }; }
+
+  function validateJson(input: string) {
+    if (!input.trim()) return { valid: false, error: '输入不能为空' };
+    try {
+      JSON.parse(input);
+      return { valid: true };
+    } catch (e: any) {
+      return { valid: false, error: e.message };
+    }
   }
-  function getIndent() { var v = indentSelect.value; return v === "tab" ? "	" : parseInt(v); }
-  document.getElementById("btn-format").addEventListener("click", function() {
-    var r = validateJson(inputJson.value);
-    if (!r.valid) { showStatus("JSON 无效: " + r.error, "error"); return; }
+
+  function getIndent() {
+    const v = indentSelect.value;
+    return v === 'tab' ? '\t' : parseInt(v);
+  }
+
+  document.getElementById('btn-format')?.addEventListener('click', () => {
+    const r = validateJson(inputJson.value);
+    if (!r.valid) {
+      showStatus('JSON 无效: ' + r.error, 'error');
+      return;
+    }
     outputJson.value = JSON.stringify(JSON.parse(inputJson.value), null, getIndent());
-    showStatus("格式化成功", "success");
+    showStatus('格式化成功', 'success');
   });
-  document.getElementById("btn-minify").addEventListener("click", function() {
-    var r = validateJson(inputJson.value);
-    if (!r.valid) { showStatus("JSON 无效: " + r.error, "error"); return; }
+
+  document.getElementById('btn-minify')?.addEventListener('click', () => {
+    const r = validateJson(inputJson.value);
+    if (!r.valid) {
+      showStatus('JSON 无效: ' + r.error, 'error');
+      return;
+    }
     outputJson.value = JSON.stringify(JSON.parse(inputJson.value));
-    showStatus("压缩成功", "success");
+    showStatus('压缩成功', 'success');
   });
-  document.getElementById("btn-validate").addEventListener("click", function() {
-    var r = validateJson(inputJson.value);
-    showStatus(r.valid ? "JSON 有效" : "JSON 无效: " + r.error, r.valid ? "success" : "error");
+
+  document.getElementById('btn-validate')?.addEventListener('click', () => {
+    const r = validateJson(inputJson.value);
+    showStatus(r.valid ? 'JSON 有效 ✓' : 'JSON 无效: ' + r.error, r.valid ? 'success' : 'error');
   });
-  document.getElementById("btn-diff").addEventListener("click", function() {
-    diffSection.classList.toggle("hidden"); singleSection.classList.toggle("hidden");
+
+  document.getElementById('btn-diff')?.addEventListener('click', () => {
+    diffSection.classList.toggle('hidden');
+    singleSection.classList.toggle('hidden');
   });
-  document.getElementById("btn-compare").addEventListener("click", function() {
-    var a = validateJson(inputA.value); var b = validateJson(inputB.value);
-    if (!a.valid) { showStatus("JSON A 无效: " + a.error, "error"); return; }
-    if (!b.valid) { showStatus("JSON B 无效: " + b.error, "error"); return; }
-    var objA = JSON.parse(inputA.value); var objB = JSON.parse(inputB.value); var changes = [];
-    function diff(p, c, path) { path = path || ""; var keys = new Set(Object.keys(p || {}).concat(Object.keys(c || {}))); keys.forEach(function(k) { var fp = path ? path + "." + k : k; if (!(k in (p || {}))) { changes.push("+ " + fp + ": " + JSON.stringify(c[k])); } else if (!(k in (c || {}))) { changes.push("- " + fp + ": " + JSON.stringify(p[k])); } else if (typeof p[k] === "object" && typeof c[k] === "object" && p[k] && c[k]) { diff(p[k], c[k], fp); } else if (JSON.stringify(p[k]) !== JSON.stringify(c[k])) { changes.push("~ " + fp); } }); }
+
+  document.getElementById('btn-compare')?.addEventListener('click', () => {
+    const a = validateJson(inputA.value);
+    const b = validateJson(inputB.value);
+    if (!a.valid) {
+      showStatus('JSON A 无效: ' + a.error, 'error');
+      return;
+    }
+    if (!b.valid) {
+      showStatus('JSON B 无效: ' + b.error, 'error');
+      return;
+    }
+    const objA = JSON.parse(inputA.value);
+    const objB = JSON.parse(inputB.value);
+    const changes: string[] = [];
+    
+    function diff(p: any, c: any, path: string) {
+      path = path || '';
+      const keys = new Set([...Object.keys(p || {}), ...Object.keys(c || {})]);
+      keys.forEach(k => {
+        const fp = path ? path + '.' + k : k;
+        if (!(k in (p || {}))) {
+          changes.push('+ ' + fp + ': ' + JSON.stringify(c[k]));
+        } else if (!(k in (c || {}))) {
+          changes.push('- ' + fp + ': ' + JSON.stringify(p[k]));
+        } else if (typeof p[k] === 'object' && typeof c[k] === 'object' && p[k] && c[k]) {
+          diff(p[k], c[k], fp);
+        } else if (JSON.stringify(p[k]) !== JSON.stringify(c[k])) {
+          changes.push('~ ' + fp);
+        }
+      });
+    }
+    
     diff(objA, objB);
-    outputJson.value = changes.length === 0 ? "无差异" : changes.join(String.fromCharCode(10));
-    showStatus(changes.length === 0 ? "两个 JSON 完全相同" : "发现 " + changes.length + " 处差异", "info");
+    outputJson.value = changes.length === 0 ? '无差异' : changes.join('\n');
+    showStatus(changes.length === 0 ? '两个 JSON 完全相同' : '发现 ' + changes.length + ' 处差异', 'info');
   });
-  document.getElementById("btn-example").addEventListener("click", function() {
-    inputJson.value = JSON.stringify({name:"MIMO",version:"1.0.0",tools:["JSON Formatter","Markdown Previewer"],config:{theme:"dark"}}, null, 2);
-    showStatus("已加载示例", "info");
+
+  document.getElementById('btn-example')?.addEventListener('click', () => {
+    inputJson.value = JSON.stringify({
+      name: 'MIMO',
+      version: '1.0.0',
+      tools: ['JSON Formatter', 'Markdown Previewer'],
+      config: { theme: 'dark' }
+    }, null, 2);
+    showStatus('已加载示例', 'info');
   });
-  document.getElementById("btn-copy").addEventListener("click", function() {
-    if (!outputJson.value) { showStatus("没有可复制的内容", "error"); return; }
-    navigator.clipboard.writeText(outputJson.value); showStatus("已复制到剪贴板", "success");
+
+  document.getElementById('btn-copy')?.addEventListener('click', () => {
+    if (!outputJson.value) {
+      showStatus('没有可复制的内容', 'error');
+      return;
+    }
+    navigator.clipboard.writeText(outputJson.value);
+    showStatus('已复制到剪贴板', 'success');
   });
-  document.getElementById("btn-clear").addEventListener("click", function() {
-    inputJson.value = ""; outputJson.value = ""; inputA.value = ""; inputB.value = "";
-    statusBar.className = "mt-4 p-3 rounded-lg text-sm hidden";
+
+  document.getElementById('btn-clear')?.addEventListener('click', () => {
+    inputJson.value = '';
+    outputJson.value = '';
+    inputA.value = '';
+    inputB.value = '';
+    statusBar.className = 'mt-4 p-3 rounded-lg text-sm hidden';
   });
 </script>

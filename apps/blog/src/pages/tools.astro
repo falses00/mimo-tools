@@ -1,141 +1,189 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { tools, categories } from '../data/tools';
-
-const allCategories = ['all', ...categories.map(c => c.id)];
 ---
 
 <Layout title="工具箱 - MIMO">
-  <main class="min-h-screen bg-background">
-    <div class="container mx-auto px-4 py-12">
+  <div class="section">
+    <div class="container">
+      {/* Header */}
       <div class="text-center mb-12">
-        <h1 class="text-4xl font-bold mb-4">🛠️ 工具箱</h1>
-        <p class="text-muted-foreground text-lg max-w-2xl mx-auto">
-          实用开发工具集合，所有工具纯前端处理，数据不离开浏览器
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full mb-4" style="background: var(--gold-subtle); border: 1px solid var(--gold-border);">
+          <span class="text-xs font-medium" style="color: var(--gold-soft);">工具箱</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl font-bold mb-4" style="color: var(--text-primary);">
+          🛠️ 实用工具集合
+        </h1>
+        <p class="text-lg max-w-2xl mx-auto" style="color: var(--text-muted);">
+          所有工具纯前端处理，数据不离开浏览器。无需安装，即开即用。
         </p>
       </div>
 
-      <div class="flex flex-wrap justify-center gap-2 mb-8">
-        <button class="category-btn active px-4 py-2 rounded-full text-sm font-medium transition-colors" data-category="all">
-          全部
-        </button>
-        {categories.map(cat => (
-          <button class="category-btn px-4 py-2 rounded-full text-sm font-medium transition-colors" data-category={cat.id}>
-            {cat.icon} {cat.name}
-          </button>
-        ))}
+      {/* Search and Filter */}
+      <div class="max-w-4xl mx-auto mb-12">
+        <div class="flex flex-col sm:flex-row gap-4">
+          {/* Search */}
+          <div class="flex-1">
+            <input
+              type="text"
+              id="search-input"
+              placeholder="搜索工具..."
+              class="input"
+            />
+          </div>
+          {/* Category Filter */}
+          <div class="flex flex-wrap gap-2">
+            <button
+              class="btn btn-primary category-btn"
+              data-category="all"
+            >
+              全部
+            </button>
+            {categories.map(cat => (
+              <button
+                class="btn btn-secondary category-btn"
+                data-category={cat.id}
+              >
+                {cat.icon} {cat.name}
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
 
-      <div class="mb-8 max-w-md mx-auto">
-        <input
-          type="text"
-          id="search-input"
-          placeholder="搜索工具..."
-          class="w-full px-4 py-3 rounded-lg border border-input bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-        />
-      </div>
-
-      <div id="tools-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {/* Tools Grid */}
+      <div id="tools-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {tools.map(tool => (
           <a
-            href={tool.status === 'available' ? tool.path : '#'}
-            class={`tool-card group block p-6 rounded-xl border transition-all duration-200 ${
-              tool.status === 'available'
-                ? 'border-border hover:border-primary hover:shadow-lg hover:shadow-primary/10 cursor-pointer'
-                : 'border-border/50 opacity-60 cursor-not-allowed'
-            }`}
+            href={tool.path}
+            class="group block rounded-xl p-6 transition-all duration-300 tool-card"
+            style="background: var(--bg-card); border: 1px solid var(--border-subtle);"
             data-category={tool.category}
             data-name={tool.name.toLowerCase()}
-            data-tags={tool.tags.join(',').toLowerCase()}
+            data-description={tool.description.toLowerCase()}
+            data-tags={tool.tags.join(' ').toLowerCase()}
           >
-            <div class="flex items-start justify-between mb-4">
-              <span class="text-3xl">{tool.icon}</span>
-              {tool.status === 'coming-soon' && (
-                <span class="text-xs bg-secondary text-secondary-foreground px-2 py-1 rounded-full">
-                  即将推出
-                </span>
-              )}
-              {tool.featured && tool.status === 'available' && (
-                <span class="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">
-                  推荐
-                </span>
-              )}
+            {/* Icon */}
+            <div class="flex items-center justify-center w-12 h-12 rounded-xl mb-4" style="background: var(--gold-subtle); border: 1px solid var(--gold-border);">
+              <span class="text-2xl" style="color: var(--gold-primary);">{tool.icon}</span>
             </div>
-            <h3 class="text-lg font-semibold mb-2 group-hover:text-primary transition-colors">
+
+            {/* Title */}
+            <h3 class="text-lg font-semibold mb-2 transition-colors duration-200 group-hover:text-[var(--gold-primary)]" style="color: var(--text-primary);">
               {tool.name}
             </h3>
-            <p class="text-muted-foreground text-sm mb-4">
+
+            {/* Description */}
+            <p class="text-sm mb-4" style="color: var(--text-muted);">
               {tool.description}
             </p>
-            <div class="flex flex-wrap gap-1">
-              {tool.tags.map(tag => (
-                <span class="text-xs bg-secondary/50 text-secondary-foreground px-2 py-0.5 rounded">
+
+            {/* Tags */}
+            <div class="flex flex-wrap gap-2">
+              {tool.tags.slice(0, 3).map(tag => (
+                <span class="badge text-xs" style="background: var(--bg-elevated); border-color: var(--border-subtle); color: var(--text-muted);">
                   {tag}
                 </span>
               ))}
+            </div>
+
+            {/* Arrow */}
+            <div class="mt-4 flex items-center gap-1 text-sm font-medium opacity-0 group-hover:opacity-100 transition-all duration-200 translate-x-0 group-hover:translate-x-1" style="color: var(--gold-primary);">
+              <span>使用工具</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 12h14" />
+                <path d="m12 5 7 7-7 7" />
+              </svg>
             </div>
           </a>
         ))}
       </div>
 
-      <div id="no-results" class="hidden text-center py-12">
-        <p class="text-muted-foreground text-lg">没有找到匹配的工具</p>
+      {/* Empty State */}
+      <div id="empty-state" class="hidden text-center py-16">
+        <div class="text-6xl mb-4">🔍</div>
+        <h3 class="text-xl font-semibold mb-2" style="color: var(--text-primary);">未找到匹配的工具</h3>
+        <p style="color: var(--text-muted);">尝试使用不同的关键词或分类筛选</p>
+      </div>
+
+      {/* Stats */}
+      <div class="mt-16 grid grid-cols-2 sm:grid-cols-4 gap-8 text-center">
+        <div class="p-4 rounded-xl" style="background: var(--bg-elevated); border: 1px solid var(--border-subtle);">
+          <div class="text-3xl font-bold" style="color: var(--gold-primary);">10+</div>
+          <div class="text-sm mt-1" style="color: var(--text-muted);">工具总数</div>
+        </div>
+        <div class="p-4 rounded-xl" style="background: var(--bg-elevated); border: 1px solid var(--border-subtle);">
+          <div class="text-3xl font-bold" style="color: var(--gold-primary);">4</div>
+          <div class="text-sm mt-1" style="color: var(--text-muted);">工具分类</div>
+        </div>
+        <div class="p-4 rounded-xl" style="background: var(--bg-elevated); border: 1px solid var(--border-subtle);">
+          <div class="text-3xl font-bold" style="color: var(--gold-primary);">100%</div>
+          <div class="text-sm mt-1" style="color: var(--text-muted);">前端处理</div>
+        </div>
+        <div class="p-4 rounded-xl" style="background: var(--bg-elevated); border: 1px solid var(--border-subtle);">
+          <div class="text-3xl font-bold" style="color: var(--gold-primary);">0</div>
+          <div class="text-sm mt-1" style="color: var(--text-muted);">数据上传</div>
+        </div>
       </div>
     </div>
-  </main>
+  </div>
 </Layout>
 
 <script>
   const searchInput = document.getElementById('search-input') as HTMLInputElement;
-  const toolCards = document.querySelectorAll('.tool-card');
   const categoryBtns = document.querySelectorAll('.category-btn');
-  const noResults = document.getElementById('no-results');
+  const toolCards = document.querySelectorAll('.tool-card');
+  const emptyState = document.getElementById('empty-state');
 
-  let activeCategory = 'all';
+  let currentCategory = 'all';
+  let currentSearch = '';
 
   function filterTools() {
-    const query = searchInput?.value.toLowerCase() || '';
     let visibleCount = 0;
 
     toolCards.forEach(card => {
-      const el = card as HTMLElement;
-      const category = el.dataset.category || '';
-      const name = el.dataset.name || '';
-      const tags = el.dataset.tags || '';
+      const category = card.getAttribute('data-category') || '';
+      const name = card.getAttribute('data-name') || '';
+      const description = card.getAttribute('data-description') || '';
+      const tags = card.getAttribute('data-tags') || '';
 
-      const matchesCategory = activeCategory === 'all' || category === activeCategory;
-      const matchesSearch = !query || name.includes(query) || tags.includes(query) || category.includes(query);
+      const matchesCategory = currentCategory === 'all' || category === currentCategory;
+      const matchesSearch = !currentSearch || 
+        name.includes(currentSearch) || 
+        description.includes(currentSearch) || 
+        tags.includes(currentSearch);
 
       if (matchesCategory && matchesSearch) {
-        el.style.display = '';
+        (card as HTMLElement).style.display = '';
         visibleCount++;
       } else {
-        el.style.display = 'none';
+        (card as HTMLElement).style.display = 'none';
       }
     });
 
-    if (noResults) {
-      noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+    if (emptyState) {
+      emptyState.classList.toggle('hidden', visibleCount > 0);
     }
   }
 
   categoryBtns.forEach(btn => {
     btn.addEventListener('click', () => {
-      categoryBtns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      activeCategory = (btn as HTMLElement).dataset.category || 'all';
+      const category = btn.getAttribute('data-category') || 'all';
+      currentCategory = category;
+
+      categoryBtns.forEach(b => {
+        b.classList.remove('btn-primary');
+        b.classList.add('btn-secondary');
+      });
+      btn.classList.remove('btn-secondary');
+      btn.classList.add('btn-primary');
+
       filterTools();
     });
   });
 
-  searchInput?.addEventListener('input', filterTools);
+  searchInput?.addEventListener('input', (e) => {
+    currentSearch = (e.target as HTMLInputElement).value.toLowerCase();
+    filterTools();
+  });
 </script>
-
-<style>
-  .category-btn {
-    @apply bg-secondary/50 text-secondary-foreground hover:bg-secondary;
-  }
-  .category-btn.active {
-    @apply bg-primary text-primary-foreground;
-  }
-</style>
