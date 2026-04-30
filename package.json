@@ -13,6 +13,7 @@
     "test": "npx vitest run",
     "test:e2e": "npx playwright test",
     "test:links": "npx tsx scripts/audit-dist-links.ts",
+    "test:live-links": "npx tsx scripts/audit-live-links.ts",
     "lint": "echo \"lint not configured yet\"",
     "typecheck": "npx tsc --noEmit --project apps/blog/tsconfig.json",
     "test:watch": "npx vitest"
