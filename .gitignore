@@ -40,3 +40,14 @@ secrets
 *.db
 *.sqlite
 *.sqlite3
+
+# Temporary files
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.svg
+!apps/blog/public/*.svg
+open-browser.ts
+review/
+.tmp/
