@@ -1,0 +1,72 @@
+---
+import { getFeaturedTools } from '../../data/tools';
+
+const featuredTools = getFeaturedTools();
+---
+
+<section class="py-24 sm:py-32">
+  <div class="mx-auto max-w-7xl px-6 lg:px-8">
+    <div class="mx-auto max-w-2xl text-center">
+      <h2 class="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+        精选工具
+      </h2>
+      <p class="mt-6 text-lg leading-8 text-muted-foreground">
+        实用开发工具集合，所有工具纯前端处理，数据不离开浏览器
+      </p>
+    </div>
+    <div class="mx-auto mt-16 max-w-2xl sm:mt-20 lg:mt-24 lg:max-w-none">
+      <div class="grid grid-cols-1 gap-x-8 gap-y-16 sm:grid-cols-2 lg:grid-cols-3">
+        {featuredTools.map((tool) => (
+          <a
+            href={tool.path}
+            class="group block rounded-2xl border border-border/50 bg-card p-6 shadow-sm transition-all hover:shadow-md hover:border-primary/50"
+          >
+            <div class="flex items-center gap-4">
+              <div class="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                <span class="text-2xl">{tool.icon}</span>
+              </div>
+              <div>
+                <h3 class="text-lg font-semibold text-foreground group-hover:text-primary transition-colors">
+                  {tool.name}
+                </h3>
+                <p class="text-sm text-muted-foreground">
+                  {tool.description}
+                </p>
+              </div>
+            </div>
+            <div class="mt-4 flex flex-wrap gap-2">
+              {tool.tags.map((tag) => (
+                <span class="inline-flex items-center rounded-full bg-secondary/50 px-2.5 py-0.5 text-xs font-medium text-secondary-foreground">
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+    <div class="mt-12 text-center">
+      <a
+        href="/tools"
+        class="inline-flex items-center rounded-md bg-primary px-3.5 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm hover:bg-primary/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+      >
+        查看所有工具
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="ml-2"
+        >
+          <path d="M5 12h14" />
+          <path d="m12 5 7 7-7 7" />
+        </svg>
+      </a>
+    </div>
+  </div>
+</section>
