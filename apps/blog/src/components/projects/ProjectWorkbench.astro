@@ -1,0 +1,376 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+interface Props {
+  id: 'dataforge' | 'specpilot' | 'incidentlab' | 'knowledgebase-studio';
+  icon: string;
+  name: string;
+  tagline: string;
+  description: string;
+}
+
+const { id, icon, name, tagline, description } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const baseWithSlash = base.endsWith('/') ? base : `${base}/`;
+
+const samples = {
+  dataforge: `region,revenue,cost,status
+APAC,128000,82000,healthy
+EU,96000,64000,watch
+US,142000,93000,healthy
+LATAM,52000,41000,risk`,
+  specpilot: `{
+  "openapi": "3.0.0",
+  "info": { "title": "MIMO API", "version": "1.0.0" },
+  "paths": {
+    "/api/health": { "get": { "summary": "Health check" } },
+    "/api/dataforge/profile": { "post": { "summary": "Profile dataset" } }
+  }
+}`,
+  incidentlab: `2026-04-30T10:00:02Z INFO api boot complete
+2026-04-30T10:01:18Z WARN worker slow queue depth=42
+2026-04-30T10:02:41Z ERROR api timeout route=/api/repolens
+2026-04-30T10:04:09Z ERROR db connection retry
+2026-04-30T10:05:30Z INFO api recovered`,
+  'knowledgebase-studio': `# Render Deploy
+Set NODE_ENV=production and CORS_ORIGIN=https://falses00.github.io.
+
+# API Verification
+Run npm run verify:api https://<render-url> after deployment.
+
+# Supabase RAG
+Run migration 001_initial_schema.sql before enabling pgvector semantic search.`,
+};
+
+const labels = {
+  dataforge: {
+    input: 'CSV / JSON Dataset',
+    action: '生成数据画像',
+    output: 'Profile Output',
+    aside: ['字段类型识别', '缺失值统计', '重复行检测', '图表建议'],
+  },
+  specpilot: {
+    input: 'OpenAPI JSON',
+    action: '解析 API 合约',
+    output: 'Contract Output',
+    aside: ['Endpoint 汇总', 'Method 识别', 'Mock 建议', '部署风险提示'],
+  },
+  incidentlab: {
+    input: 'Service Logs',
+    action: '分析故障日志',
+    output: 'Incident Output',
+    aside: ['级别统计', '异常峰值', '时间线', '复盘行动项'],
+  },
+  'knowledgebase-studio': {
+    input: 'Knowledge Notes',
+    action: '检索并回答',
+    output: 'Citation Output',
+    aside: ['关键词检索', '引用片段', '部署问答', 'RAG 升级路径'],
+  },
+};
+---
+
+<Layout title={`${name} - ${tagline}`} description={description}>
+  <section class="section project-workbench" data-project={id}>
+    <div class="container">
+      <a href={`${baseWithSlash}projects`} class="inline-flex items-center gap-2 text-sm mb-6 transition-colors duration-200" style="color: var(--text-muted);">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m12 19-7-7 7-7" />
+          <path d="M19 12H5" />
+        </svg>
+        返回旗舰项目
+      </a>
+
+      <div class="project-hero rounded-lg mb-8">
+        <div class="project-hero-copy">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-lg mb-5" style="background: var(--gold-subtle); border: 1px solid var(--gold-border);">
+            <span class="text-xs font-medium" style="color: var(--gold-soft);">Interactive flagship demo</span>
+          </div>
+          <h1 class="text-4xl sm:text-5xl font-bold tracking-normal mb-4">{name}</h1>
+          <p class="text-lg mb-6" style="color: var(--text-secondary);">{description}</p>
+          <div class="flex flex-wrap gap-2">
+            {labels[id].aside.map(item => <span class="badge-gold">{item}</span>)}
+          </div>
+        </div>
+        <div class="project-hero-mark" aria-hidden="true">
+          <span>{icon}</span>
+          <div>{tagline}</div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-[0.95fr_1.05fr] gap-6">
+        <section class="panel-3d">
+          <div class="flex items-center justify-between gap-4 mb-4">
+            <h2 class="text-xl font-semibold">{labels[id].input}</h2>
+            <button class="btn btn-secondary" data-example>载入示例</button>
+          </div>
+          <textarea class="textarea project-input" spellcheck="false">{samples[id]}</textarea>
+          <div class="flex flex-wrap gap-3 mt-4">
+            <button class="btn btn-primary" data-run>{labels[id].action}</button>
+            <button class="btn btn-secondary" data-clear>清空</button>
+          </div>
+        </section>
+
+        <section class="panel-3d">
+          <div class="flex items-center justify-between gap-4 mb-4">
+            <h2 class="text-xl font-semibold">{labels[id].output}</h2>
+            <span class="badge">Static demo mode</span>
+          </div>
+          <div class="project-output" aria-live="polite">
+            <p style="color: var(--text-muted);">点击运行后生成分析结果。</p>
+          </div>
+        </section>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<script define:vars={{ samples }}>
+  const root = document.querySelector('.project-workbench');
+  const project = root?.getAttribute('data-project') || '';
+  const input = root?.querySelector('.project-input');
+  const output = root?.querySelector('.project-output');
+
+  function esc(value) {
+    return String(value).replace(/[&<>"']/g, (char) => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#039;',
+    }[char]));
+  }
+
+  function parseCsv(text) {
+    const rows = text.trim().split(/\r?\n/).filter(Boolean).map(row => row.split(',').map(cell => cell.trim()));
+    const headers = rows.shift() || [];
+    return rows.map(row => Object.fromEntries(headers.map((header, index) => [header, row[index] ?? ''])));
+  }
+
+  function renderList(title, items) {
+    return `<div class="result-block"><h3>${esc(title)}</h3><ul>${items.map(item => `<li>${esc(item)}</li>`).join('')}</ul></div>`;
+  }
+
+  function runDataForge(text) {
+    const rows = text.trim().startsWith('[') ? JSON.parse(text) : parseCsv(text);
+    const columns = Object.keys(rows[0] || {});
+    const fields = columns.map(column => {
+      const values = rows.map(row => row[column]).filter(value => value !== '');
+      const numeric = values.length > 0 && values.every(value => !Number.isNaN(Number(value)));
+      return `${column}: ${numeric ? 'number' : 'string'}, unique ${new Set(values).size}`;
+    });
+    const duplicates = rows.length - new Set(rows.map(row => JSON.stringify(row))).size;
+    return `
+      <div class="result-metrics">
+        <span>${rows.length}<small>rows</small></span>
+        <span>${columns.length}<small>columns</small></span>
+        <span>${duplicates}<small>duplicates</small></span>
+      </div>
+      ${renderList('Field profile', fields)}
+      ${renderList('Chart suggestions', ['Bar chart for region vs revenue', 'Margin comparison by status', 'Risk table for high cost rows'])}
+    `;
+  }
+
+  function runSpecPilot(text) {
+    const spec = JSON.parse(text);
+    const paths = Object.entries(spec.paths || {});
+    const endpoints = paths.flatMap(([path, methods]) => Object.keys(methods).map(method => `${method.toUpperCase()} ${path}`));
+    return `
+      <div class="result-metrics">
+        <span>${endpoints.length}<small>endpoints</small></span>
+        <span>${Object.keys(spec.paths || {}).length}<small>paths</small></span>
+        <span>${spec.info?.version || 'n/a'}<small>version</small></span>
+      </div>
+      ${renderList('Endpoints', endpoints)}
+      ${renderList('Mock readiness', ['Health endpoint can be verified with GET', 'POST endpoints need request body examples', 'Add schema examples before public API mode'])}
+    `;
+  }
+
+  function runIncidentLab(text) {
+    const lines = text.trim().split(/\r?\n/).filter(Boolean);
+    const counts = { ERROR: 0, WARN: 0, INFO: 0, DEBUG: 0 };
+    lines.forEach(line => Object.keys(counts).forEach(level => { if (line.includes(level)) counts[level] += 1; }));
+    const actions = [];
+    if (counts.ERROR > 1) actions.push('Open incident timeline and inspect repeated failing dependency');
+    if (counts.WARN > 0) actions.push('Add queue-depth alert threshold');
+    actions.push('Attach generated report to deployment notes');
+    return `
+      <div class="result-metrics">
+        <span>${lines.length}<small>events</small></span>
+        <span>${counts.ERROR}<small>errors</small></span>
+        <span>${counts.WARN}<small>warnings</small></span>
+      </div>
+      ${renderList('Timeline', lines)}
+      ${renderList('Action items', actions)}
+    `;
+  }
+
+  function runKnowledgeBase(text) {
+    const query = 'Render API deploy verify Supabase';
+    const sections = text.split(/\n\s*\n/).filter(Boolean);
+    const scored = sections
+      .map(section => ({ section, score: query.toLowerCase().split(/\s+/).filter(term => section.toLowerCase().includes(term)).length }))
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 3);
+    return `
+      <div class="result-metrics">
+        <span>${sections.length}<small>chunks</small></span>
+        <span>${scored.length}<small>sources</small></span>
+        <span>local<small>retrieval</small></span>
+      </div>
+      <div class="result-block"><h3>Answer</h3><p>先在 Render 完成 API 服务部署，再运行 verify:api；Supabase 可以先保持迁移就绪，等需要语义搜索时再启用 pgvector。</p></div>
+      ${renderList('Citations', scored.map(item => item.section.replace(/\n/g, ' ')))}
+    `;
+  }
+
+  function run() {
+    if (!input || !output) return;
+    const text = input.value.trim();
+    if (!text) {
+      output.innerHTML = '<p class="error-text">请输入内容或载入示例。</p>';
+      return;
+    }
+    try {
+      const html = project === 'dataforge'
+        ? runDataForge(text)
+        : project === 'specpilot'
+          ? runSpecPilot(text)
+          : project === 'incidentlab'
+            ? runIncidentLab(text)
+            : runKnowledgeBase(text);
+      output.innerHTML = html;
+    } catch (error) {
+      output.innerHTML = `<p class="error-text">解析失败：${esc(error.message || error)}</p>`;
+    }
+  }
+
+  root?.querySelector('[data-run]')?.addEventListener('click', run);
+  root?.querySelector('[data-clear]')?.addEventListener('click', () => {
+    if (input) input.value = '';
+    if (output) output.innerHTML = '<p style="color: var(--text-muted);">点击运行后生成分析结果。</p>';
+  });
+  root?.querySelector('[data-example]')?.addEventListener('click', () => {
+    if (input) input.value = samples[project] || '';
+  });
+</script>
+
+<style>
+  .project-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 340px;
+    gap: 2rem;
+    align-items: center;
+    min-height: 360px;
+    padding: 2rem;
+    background:
+      radial-gradient(circle at 78% 18%, rgba(214, 178, 74, 0.16), transparent 22rem),
+      linear-gradient(135deg, rgba(27, 35, 48, 0.94), rgba(18, 27, 37, 0.82));
+    border: 1px solid var(--gold-border);
+    box-shadow: var(--shadow-card);
+    overflow: hidden;
+  }
+
+  .project-hero-copy {
+    max-width: 760px;
+  }
+
+  .project-hero-mark {
+    min-height: 240px;
+    display: grid;
+    place-items: center;
+    text-align: center;
+    border-radius: var(--radius-lg);
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
+    border: 1px solid var(--border-subtle);
+    transform: perspective(900px) rotateY(-12deg) rotateX(6deg);
+  }
+
+  .project-hero-mark span {
+    display: block;
+    font-size: 4rem;
+  }
+
+  .project-hero-mark div {
+    max-width: 12rem;
+    color: var(--text-muted);
+    font-size: 0.875rem;
+  }
+
+  .panel-3d {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+    padding: 1.5rem;
+  }
+
+  .project-input {
+    min-height: 20rem;
+  }
+
+  .project-output {
+    min-height: 24rem;
+    color: var(--text-secondary);
+  }
+
+  :global(.result-metrics) {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  :global(.result-metrics span) {
+    display: grid;
+    gap: 0.25rem;
+    padding: 1rem;
+    border-radius: var(--radius-md);
+    background: var(--bg-elevated);
+    color: var(--gold);
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+
+  :global(.result-metrics small) {
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+
+  :global(.result-block) {
+    padding: 1rem;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    background: rgba(255, 255, 255, 0.025);
+    margin-top: 1rem;
+  }
+
+  :global(.result-block h3) {
+    font-size: 1rem;
+    margin-bottom: 0.75rem;
+  }
+
+  :global(.result-block li),
+  :global(.result-block p) {
+    color: var(--text-muted);
+    font-size: 0.875rem;
+    line-height: 1.65;
+  }
+
+  :global(.error-text) {
+    color: var(--error);
+  }
+
+  @media (max-width: 900px) {
+    .project-hero {
+      grid-template-columns: 1fr;
+      min-height: auto;
+      padding: 1.25rem;
+    }
+
+    .project-hero-mark {
+      min-height: 150px;
+      transform: none;
+    }
+  }
+</style>

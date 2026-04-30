@@ -4,14 +4,40 @@
 
 :root {
   /* ===== Background Colors ===== */
-  --bg-page: #0b0d12;
-  --bg-surface: #11151d;
-  --bg-elevated: #171c26;
+  --background: 217 30% 7%;
+  --foreground: 42 47% 94%;
+  --card: 215 31% 13%;
+  --card-foreground: 42 47% 94%;
+  --popover: 215 31% 13%;
+  --popover-foreground: 42 47% 94%;
+  --primary: 44 64% 56%;
+  --primary-foreground: 217 30% 7%;
+  --secondary: 199 22% 20%;
+  --secondary-foreground: 42 47% 94%;
+  --muted: 212 18% 20%;
+  --muted-foreground: 38 12% 60%;
+  --accent: 192 31% 38%;
+  --accent-foreground: 42 47% 94%;
+  --destructive: 0 84% 65%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 215 18% 24%;
+  --input: 215 18% 24%;
+  --ring: 44 64% 56%;
+  --radius: 0.5rem;
+
+  --bg-page: #0d1118;
+  --bg-surface: #141b24;
+  --bg-elevated: #1b2330;
+  --bg-card: #161e29;
+  --bg-section: rgba(20, 27, 36, 0.72);
+  --bg-hover: rgba(255, 255, 255, 0.05);
+  --bg-input: #111822;
   --bg-glass: rgba(23, 28, 38, 0.72);
   --bg-glass-hover: rgba(23, 28, 38, 0.85);
   
   /* ===== Gold Accent Colors ===== */
-  --gold: #d4af37;
+  --gold: #d6b24a;
+  --gold-primary: var(--gold);
   --gold-soft: #b8922f;
   --gold-deep: #7a5b16;
   --gold-glow: rgba(212, 175, 55, 0.22);
@@ -20,10 +46,10 @@
   --gold-subtle: rgba(212, 175, 55, 0.08);
   
   /* ===== Text Colors ===== */
-  --text-primary: #f7f2e8;
-  --text-secondary: #c8c0b2;
-  --text-muted: #918a7c;
-  --text-disabled: #5a5548;
+  --text-primary: #f8f3e8;
+  --text-secondary: #d0c7b8;
+  --text-muted: #a49a89;
+  --text-disabled: #6b6253;
   
   /* ===== Border Colors ===== */
   --border-subtle: rgba(255, 255, 255, 0.06);
@@ -38,8 +64,8 @@
   --error-muted: rgba(248, 113, 113, 0.15);
   --warning: #fbbf24;
   --warning-muted: rgba(251, 191, 36, 0.15);
-  --info: #60a5fa;
-  --info-muted: rgba(96, 165, 250, 0.15);
+  --info: #6aa6b8;
+  --info-muted: rgba(106, 166, 184, 0.15);
   
   /* ===== 3D Shadows ===== */
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
@@ -90,6 +116,9 @@
   
   /* ===== Container ===== */
   --container-max: 1280px;
+  --container-md: 768px;
+  --container-xl: 1280px;
+  --container-2xl: 1536px;
   --container-padding: 1.5rem;
   
   /* ===== Section ===== */
@@ -98,6 +127,7 @@
   
   /* ===== Transitions ===== */
   --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 200ms cubic-bezier(0.4, 0, 0.2, 1);
   --transition-normal: 200ms cubic-bezier(0.4, 0, 0.2, 1);
   --transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
   --transition-3d: 250ms cubic-bezier(0.4, 0, 0.2, 1);
@@ -109,13 +139,37 @@
 
 /* ===== Light Theme Override ===== */
 .light {
-  --bg-page: #ffffff;
-  --bg-surface: #f8f9fa;
-  --bg-elevated: #ffffff;
-  --bg-glass: rgba(255, 255, 255, 0.8);
-  --text-primary: #1a1a1a;
-  --text-secondary: #4a5568;
-  --text-muted: #718096;
+  --background: 190 22% 96%;
+  --foreground: 205 24% 16%;
+  --card: 42 100% 99%;
+  --card-foreground: 205 24% 16%;
+  --popover: 42 100% 99%;
+  --popover-foreground: 205 24% 16%;
+  --primary: 42 89% 38%;
+  --primary-foreground: 42 100% 99%;
+  --secondary: 190 22% 91%;
+  --secondary-foreground: 205 24% 16%;
+  --muted: 190 18% 90%;
+  --muted-foreground: 200 10% 45%;
+  --accent: 192 31% 38%;
+  --accent-foreground: 42 100% 99%;
+  --destructive: 0 72% 52%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 190 14% 80%;
+  --input: 190 14% 80%;
+  --ring: 42 89% 38%;
+
+  --bg-page: #f3f6f7;
+  --bg-surface: #e9f0f1;
+  --bg-elevated: #fdfbf5;
+  --bg-card: #fffdf8;
+  --bg-section: #e8eef0;
+  --bg-hover: rgba(11, 13, 18, 0.06);
+  --bg-input: #fffdf8;
+  --bg-glass: rgba(255, 253, 248, 0.82);
+  --text-primary: #1f2a32;
+  --text-secondary: #475866;
+  --text-muted: #6e7d85;
   --border-subtle: rgba(0, 0, 0, 0.06);
   --gold: #b8860b;
   --gold-soft: #9a7209;

@@ -83,6 +83,12 @@ npm run test:api
 
 ## 🔧 运行模式
 
+### Workbench Showcase Mode
+- 新增 `/workbench` 作为专业展示台
+- 汇总 GitHub Pages、GitHub 仓库、Render API、Supabase/RAG 的接入状态
+- 连接 `/projects`、`/tools`、`/blog`，作为未来大型项目的统一入口
+- 当前判断：不需要另建大型壳项目，优先增强 MIMO 主站并通过链接扩展
+
 ### Static Demo Mode (GitHub Pages)
 - 前端静态部署到 GitHub Pages
 - 使用前端 fallback 逻辑
@@ -136,10 +142,10 @@ npm run test:api
 
 ## 🎨 3D 视觉设计
 
-- 暗金深灰高级风格
-- 3D 卡片悬停效果
-- 玻璃拟态面板
-- 动态金色光球背景
+- Three.js 首页 3D 工程展示场景
+- 深墨、钢蓝、暗金多层材质背景
+- 3D 卡片悬停效果和对称展示台布局
+- 玻璃拟态面板与真实交互状态
 - 响应式设计
 - 支持深色/浅色模式
 

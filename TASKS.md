@@ -66,5 +66,19 @@
 - [x] 循环 2: 配置 MCP 和 Skills
 - [x] 循环 3: 前端重构
 - [x] 循环 4: 扩展工具到 10 个
-- [ ] 循环 5: Playwright 视觉验收
+- [x] 循环 5: 专业展示台与 Playwright 视觉验收
 - [ ] 循环 6: 最终部署和验收
+
+## 第九阶段：专业展示台 [~]
+- [x] 判断是否需要创建新的大型项目：当前不需要，先以 MIMO 主站作为统一入口
+- [x] 新增 `/workbench` 展示台页面，汇总前端、API、Render、Supabase 接入状态
+- [x] 首页、导航、页脚接入工作台入口
+- [x] 使用 Playwright 验证首页、工作台、移动端导航和关键链接
+
+## 第十阶段：3D 视觉与旗舰项目完整度 [~]
+- [x] 首页接入 Three.js 真实 3D 场景，替代纯 CSS 装饰感背景
+- [x] 调整暗色/亮色主题，避免纯黑或纯白底色
+- [x] 补齐 shadcn/Tailwind 兼容 token，稳定工具页卡片、边框、输入框视觉
+- [x] 将 DataForge / SpecPilot / IncidentLab / KnowledgeBase 从占位页升级为可交互 Demo 工作台
+- [x] Playwright 验证 3D canvas 非空、项目 Demo 可点击、移动端无横向溢出
+- [ ] 发布前确认是否 push 到 GitHub 触发 Pages 部署

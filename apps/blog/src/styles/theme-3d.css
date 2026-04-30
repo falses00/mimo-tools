@@ -67,6 +67,71 @@
 }
 
 @layer components {
+  /* ===== Layout Primitives ===== */
+  .container {
+    width: 100%;
+    max-width: var(--container-xl);
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .container-sm {
+    width: 100%;
+    max-width: var(--container-md);
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .container-lg {
+    width: 100%;
+    max-width: var(--container-2xl);
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .section {
+    padding-top: 4rem;
+    padding-bottom: 4rem;
+  }
+
+  .section-sm {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+  }
+
+  @media (min-width: 640px) {
+    .container,
+    .container-sm,
+    .container-lg {
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .container,
+    .container-lg {
+      padding-left: 2rem;
+      padding-right: 2rem;
+    }
+
+    .section {
+      padding-top: 6rem;
+      padding-bottom: 6rem;
+    }
+
+    .section-sm {
+      padding-top: 4rem;
+      padding-bottom: 4rem;
+    }
+  }
+
   /* ===== 3D Card ===== */
   .card-3d {
     background: var(--bg-elevated);
@@ -136,6 +201,99 @@
     background: var(--bg-elevated);
     color: var(--text-primary);
     border-color: var(--border-gold);
+  }
+
+  /* ===== Standard Button ===== */
+  .btn {
+    display: inline-flex;
+    min-height: 2.5rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-md);
+    padding: 0.625rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all var(--transition-normal);
+  }
+
+  .btn-primary {
+    background: var(--gold);
+    color: var(--bg-page);
+  }
+
+  .btn-primary:hover {
+    background: var(--gold-soft);
+    color: var(--bg-page);
+    box-shadow: var(--shadow-gold);
+  }
+
+  .btn-secondary {
+    background: var(--bg-elevated);
+    color: var(--text-primary);
+    border: 1px solid var(--border-default);
+  }
+
+  .btn-secondary:hover {
+    background: var(--bg-hover);
+    border-color: var(--border-strong);
+  }
+
+  /* ===== Form Controls ===== */
+  .input {
+    width: 100%;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-default);
+    background: var(--bg-input);
+    color: var(--text-primary);
+    padding: 0.625rem 1rem;
+    font-size: 0.875rem;
+    transition: all var(--transition-normal);
+  }
+
+  .input::placeholder {
+    color: var(--text-muted);
+  }
+
+  .input:focus {
+    outline: none;
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px var(--gold-glow);
+  }
+
+  .textarea {
+    width: 100%;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-default);
+    background: var(--bg-input);
+    color: var(--text-primary);
+    padding: 1rem;
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    line-height: 1.65;
+    transition: all var(--transition-normal);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  }
+
+  .textarea::placeholder {
+    color: var(--text-muted);
+  }
+
+  .textarea:focus {
+    outline: none;
+    border-color: var(--gold);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03), 0 0 0 3px var(--gold-glow);
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 9999px;
+    border: 1px solid var(--border-subtle);
+    background: var(--bg-elevated);
+    color: var(--text-secondary);
+    padding: 0.125rem 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 500;
   }
   
   /* ===== Input 3D ===== */

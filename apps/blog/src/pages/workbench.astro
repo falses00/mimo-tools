@@ -1,0 +1,170 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { deploymentChecklist, platformLinks, workbenchLanes } from '../data/workbench';
+
+const base = import.meta.env.BASE_URL;
+const baseWithSlash = base.endsWith('/') ? base : `${base}/`;
+
+const withBase = (href: string) => {
+  if (href.startsWith('http')) return href;
+  return `${baseWithSlash}${href.replace(/^\//, '')}`;
+};
+---
+
+<Layout
+  title="MIMO Workbench - 专业展示台"
+  description="MIMO 个人工程工具、博客、API 与部署状态的统一展示台。"
+>
+  <section class="section">
+    <div class="container">
+      <div class="max-w-4xl">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-lg mb-5" style="background: var(--gold-subtle); border: 1px solid var(--gold-border);">
+          <span class="w-2 h-2 rounded-full" style="background: var(--success);"></span>
+          <span class="text-xs font-medium" style="color: var(--gold-soft);">Personal Workbench</span>
+        </div>
+        <h1 class="text-3xl sm:text-5xl lg:text-6xl font-bold mb-6 tracking-normal" style="color: var(--text-primary);">
+          一个入口展示工具、项目、博客与部署能力
+        </h1>
+        <p class="text-lg sm:text-xl leading-relaxed max-w-3xl" style="color: var(--text-secondary);">
+          当前不需要另建大型项目。MIMO 已经具备公开展示、可运行工具、工程项目页和后端 API，只需要把它们组织成一个清晰的工作台，并用链接接入未来的大型项目或个人系统。
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-8 mt-12">
+        <div class="rounded-lg p-6 lg:p-8" style="background: var(--bg-card); border: 1px solid var(--gold-border); box-shadow: var(--shadow-card);">
+          <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-8">
+            <div>
+              <h2 class="text-2xl font-semibold mb-2">Platform Readiness</h2>
+              <p class="text-sm" style="color: var(--text-muted);">把当前部署报告转成访客和维护者都能读懂的状态板。</p>
+            </div>
+            <span class="badge-gold w-fit">Static live, API ready</span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {platformLinks.map(link => (
+              <a
+                href={link.status === 'pending' ? link.href : withBase(link.href)}
+                target={link.kind === 'external' ? '_blank' : undefined}
+                rel={link.kind === 'external' ? 'noopener noreferrer' : undefined}
+                class="group block rounded-lg p-5 transition-all duration-200"
+                style="background: var(--bg-elevated); border: 1px solid var(--border-subtle);"
+              >
+                <div class="flex items-start justify-between gap-3">
+                  <h3 class="text-base font-semibold" style="color: var(--text-primary);">{link.label}</h3>
+                  <span
+                    class:list={[
+                      'text-xs rounded-full px-2 py-0.5 border',
+                      link.status === 'live' ? 'status-live' : link.status === 'ready' ? 'status-ready' : 'status-pending'
+                    ]}
+                  >
+                    {link.status}
+                  </span>
+                </div>
+                <p class="text-sm mt-3 leading-relaxed" style="color: var(--text-muted);">{link.description}</p>
+                <div class="mt-4 text-sm font-medium transition-transform duration-200 group-hover:translate-x-1" style="color: var(--gold);">
+                  Open
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+
+        <aside class="rounded-lg p-6 lg:p-8" style="background: var(--bg-surface); border: 1px solid var(--border-subtle);">
+          <h2 class="text-xl font-semibold mb-4">Deployment Next Actions</h2>
+          <ol class="space-y-3">
+            {deploymentChecklist.map((item, index) => (
+              <li class="flex gap-3 text-sm leading-relaxed" style="color: var(--text-secondary);">
+                <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-md text-xs font-semibold" style="background: var(--gold-subtle); color: var(--gold); border: 1px solid var(--gold-border);">
+                  {index + 1}
+                </span>
+                <span>{item}</span>
+              </li>
+            ))}
+          </ol>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-sm" style="background: var(--bg-section); border-top: 1px solid var(--border-subtle); border-bottom: 1px solid var(--border-subtle);">
+    <div class="container">
+      <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-10">
+        <div>
+          <p class="text-sm font-medium mb-2" style="color: var(--gold-soft);">Information Architecture</p>
+          <h2 class="text-3xl sm:text-4xl font-bold">展示台的四条路径</h2>
+        </div>
+        <p class="max-w-2xl text-sm leading-relaxed" style="color: var(--text-muted);">
+          先用现有站点承载全部公开入口。未来真正出现独立大型系统时，只需要新增项目页和外部链接，不需要拆散当前工作台。
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
+        {workbenchLanes.map(lane => (
+          <a
+            href={withBase(lane.href)}
+            class="group block rounded-lg p-6 transition-all duration-200"
+            style="background: var(--bg-card); border: 1px solid var(--border-subtle);"
+          >
+            <div class="flex items-center justify-between gap-3 mb-6">
+              <span class="text-xs font-semibold uppercase" style="color: var(--gold-soft);">{lane.status}</span>
+              <span class="text-xs" style="color: var(--text-muted);">{lane.metric}</span>
+            </div>
+            <h3 class="text-xl font-semibold mb-3" style="color: var(--text-primary);">{lane.title}</h3>
+            <p class="text-sm leading-relaxed" style="color: var(--text-muted);">{lane.description}</p>
+            <div class="mt-6 text-sm font-medium transition-transform duration-200 group-hover:translate-x-1" style="color: var(--gold);">Explore</div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="rounded-lg p-6 lg:p-8" style="background: var(--bg-card); border: 1px solid var(--border-subtle);">
+        <div class="grid grid-cols-1 lg:grid-cols-[0.7fr_1.3fr] gap-8">
+          <div>
+            <p class="text-sm font-medium mb-2" style="color: var(--gold-soft);">Decision</p>
+            <h2 class="text-3xl font-bold mb-4">先增强 MIMO，不另建大型壳项目</h2>
+            <p class="text-sm leading-relaxed" style="color: var(--text-muted);">
+              新项目会增加部署、路由、内容维护和品牌一致性的成本。现在更有效的是把 MIMO 变成主入口：工具可用性负责证明能力，博客负责解释背景，项目页负责沉淀作品，工作台负责连接部署和未来系统。
+            </p>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div class="rounded-lg p-5" style="background: var(--bg-elevated); border: 1px solid var(--border-subtle);">
+              <div class="text-2xl font-bold" style="color: var(--gold);">1</div>
+              <div class="text-sm mt-2" style="color: var(--text-muted);">Public front door</div>
+            </div>
+            <div class="rounded-lg p-5" style="background: var(--bg-elevated); border: 1px solid var(--border-subtle);">
+              <div class="text-2xl font-bold" style="color: var(--gold);">4</div>
+              <div class="text-sm mt-2" style="color: var(--text-muted);">Connected surfaces</div>
+            </div>
+            <div class="rounded-lg p-5" style="background: var(--bg-elevated); border: 1px solid var(--border-subtle);">
+              <div class="text-2xl font-bold" style="color: var(--gold);">0</div>
+              <div class="text-sm mt-2" style="color: var(--text-muted);">Extra repos required</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .status-live {
+    background: var(--success-muted);
+    border-color: rgba(74, 222, 128, 0.35);
+    color: var(--success);
+  }
+
+  .status-ready {
+    background: var(--info-muted);
+    border-color: rgba(96, 165, 250, 0.35);
+    color: var(--info);
+  }
+
+  .status-pending {
+    background: var(--warning-muted);
+    border-color: rgba(251, 191, 36, 0.35);
+    color: var(--warning);
+  }
+</style>
