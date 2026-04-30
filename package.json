@@ -33,6 +33,8 @@
   },
   "homepage": "https://yourusername.github.io/mimo",
   "devDependencies": {
+    "@playwright/test": "^1.59.1",
+    "playwright": "^1.59.1",
     "vitest": "^4.1.5"
   }
 }
