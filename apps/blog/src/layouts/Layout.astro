@@ -11,6 +11,8 @@ interface Props {
 }
 
 const { title, description = '个人工具生态 - MIMO', image = '/og-image.png' } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const baseWithSlash = base.endsWith('/') ? base : `${base}/`;
 ---
 
 <!doctype html>
@@ -19,8 +21,8 @@ const { title, description = '个人工具生态 - MIMO', image = '/og-image.png
     <meta charset="UTF-8" />
     <meta name="description" content={description} />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta property="og:image" content={image} />
+    <link rel="icon" type="image/svg+xml" href={`${baseWithSlash}favicon.svg`} />
+    <meta property="og:image" content={`${baseWithSlash}og-image.png`} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />

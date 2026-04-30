@@ -2,6 +2,9 @@
 import Layout from '../layouts/Layout.astro';
 import { getCollection } from 'astro:content';
 
+const base = import.meta.env.BASE_URL;
+const baseWithSlash = base.endsWith('/') ? base : `${base}/`;
+
 const posts = await getCollection('blog');
 const sortedPosts = posts.sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
 ---
@@ -26,7 +29,7 @@ const sortedPosts = posts.sort((a, b) => new Date(b.data.date).getTime() - new D
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {sortedPosts.map(post => (
           <a
-            href={`/blog/${post.slug}`}
+            href={`${baseWithSlash}blog/${post.slug}`}
             class="group block rounded-xl overflow-hidden transition-all duration-300"
             style="background: var(--bg-card); border: 1px solid var(--border-subtle);"
           >
