@@ -5,6 +5,6 @@ export default defineConfig({
     globals: true,
     environment: 'node',
     include: ['apps/**/*.{test,spec}.{ts,tsx}', 'packages/**/*.{test,spec}.{ts,tsx}'],
-    exclude: ['node_modules', 'dist', '.astro', '.opencode'],
+    exclude: ['node_modules', 'dist', '.astro', '.opencode', 'apps/blog/tests/e2e/**'],
   },
 });
