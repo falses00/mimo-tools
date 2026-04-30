@@ -11,6 +11,7 @@
     "dev": "npm run dev --workspace=apps/blog",
     "build": "npm run build --workspace=apps/blog",
     "test": "npx vitest run",
+    "test:e2e": "npx playwright test",
     "lint": "echo \"lint not configured yet\"",
     "typecheck": "npx tsc --noEmit --project apps/blog/tsconfig.json",
     "test:watch": "npx vitest"
@@ -34,6 +35,7 @@
   "homepage": "https://yourusername.github.io/mimo",
   "devDependencies": {
     "@playwright/test": "^1.59.1",
+    "@types/node": "^25.6.0",
     "playwright": "^1.59.1",
     "vitest": "^4.1.5"
   }
