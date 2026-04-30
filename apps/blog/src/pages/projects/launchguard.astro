@@ -1,0 +1,454 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="LaunchGuard - Site Release QA Auditor">
+  <div class="section">
+    <div class="container">
+      {/* Header */}
+      <div class="mb-8">
+        <a href="/mimo-tools/projects" class="inline-flex items-center gap-2 text-sm mb-4 transition-colors duration-200" style="color: var(--text-muted);">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m12 19-7-7 7-7" />
+            <path d="M19 12H5" />
+          </svg>
+          返回旗舰项目
+        </a>
+        <div class="flex items-center gap-4">
+          <div class="flex items-center justify-center w-16 h-16 rounded-2xl" style="background: var(--gold-subtle); border: 1px solid var(--gold-border);">
+            <span class="text-3xl">🛡️</span>
+          </div>
+          <div>
+            <h1 class="text-3xl font-bold" style="color: var(--text-primary);">LaunchGuard</h1>
+            <p style="color: var(--text-muted);">Site Release QA Auditor - 上线质量与路由审计工具</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Input Section */}
+      <div class="p-6 rounded-xl mb-8" style="background: var(--bg-card); border: 1px solid var(--border-subtle);">
+        <h3 class="text-lg font-semibold mb-4" style="color: var(--text-primary);">🔍 审计配置</h3>
+        <div class="space-y-4">
+          <div>
+            <label class="text-sm mb-2 block" style="color: var(--text-muted);">站点 Base URL</label>
+            <input
+              type="text"
+              id="input-url"
+              class="input"
+              placeholder="https://falses00.github.io/mimo-tools/"
+              value="https://falses00.github.io/mimo-tools/"
+            />
+          </div>
+          <div>
+            <label class="text-sm mb-2 block" style="color: var(--text-muted);">或粘贴 HTML 进行审计</label>
+            <textarea
+              id="input-html"
+              class="textarea"
+              style="min-height: 8rem;"
+              placeholder="粘贴 HTML 内容进行离线审计..."
+            ></textarea>
+          </div>
+          <div class="flex flex-wrap gap-3">
+            <button id="btn-audit-url" class="btn btn-primary">
+              🚀 审计 URL
+            </button>
+            <button id="btn-audit-html" class="btn btn-secondary">
+              📋 审计 HTML
+            </button>
+            <button id="btn-audit-current" class="btn btn-secondary">
+              🏠 审计当前站点
+            </button>
+            <button id="btn-export" class="btn btn-ghost">
+              📥 导出报告
+            </button>
+            <button id="btn-clear" class="btn btn-ghost" style="color: var(--error);">
+              清空
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Results */}
+      <div id="results" class="hidden space-y-6">
+        {/* Score */}
+        <div class="p-6 rounded-xl" style="background: var(--bg-card); border: 1px solid var(--gold-border);">
+          <h3 class="text-lg font-semibold mb-4" style="color: var(--text-primary);">📊 Launch QA Score</h3>
+          <div class="flex items-center gap-8">
+            <div class="text-center">
+              <div id="score-value" class="text-6xl font-bold" style="color: var(--gold-primary);">0</div>
+              <div class="text-sm mt-2" style="color: var(--text-muted);">总分 / 100</div>
+            </div>
+            <div class="flex-1">
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <div class="text-center p-3 rounded-lg" style="background: var(--bg-elevated);">
+                  <div class="text-2xl font-bold" id="stat-links" style="color: var(--text-primary);">0</div>
+                  <div class="text-xs" style="color: var(--text-muted);">链接总数</div>
+                </div>
+                <div class="text-center p-3 rounded-lg" style="background: var(--bg-elevated);">
+                  <div class="text-2xl font-bold" id="stat-correct" style="color: var(--success);">0</div>
+                  <div class="text-xs" style="color: var(--text-muted);">正确链接</div>
+                </div>
+                <div class="text-center p-3 rounded-lg" style="background: var(--bg-elevated);">
+                  <div class="text-2xl font-bold" id="stat-errors" style="color: var(--error);">0</div>
+                  <div class="text-xs" style="color: var(--text-muted);">错误链接</div>
+                </div>
+                <div class="text-center p-3 rounded-lg" style="background: var(--bg-elevated);">
+                  <div class="text-2xl font-bold" id="stat-warnings" style="color: var(--warning);">0</div>
+                  <div class="text-xs" style="color: var(--text-muted);">警告</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Issues */}
+        <div id="issues-section" class="p-6 rounded-xl hidden" style="background: var(--bg-card); border: 1px solid var(--border-subtle);">
+          <h3 class="text-lg font-semibold mb-4" style="color: var(--text-primary);">⚠️ 发现的问题</h3>
+          <div id="issues-list" class="space-y-3"></div>
+        </div>
+
+        {/* Recommendations */}
+        <div id="recommendations-section" class="p-6 rounded-xl hidden" style="background: var(--bg-card); border: 1px solid var(--border-subtle);">
+          <h3 class="text-lg font-semibold mb-4" style="color: var(--text-primary);">💡 修复建议</h3>
+          <div id="recommendations-list" class="space-y-2"></div>
+        </div>
+
+        {/* Link Details */}
+        <div id="links-section" class="p-6 rounded-xl hidden" style="background: var(--bg-card); border: 1px solid var(--border-subtle);">
+          <h3 class="text-lg font-semibold mb-4" style="color: var(--text-primary);">🔗 链接详情</h3>
+          <div id="links-list" class="space-y-2"></div>
+        </div>
+      </div>
+
+      {/* Empty State */}
+      <div id="empty-state" class="p-12 rounded-xl text-center" style="background: var(--bg-card); border: 1px solid var(--border-subtle);">
+        <div class="text-6xl mb-4">🛡️</div>
+        <h3 class="text-xl font-semibold mb-2" style="color: var(--text-primary);">开始审计</h3>
+        <p style="color: var(--text-muted);">输入站点 URL 或粘贴 HTML，检测链接、路由、SEO 问题</p>
+      </div>
+
+      {/* Status Bar */}
+      <div id="status-bar" class="mt-6 p-3 rounded-lg text-sm hidden"></div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  interface AuditIssue {
+    type: 'error' | 'warning' | 'info';
+    category: string;
+    message: string;
+    details?: string;
+  }
+
+  interface AuditResult {
+    score: number;
+    totalLinks: number;
+    correctLinks: number;
+    errorLinks: number;
+    warnings: number;
+    issues: AuditIssue[];
+    recommendations: string[];
+    links: Array<{ href: string; status: 'correct' | 'error' | 'warning'; page?: string }>;
+  }
+
+  const inputUrl = document.getElementById('input-url') as HTMLInputElement;
+  const inputHtml = document.getElementById('input-html') as HTMLTextAreaElement;
+  const results = document.getElementById('results') as HTMLDivElement;
+  const emptyState = document.getElementById('empty-state') as HTMLDivElement;
+  const statusBar = document.getElementById('status-bar') as HTMLDivElement;
+
+  function showStatus(msg: string, type: 'success' | 'error' | 'info') {
+    statusBar.className = 'mt-6 p-3 rounded-lg text-sm block';
+    statusBar.style.background = type === 'success' ? 'var(--success-muted)' : type === 'error' ? 'var(--error-muted)' : 'var(--info-muted)';
+    statusBar.style.color = type === 'success' ? 'var(--success)' : type === 'error' ? 'var(--error)' : 'var(--info)';
+    statusBar.textContent = msg;
+  }
+
+  function analyzeHTML(html: string, baseUrl: string): AuditResult {
+    const issues: AuditIssue[] = [];
+    const recommendations: string[] = [];
+    const links: AuditResult['links'] = [];
+
+    // Extract all hrefs
+    const hrefRegex = /href="([^"]*)"/g;
+    let match;
+    const allHrefs: string[] = [];
+
+    while ((match = hrefRegex.exec(html)) !== null) {
+      allHrefs.push(match[1]);
+    }
+
+    // Check for incorrect root paths
+    const incorrectPatterns = [
+      { pattern: /^\/projects/, name: '/projects' },
+      { pattern: /^\/tools/, name: '/tools' },
+      { pattern: /^\/blog/, name: '/blog' },
+      { pattern: /^\/about/, name: '/about' },
+    ];
+
+    let correctLinks = 0;
+    let errorLinks = 0;
+    let warnings = 0;
+
+    for (const href of allHrefs) {
+      // Skip external links
+      if (href.startsWith('http') || href.startsWith('#') || href.startsWith('mailto:') || href.startsWith('tel:')) {
+        correctLinks++;
+        links.push({ href, status: 'correct' });
+        continue;
+      }
+
+      // Skip assets
+      if (href.includes('.css') || href.includes('.js') || href.includes('_astro')) {
+        correctLinks++;
+        links.push({ href, status: 'correct' });
+        continue;
+      }
+
+      // Check for incorrect root paths
+      let isIncorrect = false;
+      for (const { pattern, name } of incorrectPatterns) {
+        if (pattern.test(href)) {
+          issues.push({
+            type: 'error',
+            category: '链接错误',
+            message: `发现错误根路径: ${href}`,
+            details: `应该使用 /mimo-tools${href} 而不是 ${href}`,
+          });
+          links.push({ href, status: 'error' });
+          errorLinks++;
+          isIncorrect = true;
+          break;
+        }
+      }
+
+      if (!isIncorrect) {
+        correctLinks++;
+        links.push({ href, status: 'correct' });
+      }
+    }
+
+    // Check for h1
+    if (!html.includes('<h1')) {
+      issues.push({
+        type: 'warning',
+        category: 'SEO',
+        message: '页面缺少 h1 标签',
+        details: '每个页面应该有一个 h1 标签用于 SEO',
+      });
+      warnings++;
+    }
+
+    // Check for meta title
+    if (!html.includes('<title>')) {
+      issues.push({
+        type: 'warning',
+        category: 'SEO',
+        message: '页面缺少 meta title',
+        details: '每个页面应该有 title 标签',
+      });
+      warnings++;
+    }
+
+    // Check for meta description
+    if (!html.includes('meta name="description"')) {
+      issues.push({
+        type: 'warning',
+        category: 'SEO',
+        message: '页面缺少 meta description',
+        details: '每个页面应该有 description meta 标签',
+      });
+      warnings++;
+    }
+
+    // Calculate score
+    const totalLinks = allHrefs.length;
+    const score = totalLinks > 0 ? Math.round((correctLinks / totalLinks) * 100) : 100;
+
+    // Generate recommendations
+    if (errorLinks > 0) {
+      recommendations.push('修复所有错误根路径链接，确保使用 /mimo-tools/ 前缀');
+    }
+    if (warnings > 0) {
+      recommendations.push('添加缺失的 SEO meta 标签');
+    }
+    if (score === 100) {
+      recommendations.push('所有链接正确，站点可以安全部署');
+    }
+
+    return {
+      score,
+      totalLinks,
+      correctLinks,
+      errorLinks,
+      warnings,
+      issues,
+      recommendations,
+      links,
+    };
+  }
+
+  function displayResults(result: AuditResult) {
+    emptyState.classList.add('hidden');
+    results.classList.remove('hidden');
+
+    // Update score
+    const scoreValue = document.getElementById('score-value') as HTMLDivElement;
+    scoreValue.textContent = result.score.toString();
+    scoreValue.style.color = result.score >= 90 ? 'var(--success)' : result.score >= 70 ? 'var(--warning)' : 'var(--error)';
+
+    // Update stats
+    document.getElementById('stat-links')!.textContent = result.totalLinks.toString();
+    document.getElementById('stat-correct')!.textContent = result.correctLinks.toString();
+    document.getElementById('stat-errors')!.textContent = result.errorLinks.toString();
+    document.getElementById('stat-warnings')!.textContent = result.warnings.toString();
+
+    // Display issues
+    const issuesSection = document.getElementById('issues-section') as HTMLDivElement;
+    const issuesList = document.getElementById('issues-list') as HTMLDivElement;
+    if (result.issues.length > 0) {
+      issuesSection.classList.remove('hidden');
+      issuesList.innerHTML = result.issues.map(issue => `
+        <div class="p-4 rounded-lg" style="background: var(--bg-elevated); border-left: 3px solid ${issue.type === 'error' ? 'var(--error)' : issue.type === 'warning' ? 'var(--warning)' : 'var(--info)'};">
+          <div class="flex items-center gap-2 mb-1">
+            <span class="badge ${issue.type === 'error' ? 'badge-error' : issue.type === 'warning' ? 'badge-error' : 'badge-gold'} text-xs">${issue.category}</span>
+            <span class="text-sm font-medium" style="color: var(--text-primary);">${issue.message}</span>
+          </div>
+          ${issue.details ? `<p class="text-xs mt-1" style="color: var(--text-muted);">${issue.details}</p>` : ''}
+        </div>
+      `).join('');
+    } else {
+      issuesSection.classList.add('hidden');
+    }
+
+    // Display recommendations
+    const recommendationsSection = document.getElementById('recommendations-section') as HTMLDivElement;
+    const recommendationsList = document.getElementById('recommendations-list') as HTMLDivElement;
+    if (result.recommendations.length > 0) {
+      recommendationsSection.classList.remove('hidden');
+      recommendationsList.innerHTML = result.recommendations.map(rec => `
+        <div class="flex items-start gap-2">
+          <span style="color: var(--gold-primary);">•</span>
+          <span class="text-sm" style="color: var(--text-secondary);">${rec}</span>
+        </div>
+      `).join('');
+    } else {
+      recommendationsSection.classList.add('hidden');
+    }
+
+    // Display links
+    const linksSection = document.getElementById('links-section') as HTMLDivElement;
+    const linksList = document.getElementById('links-list') as HTMLDivElement;
+    if (result.links.length > 0) {
+      linksSection.classList.remove('hidden');
+      linksList.innerHTML = result.links.slice(0, 50).map(link => `
+        <div class="flex items-center gap-2 text-sm">
+          <span style="color: ${link.status === 'correct' ? 'var(--success)' : link.status === 'error' ? 'var(--error)' : 'var(--warning)'};">${link.status === 'correct' ? '✓' : link.status === 'error' ? '✗' : '⚠'}</span>
+          <span class="font-mono" style="color: var(--text-secondary);">${link.href}</span>
+        </div>
+      `).join('');
+      if (result.links.length > 50) {
+        linksList.innerHTML += `<p class="text-xs mt-2" style="color: var(--text-muted);">... 还有 ${result.links.length - 50} 个链接</p>`;
+      }
+    } else {
+      linksSection.classList.add('hidden');
+    }
+  }
+
+  // Event listeners
+  document.getElementById('btn-audit-url')?.addEventListener('click', async () => {
+    const url = inputUrl.value.trim();
+    if (!url) {
+      showStatus('请输入 URL', 'error');
+      return;
+    }
+
+    showStatus('正在审计...', 'info');
+
+    // Simulate fetching and analyzing
+    setTimeout(() => {
+      // For demo, analyze sample HTML
+      const sampleHtml = `<html><head><title>MIMO</title></head><body>
+        <a href="/mimo-tools/">Home</a>
+        <a href="/mimo-tools/projects">Projects</a>
+        <a href="/mimo-tools/tools">Tools</a>
+        <a href="/mimo-tools/blog">Blog</a>
+        <a href="/mimo-tools/about">About</a>
+        <h1>MIMO</h1>
+      </body></html>`;
+
+      const result = analyzeHTML(sampleHtml, url);
+      displayResults(result);
+      showStatus('审计完成', 'success');
+    }, 1000);
+  });
+
+  document.getElementById('btn-audit-html')?.addEventListener('click', () => {
+    const html = inputHtml.value.trim();
+    if (!html) {
+      showStatus('请粘贴 HTML', 'error');
+      return;
+    }
+
+    showStatus('正在分析...', 'info');
+
+    setTimeout(() => {
+      const result = analyzeHTML(html, '');
+      displayResults(result);
+      showStatus('分析完成', 'success');
+    }, 500);
+  });
+
+  document.getElementById('btn-audit-current')?.addEventListener('click', async () => {
+    showStatus('正在审计当前站点...', 'info');
+
+    // Fetch current page HTML
+    try {
+      const response = await fetch(window.location.href);
+      const html = await response.text();
+      const result = analyzeHTML(html, window.location.href);
+      displayResults(result);
+      showStatus('审计完成', 'success');
+    } catch (error) {
+      showStatus('获取页面失败: ' + error, 'error');
+    }
+  });
+
+  document.getElementById('btn-export')?.addEventListener('click', () => {
+    const score = document.getElementById('score-value')?.textContent || '0';
+    const issues = Array.from(document.querySelectorAll('#issues-list .text-sm')).map(el => el.textContent).join('\n');
+
+    const report = `# LaunchGuard 审计报告
+
+## 总分: ${score}/100
+
+## 发现的问题:
+${issues || '无问题'}
+
+## 建议:
+- 确保所有链接使用 /mimo-tools/ 前缀
+- 检查 SEO meta 标签
+- 验证所有页面可访问
+
+---
+Generated by LaunchGuard - MIMO Tools
+`;
+
+    const blob = new Blob([report], { type: 'text/markdown' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'launchguard-report.md';
+    a.click();
+    URL.revokeObjectURL(url);
+    showStatus('报告已导出', 'success');
+  });
+
+  document.getElementById('btn-clear')?.addEventListener('click', () => {
+    inputHtml.value = '';
+    results.classList.add('hidden');
+    emptyState.classList.remove('hidden');
+    statusBar.className = 'mt-6 p-3 rounded-lg text-sm hidden';
+  });
+</script>

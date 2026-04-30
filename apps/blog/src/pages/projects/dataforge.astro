@@ -1,0 +1,74 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+const projectData = {
+  dataforge: {
+    icon: '⚒️',
+    name: 'DataForge',
+    tagline: 'Browser Data Workbench',
+    description: '浏览器内数据分析工作台。上传 CSV/JSON，自动数据画像，SQL 查询，图表建议，导出报告。',
+  },
+  specpilot: {
+    icon: '✈️',
+    name: 'SpecPilot',
+    tagline: 'API Contract & Mock Studio',
+    description: 'API 合约、Mock、Schema 校验工作台。解析 OpenAPI，生成 mock，校验 response。',
+  },
+  incidentlab: {
+    icon: '🔬',
+    name: 'IncidentLab',
+    tagline: 'Log & Incident Analyzer',
+    description: '日志异常分析与故障复盘生成器。解析日志，检测异常，生成 incident report。',
+  },
+  'knowledgebase-studio': {
+    icon: '📚',
+    name: 'KnowledgeBase Studio',
+    tagline: 'Local RAG & Citation Search',
+    description: '本地文档检索和带引用问答。上传文档，构建索引，搜索，生成带引用的回答。',
+  },
+};
+
+const slug = Astro.url.pathname.split('/').pop() || '';
+const project = projectData[slug as keyof typeof projectData] || projectData.dataforge;
+---
+
+<Layout title={`${project.name} - ${project.tagline}`}>
+  <div class="section">
+    <div class="container">
+      {/* Header */}
+      <div class="mb-8">
+        <a href="/mimo-tools/projects" class="inline-flex items-center gap-2 text-sm mb-4 transition-colors duration-200" style="color: var(--text-muted);">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m12 19-7-7 7-7" />
+            <path d="M19 12H5" />
+          </svg>
+          返回旗舰项目
+        </a>
+        <div class="flex items-center gap-4">
+          <div class="flex items-center justify-center w-16 h-16 rounded-2xl" style="background: var(--gold-subtle); border: 1px solid var(--gold-border);">
+            <span class="text-3xl">{project.icon}</span>
+          </div>
+          <div>
+            <h1 class="text-3xl font-bold" style="color: var(--text-primary);">{project.name}</h1>
+            <p style="color: var(--text-muted);">{project.tagline}</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Description */}
+      <div class="p-6 rounded-xl mb-8" style="background: var(--bg-card); border: 1px solid var(--border-subtle);">
+        <p class="text-lg" style="color: var(--text-secondary);">{project.description}</p>
+      </div>
+
+      {/* Main Content Area */}
+      <div class="p-8 rounded-xl text-center" style="background: var(--bg-card); border: 1px solid var(--border-subtle);">
+        <div class="text-6xl mb-4">{project.icon}</div>
+        <h2 class="text-2xl font-bold mb-4" style="color: var(--text-primary);">即将推出</h2>
+        <p class="mb-6" style="color: var(--text-muted);">此项目正在开发中，敬请期待</p>
+        <a href="/mimo-tools/projects" class="btn btn-primary">
+          返回旗舰项目列表
+        </a>
+      </div>
+    </div>
+  </div>
+</Layout>
