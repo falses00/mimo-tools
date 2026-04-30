@@ -2,7 +2,7 @@
 import Layout from '../../layouts/Layout.astro';
 
 interface Props {
-  id: 'dataforge' | 'specpilot' | 'incidentlab' | 'knowledgebase-studio';
+  id: 'launchguard' | 'repolens' | 'dataforge' | 'specpilot' | 'incidentlab' | 'knowledgebase-studio';
   icon: string;
   name: string;
   tagline: string;
@@ -12,8 +12,37 @@ interface Props {
 const { id, icon, name, tagline, description } = Astro.props;
 const base = import.meta.env.BASE_URL;
 const baseWithSlash = base.endsWith('/') ? base : `${base}/`;
+const apiBaseUrl = import.meta.env.PUBLIC_API_BASE_URL ?? '';
 
-const samples = {
+const endpoints: Record<string, string> = {
+  launchguard: '/api/launchguard/audit',
+  repolens: '/api/repolens/analyze',
+  dataforge: '/api/dataforge/profile',
+  specpilot: '/api/specpilot/parse',
+  incidentlab: '/api/incidentlab/analyze',
+  'knowledgebase-studio': '/api/knowledgebase/ask',
+};
+
+const samples: Record<string, string> = {
+  launchguard: `<h1>MIMO</h1>
+<a href="/mimo-tools/projects">Good link</a>
+<a href="/projects">Bad link</a>
+<a href="/tools">Bad link</a>
+<title>MIMO - Tools</title>
+<meta name="description" content="MIMO tools">`,
+  repolens: `{
+  "name": "mimo-tools",
+  "owner": "falses00",
+  "readme": true,
+  "license": "MIT",
+  "hasTests": true,
+  "testFramework": "Vitest",
+  "hasCI": true,
+  "ciProvider": "GitHub Actions",
+  "hasDocs": true,
+  "languages": { "TypeScript": 65, "Astro": 20, "CSS": 10 },
+  "scripts": ["dev", "build", "test", "lint", "typecheck"]
+}`,
   dataforge: `region,revenue,cost,status
 APAC,128000,82000,healthy
 EU,96000,64000,watch
@@ -42,7 +71,19 @@ Run npm run verify:api https://<render-url> after deployment.
 Run migration 001_initial_schema.sql before enabling pgvector semantic search.`,
 };
 
-const labels = {
+const labels: Record<string, { input: string; action: string; output: string; aside: string[] }> = {
+  launchguard: {
+    input: 'HTML Content',
+    action: 'Audit Launch',
+    output: 'Audit Result',
+    aside: ['链接审计', 'Base Path 检测', '404 风险评估', 'SEO 检查'],
+  },
+  repolens: {
+    input: 'Repository Manifest',
+    action: 'Analyze Repo',
+    output: 'Analysis Result',
+    aside: ['仓库分析', '质量评分', '改进建议', '报告导出'],
+  },
   dataforge: {
     input: 'CSV / JSON Dataset',
     action: '生成数据画像',
@@ -71,7 +112,12 @@ const labels = {
 ---
 
 <Layout title={`${name} - ${tagline}`} description={description}>
-  <section class="section project-workbench" data-project={id}>
+  <section
+    class="section project-workbench"
+    data-project={id}
+    data-api-base-url={apiBaseUrl}
+    data-endpoint={endpoints[id]}
+  >
     <div class="container">
       <a href={`${baseWithSlash}projects`} class="inline-flex items-center gap-2 text-sm mb-6 transition-colors duration-200" style="color: var(--text-muted);">
         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -98,6 +144,14 @@ const labels = {
         </div>
       </div>
 
+      {/* Mode Badge */}
+      <div class="mb-6">
+        <span id="mode-badge" class="badge" style="background: var(--bg-elevated); border: 1px solid var(--border-subtle); color: var(--text-muted);">
+          {apiBaseUrl ? 'API Mode: Connecting...' : 'Static Demo Mode'}
+        </span>
+        <span id="duration-badge" class="badge ml-2 hidden" style="background: var(--bg-elevated); border: 1px solid var(--border-subtle); color: var(--text-muted);"></span>
+      </div>
+
       <div class="grid grid-cols-1 lg:grid-cols-[0.95fr_1.05fr] gap-6">
         <section class="panel-3d">
           <div class="flex items-center justify-between gap-4 mb-4">
@@ -114,7 +168,7 @@ const labels = {
         <section class="panel-3d">
           <div class="flex items-center justify-between gap-4 mb-4">
             <h2 class="text-xl font-semibold">{labels[id].output}</h2>
-            <span class="badge">Static demo mode</span>
+            <span id="output-mode-badge" class="badge" style="background: var(--bg-elevated); border: 1px solid var(--border-subtle); color: var(--text-muted);">等待运行</span>
           </div>
           <div class="project-output" aria-live="polite">
             <p style="color: var(--text-muted);">点击运行后生成分析结果。</p>
@@ -125,19 +179,19 @@ const labels = {
   </section>
 </Layout>
 
-<script define:vars={{ samples }}>
+<script define:vars={{ samples, apiBaseUrl }}>
   const root = document.querySelector('.project-workbench');
   const project = root?.getAttribute('data-project') || '';
+  const endpoint = root?.getAttribute('data-endpoint') || '';
   const input = root?.querySelector('.project-input');
   const output = root?.querySelector('.project-output');
+  const modeBadge = document.getElementById('mode-badge');
+  const durationBadge = document.getElementById('duration-badge');
+  const outputModeBadge = document.getElementById('output-mode-badge');
 
   function esc(value) {
     return String(value).replace(/[&<>"']/g, (char) => ({
-      '&': '&amp;',
-      '<': '&lt;',
-      '>': '&gt;',
-      '"': '&quot;',
-      "'": '&#039;',
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;',
     }[char]));
   }
 
@@ -151,7 +205,12 @@ const labels = {
     return `<div class="result-block"><h3>${esc(title)}</h3><ul>${items.map(item => `<li>${esc(item)}</li>`).join('')}</ul></div>`;
   }
 
-  function runDataForge(text) {
+  function renderMetrics(metrics) {
+    return `<div class="result-metrics">${metrics.map(m => `<span>${m.value}<small>${m.label}</small></span>`).join('')}</div>`;
+  }
+
+  // Local fallback functions
+  function runDataForgeLocal(text) {
     const rows = text.trim().startsWith('[') ? JSON.parse(text) : parseCsv(text);
     const columns = Object.keys(rows[0] || {});
     const fields = columns.map(column => {
@@ -160,33 +219,25 @@ const labels = {
       return `${column}: ${numeric ? 'number' : 'string'}, unique ${new Set(values).size}`;
     });
     const duplicates = rows.length - new Set(rows.map(row => JSON.stringify(row))).size;
-    return `
-      <div class="result-metrics">
-        <span>${rows.length}<small>rows</small></span>
-        <span>${columns.length}<small>columns</small></span>
-        <span>${duplicates}<small>duplicates</small></span>
-      </div>
-      ${renderList('Field profile', fields)}
-      ${renderList('Chart suggestions', ['Bar chart for region vs revenue', 'Margin comparison by status', 'Risk table for high cost rows'])}
-    `;
+    return renderMetrics([
+      { value: rows.length, label: 'rows' },
+      { value: columns.length, label: 'columns' },
+      { value: duplicates, label: 'duplicates' },
+    ]) + renderList('Field profile', fields) + renderList('Chart suggestions', ['Bar chart for region vs revenue', 'Margin comparison by status']);
   }
 
-  function runSpecPilot(text) {
+  function runSpecPilotLocal(text) {
     const spec = JSON.parse(text);
     const paths = Object.entries(spec.paths || {});
     const endpoints = paths.flatMap(([path, methods]) => Object.keys(methods).map(method => `${method.toUpperCase()} ${path}`));
-    return `
-      <div class="result-metrics">
-        <span>${endpoints.length}<small>endpoints</small></span>
-        <span>${Object.keys(spec.paths || {}).length}<small>paths</small></span>
-        <span>${spec.info?.version || 'n/a'}<small>version</small></span>
-      </div>
-      ${renderList('Endpoints', endpoints)}
-      ${renderList('Mock readiness', ['Health endpoint can be verified with GET', 'POST endpoints need request body examples', 'Add schema examples before public API mode'])}
-    `;
+    return renderMetrics([
+      { value: endpoints.length, label: 'endpoints' },
+      { value: Object.keys(spec.paths || {}).length, label: 'paths' },
+      { value: spec.info?.version || 'n/a', label: 'version' },
+    ]) + renderList('Endpoints', endpoints) + renderList('Mock readiness', ['Health endpoint can be verified with GET', 'POST endpoints need request body examples']);
   }
 
-  function runIncidentLab(text) {
+  function runIncidentLabLocal(text) {
     const lines = text.trim().split(/\r?\n/).filter(Boolean);
     const counts = { ERROR: 0, WARN: 0, INFO: 0, DEBUG: 0 };
     lines.forEach(line => Object.keys(counts).forEach(level => { if (line.includes(level)) counts[level] += 1; }));
@@ -194,53 +245,223 @@ const labels = {
     if (counts.ERROR > 1) actions.push('Open incident timeline and inspect repeated failing dependency');
     if (counts.WARN > 0) actions.push('Add queue-depth alert threshold');
     actions.push('Attach generated report to deployment notes');
-    return `
-      <div class="result-metrics">
-        <span>${lines.length}<small>events</small></span>
-        <span>${counts.ERROR}<small>errors</small></span>
-        <span>${counts.WARN}<small>warnings</small></span>
-      </div>
-      ${renderList('Timeline', lines)}
-      ${renderList('Action items', actions)}
-    `;
+    return renderMetrics([
+      { value: lines.length, label: 'events' },
+      { value: counts.ERROR, label: 'errors' },
+      { value: counts.WARN, label: 'warnings' },
+    ]) + renderList('Timeline', lines) + renderList('Action items', actions);
   }
 
-  function runKnowledgeBase(text) {
+  function runKnowledgeBaseLocal(text) {
     const query = 'Render API deploy verify Supabase';
     const sections = text.split(/\n\s*\n/).filter(Boolean);
     const scored = sections
       .map(section => ({ section, score: query.toLowerCase().split(/\s+/).filter(term => section.toLowerCase().includes(term)).length }))
       .sort((a, b) => b.score - a.score)
       .slice(0, 3);
-    return `
-      <div class="result-metrics">
-        <span>${sections.length}<small>chunks</small></span>
-        <span>${scored.length}<small>sources</small></span>
-        <span>local<small>retrieval</small></span>
-      </div>
-      <div class="result-block"><h3>Answer</h3><p>先在 Render 完成 API 服务部署，再运行 verify:api；Supabase 可以先保持迁移就绪，等需要语义搜索时再启用 pgvector。</p></div>
-      ${renderList('Citations', scored.map(item => item.section.replace(/\n/g, ' ')))}
-    `;
+    return renderMetrics([
+      { value: sections.length, label: 'chunks' },
+      { value: scored.length, label: 'sources' },
+      { value: 'local', label: 'retrieval' },
+    ]) + `<div class="result-block"><h3>Answer</h3><p>先在 Render 完成 API 服务部署，再运行 verify:api；Supabase 可以先保持迁移就绪，等需要语义搜索时再启用 pgvector。</p></div>` + renderList('Citations', scored.map(item => item.section.replace(/\n/g, ' ')));
   }
 
-  function run() {
+  function runLaunchGuardLocal(text) {
+    const hrefRegex = /href="([^"]*)"/g;
+    let match;
+    const allHrefs = [];
+    while ((match = hrefRegex.exec(text)) !== null) allHrefs.push(match[1]);
+    const incorrectPatterns = [/^\/projects$/, /^\/projects\//, /^\/tools$/, /^\/tools\//, /^\/blog$/, /^\/blog\//, /^\/about$/];
+    let errorLinks = 0;
+    allHrefs.forEach(href => { if (incorrectPatterns.some(p => p.test(href))) errorLinks++; });
+    const score = allHrefs.length > 0 ? Math.round(((allHrefs.length - errorLinks) / allHrefs.length) * 100) : 100;
+    return renderMetrics([
+      { value: score, label: 'score' },
+      { value: allHrefs.length, label: 'links' },
+      { value: errorLinks, label: 'errors' },
+    ]) + (errorLinks > 0 ? renderList('Issues', [`Found ${errorLinks} incorrect root paths`]) : '<div class="result-block"><h3>Result</h3><p>All links correct!</p></div>');
+  }
+
+  function runRepoLensLocal(text) {
+    const manifest = JSON.parse(text);
+    let score = 0;
+    const checks = [];
+    if (manifest.readme) { score += 15; checks.push('README: ✅'); } else { checks.push('README: ❌'); }
+    if (manifest.license) { score += 10; checks.push('LICENSE: ✅'); } else { checks.push('LICENSE: ❌'); }
+    if (manifest.hasTests) { score += 20; checks.push('Tests: ✅'); } else { checks.push('Tests: ❌'); }
+    if (manifest.hasCI) { score += 20; checks.push('CI/CD: ✅'); } else { checks.push('CI/CD: ❌'); }
+    if (manifest.hasDocs) { score += 15; checks.push('Docs: ✅'); } else { checks.push('Docs: ❌'); }
+    return renderMetrics([
+      { value: Math.min(100, score), label: 'score' },
+      { value: checks.filter(c => c.includes('✅')).length, label: 'passed' },
+      { value: checks.filter(c => c.includes('❌')).length, label: 'failed' },
+    ]) + renderList('Checks', checks);
+  }
+
+  function getLocalResult(text) {
+    switch (project) {
+      case 'launchguard': return runLaunchGuardLocal(text);
+      case 'repolens': return runRepoLensLocal(text);
+      case 'dataforge': return runDataForgeLocal(text);
+      case 'specpilot': return runSpecPilotLocal(text);
+      case 'incidentlab': return runIncidentLabLocal(text);
+      case 'knowledgebase-studio': return runKnowledgeBaseLocal(text);
+      default: return '<p class="error-text">Unknown project</p>';
+    }
+  }
+
+  function getPayload(text) {
+    switch (project) {
+      case 'launchguard': return { html: text };
+      case 'repolens': return { manifest: JSON.parse(text) };
+      case 'dataforge': return { dataset: text.trim().startsWith('[') ? JSON.parse(text) : parseCsv(text) };
+      case 'specpilot': return { openapi: JSON.parse(text) };
+      case 'incidentlab': return { logs: text };
+      case 'knowledgebase-studio': return { question: 'What is this project about?', documents: [{ id: '1', title: 'Notes', content: text }] };
+      default: return {};
+    }
+  }
+
+  async function callApi(text) {
+    if (!apiBaseUrl || !endpoint) return null;
+    
+    const url = `${apiBaseUrl}${endpoint}`;
+    const payload = getPayload(text);
+    
+    try {
+      const start = Date.now();
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+        signal: AbortSignal.timeout(30000),
+      });
+      
+      if (!response.ok) throw new Error(`API error: ${response.status}`);
+      
+      const data = await response.json();
+      return { ok: true, mode: 'api', data, durationMs: Date.now() - start };
+    } catch (error) {
+      return { ok: false, mode: 'api-error-fallback', error: error.message, durationMs: 0 };
+    }
+  }
+
+  function renderApiResult(result) {
+    if (!result.ok) return null;
+    const data = result.data;
+    
+    switch (project) {
+      case 'launchguard':
+        return renderMetrics([
+          { value: data.score, label: 'score' },
+          { value: data.totalLinks, label: 'links' },
+          { value: data.errorLinks, label: 'errors' },
+        ]) + (data.issues?.length ? renderList('Issues', data.issues.map(i => i.message)) : '<div class="result-block"><h3>Result</h3><p>All links correct!</p></div>');
+      
+      case 'repolens':
+        return renderMetrics([
+          { value: data.score, label: 'score' },
+          { value: data.checks?.filter(c => c.passed).length || 0, label: 'passed' },
+          { value: data.checks?.filter(c => !c.passed).length || 0, label: 'failed' },
+        ]) + renderList('Checks', (data.checks || []).map(c => `${c.name}: ${c.passed ? '✅' : '❌'} - ${c.details}`));
+      
+      case 'dataforge':
+        return renderMetrics([
+          { value: data.rowCount, label: 'rows' },
+          { value: data.columnCount, label: 'columns' },
+          { value: data.duplicateRows, label: 'duplicates' },
+        ]) + renderList('Fields', (data.fields || []).map(f => `${f.name}: ${f.type}, unique ${f.unique}`));
+      
+      case 'specpilot':
+        return renderMetrics([
+          { value: data.endpointCount, label: 'endpoints' },
+          { value: data.title || 'n/a', label: 'title' },
+          { value: data.version || 'n/a', label: 'version' },
+        ]) + renderList('Endpoints', (data.endpoints || []).map(e => `${e.method} ${e.path} - ${e.summary}`));
+      
+      case 'incidentlab':
+        return renderMetrics([
+          { value: data.totalEntries, label: 'events' },
+          { value: data.severityCounts?.ERROR || 0, label: 'errors' },
+          { value: data.severityCounts?.WARN || 0, label: 'warnings' },
+        ]) + renderList('Timeline', (data.entries || []).slice(0, 10).map(e => `${e.timestamp} ${e.level} ${e.message}`));
+      
+      case 'knowledgebase-studio':
+        return renderMetrics([
+          { value: (data.sources || []).length, label: 'sources' },
+          { value: Math.round((data.confidence || 0) * 100) + '%', label: 'confidence' },
+          { value: data.mode || 'local', label: 'mode' },
+        ]) + `<div class="result-block"><h3>Answer</h3><p>${esc(data.answer || 'No answer')}</p></div>` + renderList('Sources', (data.sources || []).map(s => `${s.docTitle}: ${s.snippet}`));
+      
+      default:
+        return '<pre>' + esc(JSON.stringify(data, null, 2)) + '</pre>';
+    }
+  }
+
+  function updateModeBadge(mode, durationMs) {
+    if (!modeBadge) return;
+    
+    switch (mode) {
+      case 'api':
+        modeBadge.style.background = 'var(--success-muted)';
+        modeBadge.style.color = 'var(--success)';
+        modeBadge.style.borderColor = 'rgba(74, 222, 128, 0.3)';
+        modeBadge.textContent = 'API Mode: Connected to Render';
+        break;
+      case 'static-fallback':
+        modeBadge.style.background = 'var(--bg-elevated)';
+        modeBadge.style.color = 'var(--text-muted)';
+        modeBadge.style.borderColor = 'var(--border-subtle)';
+        modeBadge.textContent = 'Static Demo Mode';
+        break;
+      case 'api-error-fallback':
+        modeBadge.style.background = 'var(--warning-muted)';
+        modeBadge.style.color = 'var(--warning)';
+        modeBadge.style.borderColor = 'rgba(251, 191, 36, 0.3)';
+        modeBadge.textContent = 'API Error: using fallback';
+        break;
+    }
+    
+    if (durationBadge && durationMs) {
+      durationBadge.classList.remove('hidden');
+      durationBadge.textContent = `${durationMs}ms`;
+    }
+  }
+
+  async function run() {
     if (!input || !output) return;
     const text = input.value.trim();
     if (!text) {
       output.innerHTML = '<p class="error-text">请输入内容或载入示例。</p>';
       return;
     }
-    try {
-      const html = project === 'dataforge'
-        ? runDataForge(text)
-        : project === 'specpilot'
-          ? runSpecPilot(text)
-          : project === 'incidentlab'
-            ? runIncidentLab(text)
-            : runKnowledgeBase(text);
-      output.innerHTML = html;
-    } catch (error) {
-      output.innerHTML = `<p class="error-text">解析失败：${esc(error.message || error)}</p>`;
+    
+    // Show loading
+    output.innerHTML = '<p style="color: var(--text-muted);">⏳ Connecting to Render API...</p>';
+    if (outputModeBadge) outputModeBadge.textContent = '运行中...';
+    
+    // Try API first
+    let result = null;
+    if (apiBaseUrl && endpoint) {
+      result = await callApi(text);
+    }
+    
+    if (result?.ok) {
+      // API success
+      updateModeBadge('api', result.durationMs);
+      output.innerHTML = renderApiResult(result);
+      if (outputModeBadge) outputModeBadge.textContent = 'API Mode';
+    } else {
+      // Fallback to local
+      const fallbackReason = result?.error || 'No API configured';
+      updateModeBadge(result ? 'api-error-fallback' : 'static-fallback', result?.durationMs);
+      
+      try {
+        output.innerHTML = getLocalResult(text);
+        if (outputModeBadge) outputModeBadge.textContent = result ? 'Fallback' : 'Static Demo';
+      } catch (error) {
+        output.innerHTML = `<p class="error-text">解析失败：${esc(error.message || error)}</p>`;
+      }
     }
   }
 
@@ -248,10 +469,20 @@ const labels = {
   root?.querySelector('[data-clear]')?.addEventListener('click', () => {
     if (input) input.value = '';
     if (output) output.innerHTML = '<p style="color: var(--text-muted);">点击运行后生成分析结果。</p>';
+    if (outputModeBadge) outputModeBadge.textContent = '等待运行';
+    if (durationBadge) durationBadge.classList.add('hidden');
   });
   root?.querySelector('[data-example]')?.addEventListener('click', () => {
     if (input) input.value = samples[project] || '';
   });
+
+  // Update initial mode badge
+  if (apiBaseUrl) {
+    modeBadge.style.background = 'var(--info-muted)';
+    modeBadge.style.color = 'var(--info)';
+    modeBadge.style.borderColor = 'rgba(96, 165, 250, 0.3)';
+    modeBadge.textContent = 'API Mode: Ready';
+  }
 </script>
 
 <style>
@@ -270,9 +501,7 @@ const labels = {
     overflow: hidden;
   }
 
-  .project-hero-copy {
-    max-width: 760px;
-  }
+  .project-hero-copy { max-width: 760px; }
 
   .project-hero-mark {
     min-height: 240px;
@@ -285,16 +514,8 @@ const labels = {
     transform: perspective(900px) rotateY(-12deg) rotateX(6deg);
   }
 
-  .project-hero-mark span {
-    display: block;
-    font-size: 4rem;
-  }
-
-  .project-hero-mark div {
-    max-width: 12rem;
-    color: var(--text-muted);
-    font-size: 0.875rem;
-  }
+  .project-hero-mark span { display: block; font-size: 4rem; }
+  .project-hero-mark div { max-width: 12rem; color: var(--text-muted); font-size: 0.875rem; }
 
   .panel-3d {
     background: var(--bg-card);
@@ -304,14 +525,8 @@ const labels = {
     padding: 1.5rem;
   }
 
-  .project-input {
-    min-height: 20rem;
-  }
-
-  .project-output {
-    min-height: 24rem;
-    color: var(--text-secondary);
-  }
+  .project-input { min-height: 20rem; }
+  .project-output { min-height: 24rem; color: var(--text-secondary); }
 
   :global(.result-metrics) {
     display: grid;
@@ -331,11 +546,7 @@ const labels = {
     font-weight: 700;
   }
 
-  :global(.result-metrics small) {
-    color: var(--text-muted);
-    font-size: 0.75rem;
-    font-weight: 500;
-  }
+  :global(.result-metrics small) { color: var(--text-muted); font-size: 0.75rem; font-weight: 500; }
 
   :global(.result-block) {
     padding: 1rem;
@@ -345,32 +556,12 @@ const labels = {
     margin-top: 1rem;
   }
 
-  :global(.result-block h3) {
-    font-size: 1rem;
-    margin-bottom: 0.75rem;
-  }
-
-  :global(.result-block li),
-  :global(.result-block p) {
-    color: var(--text-muted);
-    font-size: 0.875rem;
-    line-height: 1.65;
-  }
-
-  :global(.error-text) {
-    color: var(--error);
-  }
+  :global(.result-block h3) { font-size: 1rem; margin-bottom: 0.75rem; }
+  :global(.result-block li), :global(.result-block p) { color: var(--text-muted); font-size: 0.875rem; line-height: 1.65; }
+  :global(.error-text) { color: var(--error); }
 
   @media (max-width: 900px) {
-    .project-hero {
-      grid-template-columns: 1fr;
-      min-height: auto;
-      padding: 1.25rem;
-    }
-
-    .project-hero-mark {
-      min-height: 150px;
-      transform: none;
-    }
+    .project-hero { grid-template-columns: 1fr; min-height: auto; padding: 1.25rem; }
+    .project-hero-mark { min-height: 150px; transform: none; }
   }
 </style>
