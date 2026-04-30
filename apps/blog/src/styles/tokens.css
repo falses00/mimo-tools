@@ -1,29 +1,29 @@
 /* ============================================
-   MIMO Design System - Dark Gold Premium Theme
+   MIMO 3D Premium Dark Gold Design System
    ============================================ */
 
 :root {
   /* ===== Background Colors ===== */
-  --bg-page: #0f1115;
-  --bg-elevated: #151922;
-  --bg-card: #181d27;
-  --bg-section: #11151d;
-  --bg-input: #1a1f2b;
-  --bg-hover: #1e2330;
-  
-  /* ===== Text Colors ===== */
-  --text-primary: #f5f2ea;
-  --text-secondary: #c8c0b2;
-  --text-muted: #9a9388;
-  --text-disabled: #6b6560;
+  --bg-page: #0b0d12;
+  --bg-surface: #11151d;
+  --bg-elevated: #171c26;
+  --bg-glass: rgba(23, 28, 38, 0.72);
+  --bg-glass-hover: rgba(23, 28, 38, 0.85);
   
   /* ===== Gold Accent Colors ===== */
-  --gold-primary: #d4af37;
+  --gold: #d4af37;
   --gold-soft: #b8922f;
-  --gold-deep: #8a6b1f;
-  --gold-glow: rgba(212, 175, 55, 0.18);
-  --gold-border: rgba(212, 175, 55, 0.35);
+  --gold-deep: #7a5b16;
+  --gold-glow: rgba(212, 175, 55, 0.22);
+  --gold-glow-strong: rgba(212, 175, 55, 0.35);
+  --gold-border: rgba(212, 175, 55, 0.32);
   --gold-subtle: rgba(212, 175, 55, 0.08);
+  
+  /* ===== Text Colors ===== */
+  --text-primary: #f7f2e8;
+  --text-secondary: #c8c0b2;
+  --text-muted: #918a7c;
+  --text-disabled: #5a5548;
   
   /* ===== Border Colors ===== */
   --border-subtle: rgba(255, 255, 255, 0.06);
@@ -36,18 +36,26 @@
   --success-muted: rgba(74, 222, 128, 0.15);
   --error: #f87171;
   --error-muted: rgba(248, 113, 113, 0.15);
-  --info: #60a5fa;
-  --info-muted: rgba(96, 165, 250, 0.15);
   --warning: #fbbf24;
   --warning-muted: rgba(251, 191, 36, 0.15);
+  --info: #60a5fa;
+  --info-muted: rgba(96, 165, 250, 0.15);
   
-  /* ===== Shadows ===== */
+  /* ===== 3D Shadows ===== */
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.3);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -4px rgba(0, 0, 0, 0.4);
-  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
-  --shadow-gold: 0 0 20px rgba(212, 175, 55, 0.15);
-  --shadow-gold-lg: 0 0 40px rgba(212, 175, 55, 0.2);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
+  --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.6);
+  --shadow-gold: 0 0 20px var(--gold-glow);
+  --shadow-gold-lg: 0 0 40px var(--gold-glow-strong);
+  --shadow-card: 
+    0 2px 4px rgba(0, 0, 0, 0.3),
+    0 8px 16px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  --shadow-card-hover:
+    0 4px 8px rgba(0, 0, 0, 0.4),
+    0 16px 32px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
   
   /* ===== Border Radius ===== */
   --radius-sm: 0.375rem;
@@ -55,8 +63,10 @@
   --radius-lg: 0.75rem;
   --radius-xl: 1rem;
   --radius-2xl: 1.5rem;
+  --radius-card: 1rem;
+  --radius-panel: 1.25rem;
   
-  /* ===== Spacing Scale ===== */
+  /* ===== Spacing ===== */
   --space-1: 0.25rem;
   --space-2: 0.5rem;
   --space-3: 0.75rem;
@@ -74,67 +84,39 @@
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
   
-  --text-xs: 0.75rem;
-  --text-sm: 0.875rem;
-  --text-base: 1rem;
-  --text-lg: 1.125rem;
-  --text-xl: 1.25rem;
-  --text-2xl: 1.5rem;
-  --text-3xl: 1.875rem;
-  --text-4xl: 2.25rem;
-  --text-5xl: 3rem;
-  --text-6xl: 3.75rem;
-  
-  --leading-tight: 1.25;
-  --leading-normal: 1.5;
-  --leading-relaxed: 1.75;
-  
   /* ===== Focus Ring ===== */
-  --focus-ring: 0 0 0 2px var(--bg-page), 0 0 0 4px var(--gold-primary);
-  --focus-ring-offset: 0 0 0 2px var(--gold-primary);
+  --focus-ring: 0 0 0 2px var(--bg-page), 0 0 0 4px var(--gold);
+  --focus-ring-offset: 0 0 0 2px var(--gold);
   
-  /* ===== Container Widths ===== */
-  --container-sm: 640px;
-  --container-md: 768px;
-  --container-lg: 1024px;
-  --container-xl: 1280px;
-  --container-2xl: 1536px;
+  /* ===== Container ===== */
+  --container-max: 1280px;
+  --container-padding: 1.5rem;
   
-  /* ===== Section Padding ===== */
+  /* ===== Section ===== */
   --section-padding: 6rem;
   --section-padding-sm: 4rem;
   
-  /* ===== Surface Hierarchy ===== */
-  --surface-0: var(--bg-page);
-  --surface-1: var(--bg-elevated);
-  --surface-2: var(--bg-card);
-  --surface-3: var(--bg-hover);
-  
   /* ===== Transitions ===== */
   --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-base: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 200ms cubic-bezier(0.4, 0, 0.2, 1);
   --transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-3d: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* ===== 3D Perspective ===== */
+  --perspective: 1000px;
+  --perspective-origin: 50% 50%;
 }
 
-/* ===== Light Theme Override (if needed) ===== */
+/* ===== Light Theme Override ===== */
 .light {
   --bg-page: #ffffff;
-  --bg-elevated: #f8f9fa;
-  --bg-card: #ffffff;
-  --bg-section: #f1f3f5;
-  --bg-input: #ffffff;
-  --bg-hover: #f1f3f5;
-  
+  --bg-surface: #f8f9fa;
+  --bg-elevated: #ffffff;
+  --bg-glass: rgba(255, 255, 255, 0.8);
   --text-primary: #1a1a1a;
   --text-secondary: #4a5568;
   --text-muted: #718096;
-  --text-disabled: #a0aec0;
-  
-  --gold-primary: #b8860b;
-  --gold-soft: #9a7209;
-  --gold-deep: #7c5a07;
-  
   --border-subtle: rgba(0, 0, 0, 0.06);
-  --border-default: rgba(0, 0, 0, 0.1);
-  --border-strong: rgba(0, 0, 0, 0.15);
+  --gold: #b8860b;
+  --gold-soft: #9a7209;
 }

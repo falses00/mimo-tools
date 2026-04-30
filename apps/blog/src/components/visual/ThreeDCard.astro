@@ -1,0 +1,29 @@
+---
+interface Props {
+  href?: string;
+  class?: string;
+  featured?: boolean;
+}
+
+const { href, class: className = '', featured = false } = Astro.props;
+const Tag = href ? 'a' : 'div';
+---
+
+<Tag 
+  href={href} 
+  class:list={['card-3d group relative overflow-hidden', featured && 'border-[var(--gold-border)]', className]}
+  {...(href ? {} : {})}
+>
+  {/* Gold accent line */}
+  {featured && (
+    <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[var(--gold)] to-transparent opacity-50"></div>
+  )}
+  
+  {/* Content */}
+  <div class="relative z-10">
+    <slot />
+  </div>
+  
+  {/* Hover glow effect */}
+  <div class="absolute inset-0 bg-gradient-to-br from-[var(--gold-glow)] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+</Tag>

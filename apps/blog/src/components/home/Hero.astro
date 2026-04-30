@@ -3,61 +3,90 @@ const base = import.meta.env.BASE_URL;
 const baseWithSlash = base.endsWith('/') ? base : `${base}/`;
 ---
 
-<section class="relative overflow-hidden section">
-  {/* Background Effects */}
+<section class="relative py-24 sm:py-32 lg:py-40 overflow-hidden">
+  {/* 3D Floating Panels */}
   <div class="absolute inset-0 -z-10">
-    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px]" style="background: radial-gradient(ellipse at center, var(--gold-glow) 0%, transparent 70%);"></div>
-    <div class="absolute bottom-0 left-0 right-0 h-px" style="background: linear-gradient(90deg, transparent, var(--gold-border), transparent);"></div>
+    <div class="absolute top-20 left-10 w-32 h-32 glass-panel animate-float opacity-20" style="animation-delay: 0s;"></div>
+    <div class="absolute top-40 right-20 w-24 h-24 glass-panel animate-float opacity-15" style="animation-delay: -2s;"></div>
+    <div class="absolute bottom-20 left-1/4 w-40 h-20 glass-panel animate-float opacity-10" style="animation-delay: -4s;"></div>
   </div>
 
   <div class="container relative">
-    <div class="max-w-3xl mx-auto text-center">
+    <div class="max-w-4xl mx-auto text-center">
       {/* Badge */}
-      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-8" style="background: var(--gold-subtle); border: 1px solid var(--gold-border);">
-        <span class="w-2 h-2 rounded-full animate-pulse" style="background: var(--gold-primary);"></span>
-        <span class="text-sm font-medium" style="color: var(--gold-soft);">开发者工具集合</span>
+      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-8 glass-panel animate-pulse-glow">
+        <span class="w-2 h-2 rounded-full" style="background: var(--gold);"></span>
+        <span class="text-sm font-medium" style="color: var(--gold-soft);">全栈工程工具生态</span>
       </div>
 
       {/* Title */}
-      <h1 class="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight mb-6">
+      <h1 class="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight mb-8">
         <span style="color: var(--text-primary);">MIMO</span>
-        <span class="block mt-2" style="color: var(--gold-primary);">个人工具生态</span>
+        <span class="block mt-2 bg-clip-text text-transparent bg-gradient-to-r from-[var(--gold)] to-[var(--gold-soft)]">
+          个人工程工具生态
+        </span>
       </h1>
 
       {/* Description */}
-      <p class="text-lg sm:text-xl leading-relaxed mb-10" style="color: var(--text-secondary);">
-        包含多个实用工具、技术博客和个人导航站。所有工具纯前端处理，数据不离开浏览器。
+      <p class="text-lg sm:text-xl leading-relaxed mb-12 max-w-2xl mx-auto" style="color: var(--text-secondary);">
+        包含 6 个旗舰项目级工具、6 个组合 Quick Utilities、完整后端 API 和 RAG 检索系统
       </p>
 
       {/* CTA Buttons */}
       <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-        <a href={`${baseWithSlash}tools`} class="btn btn-primary w-full sm:w-auto px-8 py-3 text-base">
-          浏览工具
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-2">
+        <a href={`${baseWithSlash}projects`} class="btn-gold w-full sm:w-auto px-8 py-3 text-base">
+          探索旗舰项目
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-2 inline">
             <path d="M5 12h14" />
             <path d="m12 5 7 7-7 7" />
           </svg>
         </a>
-        <a href={`${baseWithSlash}blog`} class="btn btn-gold-outline w-full sm:w-auto px-8 py-3 text-base">
-          阅读博客
+        <a href={`${baseWithSlash}tools`} class="btn-ghost w-full sm:w-auto px-8 py-3 text-base">
+          浏览工具
         </a>
       </div>
 
       {/* Stats */}
-      <div class="grid grid-cols-3 gap-8 mt-16 pt-8" style="border-top: 1px solid var(--border-subtle);">
-        <div>
-          <div class="text-3xl font-bold" style="color: var(--gold-primary);">10+</div>
-          <div class="text-sm mt-1" style="color: var(--text-muted);">实用工具</div>
-        </div>
-        <div>
-          <div class="text-3xl font-bold" style="color: var(--gold-primary);">5</div>
+      <div class="grid grid-cols-3 gap-8 mt-20 pt-8" style="border-top: 1px solid var(--border-subtle);">
+        <div class="glass-panel p-4 rounded-xl">
+          <div class="text-3xl font-bold" style="color: var(--gold);">6</div>
           <div class="text-sm mt-1" style="color: var(--text-muted);">旗舰项目</div>
         </div>
-        <div>
-          <div class="text-3xl font-bold" style="color: var(--gold-primary);">100%</div>
-          <div class="text-sm mt-1" style="color: var(--text-muted);">前端处理</div>
+        <div class="glass-panel p-4 rounded-xl">
+          <div class="text-3xl font-bold" style="color: var(--gold);">6</div>
+          <div class="text-sm mt-1" style="color: var(--text-muted);">组合工具</div>
+        </div>
+        <div class="glass-panel p-4 rounded-xl">
+          <div class="text-3xl font-bold" style="color: var(--gold);">10+</div>
+          <div class="text-sm mt-1" style="color: var(--text-muted);">API Endpoints</div>
         </div>
       </div>
     </div>
   </div>
 </section>
+
+<style>
+  @keyframes float {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-20px) rotate(2deg); }
+  }
+  
+  .animate-float {
+    animation: float 8s ease-in-out infinite;
+  }
+  
+  @keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 20px var(--gold-glow); }
+    50% { box-shadow: 0 0 40px var(--gold-glow-strong); }
+  }
+  
+  .animate-pulse-glow {
+    animation: pulse-glow 3s ease-in-out infinite;
+  }
+  
+  @media (prefers-reduced-motion: reduce) {
+    .animate-float, .animate-pulse-glow {
+      animation: none;
+    }
+  }
+</style>

@@ -1,6 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Hero from '../components/home/Hero.astro';
+import ThreeDCard from '../components/visual/ThreeDCard.astro';
 import { getFeaturedProjects } from '../data/flagship-projects';
 
 const base = import.meta.env.BASE_URL;
@@ -8,18 +9,18 @@ const baseWithSlash = base.endsWith('/') ? base : `${base}/`;
 const featuredProjects = getFeaturedProjects();
 ---
 
-<Layout title="MIMO - 个人工具生态">
+<Layout title="MIMO - 个人工程工具生态">
   <Hero />
   
   {/* Flagship Projects Section */}
-  <section class="section" style="background: var(--bg-section);">
+  <section class="section relative">
     <div class="container">
       <div class="text-center mb-16">
-        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full mb-4" style="background: var(--gold-subtle); border: 1px solid var(--gold-border);">
-          <span class="text-xs font-medium" style="color: var(--gold-soft);">旗舰项目</span>
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-6 glass-panel">
+          <span class="text-xs font-medium" style="color: var(--gold);">旗舰项目</span>
         </div>
-        <h2 class="text-3xl sm:text-4xl font-bold mb-4" style="color: var(--text-primary);">
-          🚀 Flagship Projects
+        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6" style="color: var(--text-primary);">
+          Flagship Projects
         </h2>
         <p class="text-lg max-w-2xl mx-auto" style="color: var(--text-muted);">
           真正有技术含量的工程项目，展示质量审计、数据分析、API 工具、故障分析、知识检索能力
@@ -28,52 +29,43 @@ const featuredProjects = getFeaturedProjects();
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
         {featuredProjects.map(project => (
-          <a
-            href={`${baseWithSlash}projects/${project.id}`}
-            class="group block rounded-xl p-8 transition-all duration-300"
-            style="background: var(--bg-card); border: 1px solid var(--border-subtle);"
-          >
-            <div class="flex items-start gap-4 mb-4">
-              <div class="flex items-center justify-center w-14 h-14 rounded-xl flex-shrink-0" style="background: var(--gold-subtle); border: 1px solid var(--gold-border);">
-                <span class="text-2xl">{project.icon}</span>
+          <ThreeDCard href={`${baseWithSlash}projects/${project.id}`} featured>
+            <div class="p-8">
+              <div class="flex items-start gap-4 mb-6">
+                <div class="flex items-center justify-center w-16 h-16 rounded-2xl flex-shrink-0" style="background: var(--gold-subtle); border: 1px solid var(--gold-border);">
+                  <span class="text-3xl">{project.icon}</span>
+                </div>
+                <div>
+                  <h3 class="text-xl font-bold mb-1" style="color: var(--text-primary);">
+                    {project.name}
+                  </h3>
+                  <p class="text-sm" style="color: var(--gold-soft);">{project.tagline}</p>
+                </div>
               </div>
-              <div>
-                <h3 class="text-xl font-bold mb-1 transition-colors duration-200 group-hover:text-[var(--gold-primary)]" style="color: var(--text-primary);">
-                  {project.name}
-                </h3>
-                <p class="text-sm" style="color: var(--gold-soft);">{project.tagline}</p>
+              <p class="mb-6" style="color: var(--text-secondary);">
+                {project.description}
+              </p>
+              <div class="flex flex-wrap gap-2 mb-4">
+                {project.capabilities.slice(0, 4).map(cap => (
+                  <span class="badge-gold">{cap}</span>
+                ))}
+              </div>
+              <div class="flex flex-wrap gap-2">
+                {project.techStack.slice(0, 3).map(tech => (
+                  <span class="text-xs px-2 py-1 rounded" style="background: var(--bg-surface); color: var(--text-muted);">
+                    {tech}
+                  </span>
+                ))}
               </div>
             </div>
-            <p class="mb-4" style="color: var(--text-muted);">
-              {project.description}
-            </p>
-            <div class="flex flex-wrap gap-2 mb-4">
-              {project.capabilities.slice(0, 4).map(cap => (
-                <span class="badge badge-gold text-xs">{cap}</span>
-              ))}
-            </div>
-            <div class="flex flex-wrap gap-2 mb-4">
-              {project.techStack.slice(0, 3).map(tech => (
-                <span class="badge text-xs" style="background: var(--bg-elevated); border-color: var(--border-subtle); color: var(--text-muted);">
-                  {tech}
-                </span>
-              ))}
-            </div>
-            <div class="flex items-center gap-2 text-sm font-medium opacity-0 group-hover:opacity-100 transition-all duration-200" style="color: var(--gold-primary);">
-              <span>探索项目</span>
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M5 12h14" />
-                <path d="m12 5 7 7-7 7" />
-              </svg>
-            </div>
-          </a>
+          </ThreeDCard>
         ))}
       </div>
 
       <div class="text-center">
-        <a href={`${baseWithSlash}projects`} class="btn btn-primary px-8 py-3">
+        <a href={`${baseWithSlash}projects`} class="btn-gold inline-flex items-center gap-2">
           查看所有旗舰项目
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-2">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M5 12h14" />
             <path d="m12 5 7 7-7 7" />
           </svg>
@@ -83,14 +75,14 @@ const featuredProjects = getFeaturedProjects();
   </section>
 
   {/* Quick Utilities Section */}
-  <section class="section">
+  <section class="section relative">
     <div class="container">
       <div class="text-center mb-16">
-        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full mb-4" style="background: var(--gold-subtle); border: 1px solid var(--gold-border);">
-          <span class="text-xs font-medium" style="color: var(--gold-soft);">Quick Utilities</span>
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-6 glass-panel">
+          <span class="text-xs font-medium" style="color: var(--gold);">Quick Utilities</span>
         </div>
-        <h2 class="text-3xl sm:text-4xl font-bold mb-4" style="color: var(--text-primary);">
-          🛠️ 组合工具套件
+        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6" style="color: var(--text-primary);">
+          组合工具套件
         </h2>
         <p class="text-lg max-w-2xl mx-auto" style="color: var(--text-muted);">
           6 个精心设计的组合工具，覆盖格式化、编码、时间、设计等常用场景
@@ -106,33 +98,24 @@ const featuredProjects = getFeaturedProjects();
           { icon: '⏱️', name: 'Time & ID Studio', desc: '时间戳、Cron、UUID 生成', href: '/tools/timestamp-converter' },
           { icon: '🎨', name: 'Design Utility', desc: '颜色、对比度、Token 预览', href: '/tools/color-palette' },
         ].map(tool => (
-          <a
-            href={`${baseWithSlash}${tool.href.substring(1)}`}
-            class="group block rounded-xl p-6 transition-all duration-300"
-            style="background: var(--bg-card); border: 1px solid var(--border-subtle);"
-          >
-            <div class="flex items-center gap-3 mb-3">
-              <span class="text-2xl">{tool.icon}</span>
-              <h3 class="text-lg font-semibold group-hover:text-[var(--gold-primary)] transition-colors" style="color: var(--text-primary);">
-                {tool.name}
-              </h3>
+          <ThreeDCard href={`${baseWithSlash}${tool.href.substring(1)}`}>
+            <div class="p-6">
+              <div class="flex items-center gap-3 mb-4">
+                <span class="text-2xl">{tool.icon}</span>
+                <h3 class="text-lg font-semibold" style="color: var(--text-primary);">
+                  {tool.name}
+                </h3>
+              </div>
+              <p class="text-sm" style="color: var(--text-muted);">{tool.desc}</p>
             </div>
-            <p class="text-sm" style="color: var(--text-muted);">{tool.desc}</p>
-            <div class="mt-3 flex items-center gap-1 text-sm font-medium opacity-0 group-hover:opacity-100 transition-all" style="color: var(--gold-primary);">
-              <span>打开工具</span>
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M5 12h14" />
-                <path d="m12 5 7 7-7 7" />
-              </svg>
-            </div>
-          </a>
+          </ThreeDCard>
         ))}
       </div>
 
       <div class="text-center mt-12">
-        <a href={`${baseWithSlash}tools`} class="btn btn-secondary px-8 py-3">
+        <a href={`${baseWithSlash}tools`} class="btn-ghost inline-flex items-center gap-2">
           查看所有工具
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-2">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M5 12h14" />
             <path d="m12 5 7 7-7 7" />
           </svg>
