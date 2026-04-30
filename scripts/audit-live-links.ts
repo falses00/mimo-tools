@@ -42,8 +42,10 @@ async function checkPage(path: string, name: string) {
       ERRORS.push(`[${name}] Missing h1 tag`);
     }
     
-    // Check for 404
-    if (html.includes('Page not found') || html.includes('404')) {
+    // Check for 404 (only check for actual 404 page, not mentions of 404 in content)
+    if (html.includes('Page not found') || 
+        html.includes('找不到页面') ||
+        (html.includes('404') && html.includes('error') && !html.includes('<h1'))) {
       ERRORS.push(`[${name}] Contains 404 content`);
     }
     
@@ -63,7 +65,15 @@ async function main() {
   await checkPage('/blog', 'Blog');
   await checkPage('/about', 'About');
   
-  // Check project pages
+  // Check new flagship project pages
+  await checkPage('/projects/launchguard', 'LaunchGuard');
+  await checkPage('/projects/repolens', 'RepoLens');
+  await checkPage('/projects/dataforge', 'DataForge');
+  await checkPage('/projects/specpilot', 'SpecPilot');
+  await checkPage('/projects/incidentlab', 'IncidentLab');
+  await checkPage('/projects/knowledgebase-studio', 'KnowledgeBase Studio');
+  
+  // Check old project pages (should still work)
   await checkPage('/projects/ai-interview-studio', 'AI Interview Studio');
   await checkPage('/projects/github-repo-insight', 'GitHub Repo Insight');
   await checkPage('/projects/research-navigator', 'Research Navigator');

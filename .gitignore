@@ -36,3 +36,7 @@ credentials
 secrets
 *.pem
 *.key
+.data/
+*.db
+*.sqlite
+*.sqlite3

@@ -9,8 +9,11 @@
   ],
   "scripts": {
     "dev": "npm run dev --workspace=apps/blog",
+    "dev:api": "npm run dev --workspace=apps/api",
     "build": "npm run build --workspace=apps/blog",
+    "build:api": "npm run build --workspace=apps/api",
     "test": "npx vitest run",
+    "test:api": "npm run test --workspace=apps/api",
     "test:e2e": "npx playwright test",
     "test:links": "npx tsx scripts/audit-dist-links.ts",
     "test:live-links": "npx tsx scripts/audit-live-links.ts",
