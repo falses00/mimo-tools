@@ -4,7 +4,7 @@ export interface FlagshipProject {
   tagline: string;
   description: string;
   icon: string;
-  category: 'life' | 'quality' | 'data' | 'api' | 'incident' | 'knowledge';
+  category: 'life' | 'interview' | 'quality' | 'data' | 'api' | 'incident' | 'knowledge';
   tags: string[];
   path: string;
   featured: boolean;
@@ -32,6 +32,24 @@ export const flagshipProjects: FlagshipProject[] = [
     techStack: ['TypeScript', 'NLP', 'localStorage', 'Fastify'],
     capabilities: ['自然语言解析', '自动分类', '待办管理', '习惯追踪', '账单记录', '日报导出'],
     highlights: ['一句话输入', '智能分类', '本地优先', 'API Mode', '历史记录'],
+    isFrontendOnly: false,
+    hasBackend: true,
+    hasRAG: false,
+  },
+  {
+    id: 'interviewpilot',
+    name: 'InterviewPilot',
+    tagline: 'AI 面试教练',
+    description: '粘贴简历和岗位 JD，自动分析技能匹配度、生成面试问题、提供 STAR 回答建议。',
+    icon: '🎤',
+    category: 'interview',
+    tags: ['AI', '面试', '简历', 'JD', 'STAR'],
+    path: '/projects/interviewpilot',
+    featured: true,
+    status: 'available',
+    techStack: ['TypeScript', 'NLP', 'localStorage', 'Fastify'],
+    capabilities: ['简历分析', 'JD 匹配', '面试问题', 'STAR 建议', '报告导出'],
+    highlights: ['技能匹配', '缺口分析', '面试准备', 'STAR 框架', '历史记录'],
     isFrontendOnly: false,
     hasBackend: true,
     hasRAG: false,
