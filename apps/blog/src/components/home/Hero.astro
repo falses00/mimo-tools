@@ -1,34 +1,60 @@
 ---
 ---
 
-<section class="relative overflow-hidden bg-background py-24 sm:py-32">
-  <div class="absolute inset-0 -z-10 mx-0 max-w-none overflow-hidden">
-    <div class="absolute left-1/2 top-0 ml-[-38rem] h-[28rem] w-[81.5rem] dark:[mask-image:linear-gradient(white,transparent)]">
-      <div class="absolute inset-0 bg-gradient-to-r from-[#36b49f]/30 to-[#DBFF73]/30 opacity-40 [mask-image:radial-gradient(farthest-side_at_top,white,transparent)] dark:from-[#36b49f]/30 dark:to-[#DBFF73]/30 dark:opacity-20">
-      </div>
-    </div>
+<section class="relative overflow-hidden section">
+  <!-- Background Effects -->
+  <div class="absolute inset-0 -z-10">
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px]" style="background: radial-gradient(ellipse at center, var(--gold-glow) 0%, transparent 70%);"></div>
+    <div class="absolute bottom-0 left-0 right-0 h-px" style="background: linear-gradient(90deg, transparent, var(--gold-border), transparent);"></div>
   </div>
-  <div class="mx-auto max-w-7xl px-6 lg:px-8">
-    <div class="mx-auto max-w-2xl text-center">
-      <h1 class="text-4xl font-bold tracking-tight text-foreground sm:text-6xl">
-        MIMO
+
+  <div class="container relative">
+    <div class="max-w-3xl mx-auto text-center">
+      <!-- Badge -->
+      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-8" style="background: var(--gold-subtle); border: 1px solid var(--gold-border);">
+        <span class="w-2 h-2 rounded-full animate-pulse" style="background: var(--gold-primary);"></span>
+        <span class="text-sm font-medium" style="color: var(--gold-soft);">开发者工具集合</span>
+      </div>
+
+      <!-- Title -->
+      <h1 class="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight mb-6">
+        <span style="color: var(--text-primary);">MIMO</span>
+        <span class="block mt-2" style="color: var(--gold-primary);">个人工具生态</span>
       </h1>
-      <p class="mt-6 text-lg leading-8 text-muted-foreground">
-        个人工具生态：包含多个实用工具、博客和导航站
+
+      <!-- Description -->
+      <p class="text-lg sm:text-xl leading-relaxed mb-10" style="color: var(--text-secondary);">
+        包含多个实用工具、技术博客和个人导航站。所有工具纯前端处理，数据不离开浏览器。
       </p>
-      <div class="mt-10 flex items-center justify-center gap-x-6">
-        <a
-          href="/tools"
-          class="rounded-md bg-primary px-3.5 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm hover:bg-primary/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-        >
+
+      <!-- CTA Buttons -->
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a href="/tools" class="btn btn-primary w-full sm:w-auto px-8 py-3 text-base">
           浏览工具
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-2">
+            <path d="M5 12h14" />
+            <path d="m12 5 7 7-7 7" />
+          </svg>
         </a>
-        <a
-          href="/blog"
-          class="text-sm font-semibold leading-6 text-foreground"
-        >
-          阅读博客 <span aria-hidden="true">→</span>
+        <a href="/blog" class="btn btn-gold-outline w-full sm:w-auto px-8 py-3 text-base">
+          阅读博客
         </a>
+      </div>
+
+      <!-- Stats -->
+      <div class="grid grid-cols-3 gap-8 mt-16 pt-8" style="border-top: 1px solid var(--border-subtle);">
+        <div>
+          <div class="text-3xl font-bold" style="color: var(--gold-primary);">10+</div>
+          <div class="text-sm mt-1" style="color: var(--text-muted);">实用工具</div>
+        </div>
+        <div>
+          <div class="text-3xl font-bold" style="color: var(--gold-primary);">3</div>
+          <div class="text-sm mt-1" style="color: var(--text-muted);">技术文章</div>
+        </div>
+        <div>
+          <div class="text-3xl font-bold" style="color: var(--gold-primary);">100%</div>
+          <div class="text-sm mt-1" style="color: var(--text-muted);">前端处理</div>
+        </div>
       </div>
     </div>
   </div>

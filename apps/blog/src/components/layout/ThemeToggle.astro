@@ -4,9 +4,13 @@
 
 <button
   id="theme-toggle"
-  class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors hover:text-foreground/80 text-foreground/60 h-8 w-8 px-0"
+  class="flex items-center justify-center w-9 h-9 rounded-lg transition-all duration-200"
+  style="color: var(--text-muted);"
+  onmouseover="this.style.background='var(--bg-hover)'; this.style.color='var(--text-primary)'"
+  onmouseout="this.style.background='transparent'; this.style.color='var(--text-muted)'"
   aria-label="Toggle theme"
 >
+  <!-- Sun icon (visible in dark mode) -->
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width="16"
@@ -29,6 +33,7 @@
     <path d="m6.34 17.66-1.41 1.41" />
     <path d="m19.07 4.93-1.41 1.41" />
   </svg>
+  <!-- Moon icon (visible in light mode) -->
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width="16"
@@ -52,8 +57,10 @@
     
     if (theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
       html.classList.add('dark');
+      html.classList.remove('light');
     } else {
       html.classList.remove('dark');
+      html.classList.add('light');
     }
   }
 
@@ -63,9 +70,11 @@
     
     if (isDark) {
       html.classList.remove('dark');
+      html.classList.add('light');
       localStorage.setItem('theme', 'light');
     } else {
       html.classList.add('dark');
+      html.classList.remove('light');
       localStorage.setItem('theme', 'dark');
     }
   }
@@ -86,8 +95,10 @@
     if (localStorage.getItem('theme') === 'system' || !localStorage.getItem('theme')) {
       if (e.matches) {
         document.documentElement.classList.add('dark');
+        document.documentElement.classList.remove('light');
       } else {
         document.documentElement.classList.remove('dark');
+        document.documentElement.classList.add('light');
       }
     }
   });

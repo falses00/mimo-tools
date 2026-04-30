@@ -1,0 +1,321 @@
+/* ============================================
+   MIMO Theme Styles
+   ============================================ */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    @apply bg-[var(--bg-page)] text-[var(--text-primary)] font-sans antialiased;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  /* ===== Selection ===== */
+  ::selection {
+    background: var(--gold-glow);
+    color: var(--gold-primary);
+  }
+  
+  /* ===== Scrollbar ===== */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: var(--bg-page);
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: var(--border-strong);
+    border-radius: 4px;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--gold-soft);
+  }
+  
+  /* ===== Focus Styles ===== */
+  :focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+  
+  /* ===== Headings ===== */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold tracking-tight;
+    color: var(--text-primary);
+  }
+  
+  h1 { @apply text-4xl lg:text-5xl; }
+  h2 { @apply text-3xl lg:text-4xl; }
+  h3 { @apply text-2xl lg:text-3xl; }
+  h4 { @apply text-xl lg:text-2xl; }
+  
+  /* ===== Links ===== */
+  a {
+    @apply transition-colors duration-200;
+    color: var(--gold-primary);
+  }
+  
+  a:hover {
+    color: var(--gold-soft);
+  }
+  
+  /* ===== Code ===== */
+  code {
+    @apply font-mono text-sm px-1.5 py-0.5 rounded;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+  }
+  
+  pre {
+    @apply p-4 rounded-lg overflow-x-auto;
+    background: var(--bg-elevated) !important;
+    border: 1px solid var(--border-default);
+  }
+  
+  pre code {
+    @apply bg-transparent border-0 p-0;
+  }
+}
+
+@layer components {
+  /* ===== Container ===== */
+  .container {
+    @apply mx-auto px-4 sm:px-6 lg:px-8;
+    max-width: var(--container-xl);
+  }
+  
+  .container-sm {
+    @apply mx-auto px-4 sm:px-6;
+    max-width: var(--container-md);
+  }
+  
+  .container-lg {
+    @apply mx-auto px-4 sm:px-6 lg:px-8;
+    max-width: var(--container-2xl);
+  }
+  
+  /* ===== Section ===== */
+  .section {
+    @apply py-16 lg:py-24;
+  }
+  
+  .section-sm {
+    @apply py-12 lg:py-16;
+  }
+  
+  /* ===== Card ===== */
+  .card {
+    @apply rounded-xl p-6;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    transition: all var(--transition-base);
+  }
+  
+  .card:hover {
+    border-color: var(--border-default);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+  }
+  
+  .card-featured {
+    border-color: var(--gold-border);
+  }
+  
+  .card-featured:hover {
+    box-shadow: var(--shadow-gold);
+    border-color: var(--gold-primary);
+  }
+  
+  /* ===== Button ===== */
+  .btn {
+    @apply inline-flex items-center justify-center rounded-lg px-4 py-2.5 text-sm font-medium transition-all duration-200;
+    min-height: 2.5rem;
+  }
+  
+  .btn:focus-visible {
+    box-shadow: var(--focus-ring);
+  }
+  
+  .btn-primary {
+    background: var(--gold-primary);
+    color: var(--bg-page);
+  }
+  
+  .btn-primary:hover {
+    background: var(--gold-soft);
+    box-shadow: var(--shadow-gold);
+  }
+  
+  .btn-secondary {
+    background: var(--bg-elevated);
+    color: var(--text-primary);
+    border: 1px solid var(--border-default);
+  }
+  
+  .btn-secondary:hover {
+    background: var(--bg-hover);
+    border-color: var(--border-strong);
+  }
+  
+  .btn-ghost {
+    background: transparent;
+    color: var(--text-secondary);
+  }
+  
+  .btn-ghost:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+  }
+  
+  .btn-gold-outline {
+    background: transparent;
+    color: var(--gold-primary);
+    border: 1px solid var(--gold-border);
+  }
+  
+  .btn-gold-outline:hover {
+    background: var(--gold-glow);
+    border-color: var(--gold-primary);
+  }
+  
+  /* ===== Input ===== */
+  .input {
+    @apply w-full rounded-lg px-4 py-2.5 text-sm transition-all duration-200;
+    background: var(--bg-input);
+    border: 1px solid var(--border-default);
+    color: var(--text-primary);
+  }
+  
+  .input::placeholder {
+    color: var(--text-muted);
+  }
+  
+  .input:focus {
+    outline: none;
+    border-color: var(--gold-primary);
+    box-shadow: 0 0 0 3px var(--gold-glow);
+  }
+  
+  /* ===== Textarea ===== */
+  .textarea {
+    @apply w-full rounded-lg p-4 font-mono text-sm transition-all duration-200;
+    background: var(--bg-input);
+    border: 1px solid var(--border-default);
+    color: var(--text-primary);
+    min-height: 12rem;
+  }
+  
+  .textarea:focus {
+    outline: none;
+    border-color: var(--gold-primary);
+    box-shadow: 0 0 0 3px var(--gold-glow);
+  }
+  
+  /* ===== Badge ===== */
+  .badge {
+    @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+  }
+  
+  .badge-gold {
+    background: var(--gold-subtle);
+    border-color: var(--gold-border);
+    color: var(--gold-primary);
+  }
+  
+  .badge-success {
+    background: var(--success-muted);
+    color: var(--success);
+  }
+  
+  .badge-error {
+    background: var(--error-muted);
+    color: var(--error);
+  }
+  
+  /* ===== Divider ===== */
+  .divider {
+    @apply w-full;
+    height: 1px;
+    background: var(--border-subtle);
+  }
+  
+  .divider-gold {
+    background: linear-gradient(90deg, transparent, var(--gold-border), transparent);
+  }
+  
+  /* ===== Glow Effects ===== */
+  .glow-gold {
+    box-shadow: var(--shadow-gold);
+  }
+  
+  .glow-gold-lg {
+    box-shadow: var(--shadow-gold-lg);
+  }
+  
+  .glow-text {
+    text-shadow: 0 0 20px var(--gold-glow);
+  }
+  
+  /* ===== Surface ===== */
+  .surface-0 { background: var(--surface-0); }
+  .surface-1 { background: var(--surface-1); }
+  .surface-2 { background: var(--surface-2); }
+  .surface-3 { background: var(--surface-3); }
+}
+
+@layer utilities {
+  /* ===== Text Colors ===== */
+  .text-gold { color: var(--gold-primary); }
+  .text-gold-soft { color: var(--gold-soft); }
+  .text-gold-deep { color: var(--gold-deep); }
+  .text-muted-custom { color: var(--text-muted); }
+  .text-secondary-custom { color: var(--text-secondary); }
+  
+  /* ===== Background Colors ===== */
+  .bg-gold { background: var(--gold-primary); }
+  .bg-gold-glow { background: var(--gold-glow); }
+  .bg-gold-subtle { background: var(--gold-subtle); }
+  .bg-page { background: var(--bg-page); }
+  .bg-elevated { background: var(--bg-elevated); }
+  .bg-card { background: var(--bg-card); }
+  
+  /* ===== Border Colors ===== */
+  .border-gold { border-color: var(--gold-border); }
+  .border-subtle { border-color: var(--border-subtle); }
+  
+  /* ===== Transitions ===== */
+  .transition-fast { transition-duration: var(--transition-fast); }
+  .transition-base { transition-duration: var(--transition-base); }
+  .transition-slow { transition-duration: var(--transition-slow); }
+  
+  /* ===== Hover Effects ===== */
+  .hover-lift {
+    transition: transform var(--transition-base), box-shadow var(--transition-base);
+  }
+  
+  .hover-lift:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+  }
+  
+  .hover-glow:hover {
+    box-shadow: var(--shadow-gold);
+  }
+}

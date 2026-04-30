@@ -4,65 +4,73 @@ import { getFeaturedTools } from '../../data/tools';
 const featuredTools = getFeaturedTools();
 ---
 
-<section class="py-24 sm:py-32">
-  <div class="mx-auto max-w-7xl px-6 lg:px-8">
-    <div class="mx-auto max-w-2xl text-center">
-      <h2 class="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-        精选工具
+<section class="section" style="background: var(--bg-section);">
+  <div class="container">
+    <!-- Section Header -->
+    <div class="text-center mb-16">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full mb-4" style="background: var(--gold-subtle); border: 1px solid var(--gold-border);">
+        <span class="text-xs font-medium" style="color: var(--gold-soft);">精选工具</span>
+      </div>
+      <h2 class="text-3xl sm:text-4xl font-bold mb-4" style="color: var(--text-primary);">
+        实用开发工具
       </h2>
-      <p class="mt-6 text-lg leading-8 text-muted-foreground">
-        实用开发工具集合，所有工具纯前端处理，数据不离开浏览器
+      <p class="text-lg max-w-2xl mx-auto" style="color: var(--text-muted);">
+        所有工具纯前端处理，数据不离开浏览器。无需安装，即开即用。
       </p>
     </div>
-    <div class="mx-auto mt-16 max-w-2xl sm:mt-20 lg:mt-24 lg:max-w-none">
-      <div class="grid grid-cols-1 gap-x-8 gap-y-16 sm:grid-cols-2 lg:grid-cols-3">
-        {featuredTools.map((tool) => (
-          <a
-            href={tool.path}
-            class="group block rounded-2xl border border-border/50 bg-card p-6 shadow-sm transition-all hover:shadow-md hover:border-primary/50"
-          >
-            <div class="flex items-center gap-4">
-              <div class="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                <span class="text-2xl">{tool.icon}</span>
-              </div>
-              <div>
-                <h3 class="text-lg font-semibold text-foreground group-hover:text-primary transition-colors">
-                  {tool.name}
-                </h3>
-                <p class="text-sm text-muted-foreground">
-                  {tool.description}
-                </p>
-              </div>
-            </div>
-            <div class="mt-4 flex flex-wrap gap-2">
-              {tool.tags.map((tag) => (
-                <span class="inline-flex items-center rounded-full bg-secondary/50 px-2.5 py-0.5 text-xs font-medium text-secondary-foreground">
-                  {tag}
-                </span>
-              ))}
-            </div>
-          </a>
-        ))}
-      </div>
-    </div>
-    <div class="mt-12 text-center">
-      <a
-        href="/tools"
-        class="inline-flex items-center rounded-md bg-primary px-3.5 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm hover:bg-primary/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-      >
-        查看所有工具
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          class="ml-2"
+
+    <!-- Tools Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {featuredTools.map((tool, index) => (
+        <a
+          href={tool.path}
+          class:list={[
+            'group block rounded-xl p-6 transition-all duration-300',
+            index < 3 ? 'card-featured' : 'card'
+          ]}
+          style="background: var(--bg-card); border: 1px solid var(--border-subtle);"
         >
+          {/* Icon */}
+          <div class="flex items-center justify-center w-12 h-12 rounded-xl mb-4" style="background: var(--gold-subtle); border: 1px solid var(--gold-border);">
+            <span class="text-2xl" style="color: var(--gold-primary);">{tool.icon}</span>
+          </div>
+
+          {/* Title */}
+          <h3 class="text-lg font-semibold mb-2 transition-colors duration-200 group-hover:text-[var(--gold-primary)]" style="color: var(--text-primary);">
+            {tool.name}
+          </h3>
+
+          {/* Description */}
+          <p class="text-sm mb-4" style="color: var(--text-muted);">
+            {tool.description}
+          </p>
+
+          {/* Tags */}
+          <div class="flex flex-wrap gap-2">
+            {tool.tags.slice(0, 3).map(tag => (
+              <span class="badge text-xs" style="background: var(--bg-elevated); border-color: var(--border-subtle); color: var(--text-muted);">
+                {tag}
+              </span>
+            ))}
+          </div>
+
+          {/* Arrow */}
+          <div class="mt-4 flex items-center gap-1 text-sm font-medium opacity-0 group-hover:opacity-100 transition-all duration-200 translate-x-0 group-hover:translate-x-1" style="color: var(--gold-primary);">
+            <span>了解更多</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12h14" />
+              <path d="m12 5 7 7-7 7" />
+            </svg>
+          </div>
+        </a>
+      ))}
+    </div>
+
+    {/* View All Button */}
+    <div class="text-center mt-12">
+      <a href="/tools" class="btn btn-secondary px-8 py-3">
+        查看所有工具
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-2">
           <path d="M5 12h14" />
           <path d="m12 5 7 7-7 7" />
         </svg>
