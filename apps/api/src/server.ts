@@ -14,8 +14,9 @@ const fastify = Fastify({ logger: true });
 await fastify.register(cors, {
   origin: [
     'http://localhost:4321',
-    'http://localhost:3000',
+    'http://localhost:8787',
     'https://falses00.github.io',
+    'https://falses00.github.io/mimo-tools',
   ],
   methods: ['GET', 'POST'],
 });

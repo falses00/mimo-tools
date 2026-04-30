@@ -12,11 +12,13 @@
     "dev:api": "npm run dev --workspace=apps/api",
     "build": "npm run build --workspace=apps/blog",
     "build:api": "npm run build --workspace=apps/api",
+    "start:api": "npm run start --workspace=apps/api",
     "test": "npx vitest run",
     "test:api": "npm run test --workspace=apps/api",
     "test:e2e": "npx playwright test",
     "test:links": "npx tsx scripts/audit-dist-links.ts",
     "test:live-links": "npx tsx scripts/audit-live-links.ts",
+    "verify:api": "npx tsx scripts/verify-api-deployment.ts",
     "lint": "echo \"lint not configured yet\"",
     "typecheck": "npx tsc --noEmit --project apps/blog/tsconfig.json",
     "test:watch": "npx vitest"
