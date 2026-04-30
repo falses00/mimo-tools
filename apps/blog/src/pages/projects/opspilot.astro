@@ -1,0 +1,162 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+const base = import.meta.env.BASE_URL;
+const baseWithSlash = base.endsWith('/') ? base : `${base}/`;
+const apiBaseUrl = import.meta.env.PUBLIC_API_BASE_URL ?? '';
+---
+
+<Layout title="OpsPilot API 日志 服务监控台 - MIMO" description="API 健康检查、合约校验、日志分析、事故复盘、服务状态 dashboard。">
+  <div class="opspilot-app" data-api-base-url={apiBaseUrl}>
+    <section class="op-hero">
+      <div class="container">
+        <div class="hero-badge">
+          <span class="badge-dot"></span>
+          <span>API / 日志 / 服务监控台</span>
+        </div>
+        <h1 class="hero-title">OpsPilot</h1>
+        <p class="hero-subtitle">API 健康检查、合约校验、日志分析、事故复盘、服务状态 dashboard。</p>
+      </div>
+    </section>
+    <section class="op-workbench">
+      <div class="container">
+        <div class="workbench-grid">
+          <div class="workbench-left">
+            <div class="guide-card">
+              <h3 class="guide-title">💡 功能模块</h3>
+              <div class="module-list">
+                <a href={`${baseWithSlash}projects/launchguard`} class="module-item">🛡️ LaunchGuard - 链接审计</a>
+                <a href={`${baseWithSlash}projects/repolens`} class="module-item">🔍 RepoLens - 仓库审查</a>
+                <a href={`${baseWithSlash}projects/repopilot`} class="module-item">🚀 RepoPilot - 热榜发现</a>
+                <a href={`${baseWithSlash}tools/json-formatter`} class="module-item">📝 JSON 工具</a>
+                <a href={`${baseWithSlash}tools/regex-tester`} class="module-item">🔤 Regex 工具</a>
+              </div>
+            </div>
+            <div class="input-card">
+              <h3 class="input-title">🔍 API 健康检查</h3>
+              <input id="input-url" class="op-input" placeholder="输入 API URL..." value="https://mimo-tools-api.onrender.com/api/health" />
+              <div class="input-actions">
+                <button class="btn-check" id="btn-check">💓 检查</button>
+              </div>
+            </div>
+            <div class="input-card">
+              <h3 class="input-title">📋 日志分析</h3>
+              <textarea id="input-logs" class="op-textarea" placeholder="粘贴日志内容..." rows="6"></textarea>
+              <div class="input-actions">
+                <button class="btn-analyze" id="btn-analyze">🔬 分析</button>
+              </div>
+            </div>
+          </div>
+          <div class="workbench-right">
+            <div id="empty-state" class="empty-state">
+              <div class="empty-icon">💓</div>
+              <h3 class="empty-title">开始监控</h3>
+              <p class="empty-text">输入 API URL 检查健康状态，或粘贴日志进行分析</p>
+            </div>
+            <div id="health-section" class="result-section hidden">
+              <h3 class="section-title">💓 健康检查结果</h3>
+              <div id="health-result" class="health-result"></div>
+            </div>
+            <div id="logs-section" class="result-section hidden">
+              <h3 class="section-title">📋 日志分析结果</h3>
+              <div id="logs-result" class="logs-result"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</Layout>
+
+<style>
+  .opspilot-app { min-height: 100vh; }
+  .op-hero { padding: 6rem 0 3rem; text-align: center; background: linear-gradient(180deg, var(--bg-page) 0%, var(--bg-section) 100%); }
+  .hero-badge { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; border-radius: 9999px; background: var(--gold-subtle); border: 1px solid var(--gold-border); font-size: 0.75rem; font-weight: 600; color: var(--gold); margin-bottom: 1.5rem; }
+  .badge-dot { width: 0.5rem; height: 0.5rem; border-radius: 50%; background: var(--gold); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+  .hero-title { font-size: 3rem; font-weight: 800; margin-bottom: 1rem; background: linear-gradient(135deg, var(--gold) 0%, var(--gold-soft) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .hero-subtitle { font-size: 1.125rem; color: var(--text-secondary); max-width: 600px; margin: 0 auto; line-height: 1.6; }
+  .op-workbench { padding: 2rem 0 4rem; }
+  .workbench-grid { display: grid; grid-template-columns: 1fr 1.5fr; gap: 2rem; align-items: start; }
+  @media (max-width: 1024px) { .workbench-grid { grid-template-columns: 1fr; } }
+  .workbench-left, .workbench-right { display: flex; flex-direction: column; gap: 1.5rem; }
+  .guide-card, .input-card { padding: 1.5rem; border-radius: 1rem; background: var(--bg-card); border: 1px solid var(--border-subtle); }
+  .guide-title, .input-title { font-size: 1rem; font-weight: 600; color: var(--text-primary); margin-bottom: 1rem; }
+  .module-list { display: flex; flex-direction: column; gap: 0.5rem; }
+  .module-item { display: block; padding: 0.75rem; border-radius: 0.5rem; background: var(--bg-elevated); font-size: 0.875rem; color: var(--text-secondary); text-decoration: none; }
+  .module-item:hover { background: var(--bg-hover); color: var(--gold); }
+  .op-input { width: 100%; padding: 0.75rem 1rem; border-radius: 0.5rem; background: var(--bg-input); border: 1px solid var(--border-default); color: var(--text-primary); font-size: 0.875rem; }
+  .op-textarea { width: 100%; padding: 1rem; border-radius: 0.5rem; background: var(--bg-input); border: 1px solid var(--border-default); color: var(--text-primary); font-size: 0.875rem; line-height: 1.6; resize: vertical; }
+  .op-input:focus, .op-textarea:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px var(--gold-glow); }
+  .input-actions { display: flex; gap: 0.75rem; margin-top: 1rem; }
+  .btn-check, .btn-analyze { flex: 1; padding: 0.75rem 1.5rem; border-radius: 0.5rem; background: linear-gradient(135deg, var(--gold) 0%, var(--gold-soft) 100%); color: var(--bg-page); font-weight: 600; font-size: 0.875rem; border: none; cursor: pointer; }
+  .hidden { display: none !important; }
+  .empty-state { text-align: center; padding: 3rem; border-radius: 1rem; background: var(--bg-card); border: 1px solid var(--border-subtle); }
+  .empty-icon { font-size: 3rem; margin-bottom: 1rem; }
+  .empty-title { font-size: 1.25rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.5rem; }
+  .empty-text { font-size: 0.875rem; color: var(--text-muted); }
+  .result-section { padding: 1.5rem; border-radius: 1rem; background: var(--bg-card); border: 1px solid var(--border-subtle); }
+  .section-title { font-size: 1rem; font-weight: 600; color: var(--text-primary); margin-bottom: 1rem; }
+  .health-result, .logs-result { font-size: 0.875rem; color: var(--text-secondary); line-height: 1.6; }
+  .health-item, .log-item { padding: 0.75rem; border-radius: 0.5rem; background: var(--bg-elevated); margin-bottom: 0.5rem; }
+</style>
+
+<script>
+  const inputUrl = document.getElementById('input-url');
+  const inputLogs = document.getElementById('input-logs');
+  
+  document.getElementById('btn-check')?.addEventListener('click', async () => {
+    const url = inputUrl.value.trim();
+    if (!url) { alert('请输入 API URL'); return; }
+    
+    document.getElementById('empty-state')?.classList.add('hidden');
+    document.getElementById('logs-section')?.classList.add('hidden');
+    document.getElementById('health-section')?.classList.remove('hidden');
+    
+    const healthResult = document.getElementById('health-result');
+    healthResult.innerHTML = '<div class="health-item">检查中...</div>';
+    
+    try {
+      const start = Date.now();
+      const response = await fetch(url);
+      const latency = Date.now() - start;
+      const data = await response.json();
+      
+      healthResult.innerHTML = `
+        <div class="health-item">状态: <strong style="color: var(--success);">${data.status || 'ok'}</strong></div>
+        <div class="health-item">延迟: <strong>${latency}ms</strong></div>
+        <div class="health-item">版本: <strong>${data.version || 'unknown'}</strong></div>
+        <div class="health-item">运行时间: <strong>${data.uptime || 0}s</strong></div>
+      `;
+    } catch (error) {
+      healthResult.innerHTML = `<div class="health-item" style="color: var(--error);">检查失败: ${error.message}</div>`;
+    }
+  });
+  
+  document.getElementById('btn-analyze')?.addEventListener('click', () => {
+    const logs = inputLogs.value.trim();
+    if (!logs) { alert('请粘贴日志内容'); return; }
+    
+    document.getElementById('empty-state')?.classList.add('hidden');
+    document.getElementById('health-section')?.classList.add('hidden');
+    document.getElementById('logs-section')?.classList.remove('hidden');
+    
+    const lines = logs.split('\n').filter(l => l.trim());
+    const counts = { ERROR: 0, WARN: 0, INFO: 0, DEBUG: 0 };
+    lines.forEach(line => {
+      if (line.includes('ERROR')) counts.ERROR++;
+      else if (line.includes('WARN')) counts.WARN++;
+      else if (line.includes('INFO')) counts.INFO++;
+      else if (line.includes('DEBUG')) counts.DEBUG++;
+    });
+    
+    const logsResult = document.getElementById('logs-result');
+    logsResult.innerHTML = `
+      <div class="log-item">总行数: <strong>${lines.length}</strong></div>
+      <div class="log-item" style="color: var(--error);">ERROR: <strong>${counts.ERROR}</strong></div>
+      <div class="log-item" style="color: var(--warning);">WARN: <strong>${counts.WARN}</strong></div>
+      <div class="log-item">INFO: <strong>${counts.INFO}</strong></div>
+      <div class="log-item">DEBUG: <strong>${counts.DEBUG}</strong></div>
+    `;
+  });
+</script>
