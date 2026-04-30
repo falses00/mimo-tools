@@ -164,6 +164,21 @@ EMBEDDING_MODEL=text-embedding-3-small
 - **API Key**: 从小米 MiMo 平台获取
 - **兼容性**: 完全兼容 OpenAI API 协议
 
+### 可用 MiMo 模型
+
+| 模型 | 用途 | 推荐度 |
+|------|------|--------|
+| **MiMo-V2.5-Pro** | 代码生成、分析、复杂任务 | ⭐⭐⭐⭐⭐ |
+| MiMo-V2.5 | 标准版本，速度与质量平衡 | ⭐⭐⭐⭐ |
+| MiMo-V2.5-TTS-VoiceClone | 语音克隆 | ⭐⭐⭐ |
+| MiMo-V2.5-TTS-VoiceDesign | 语音设计 | ⭐⭐⭐ |
+| MiMo-V2.5-TTS | 标准语音合成 | ⭐⭐⭐ |
+| MiMo-V2-Pro | 上一代 Pro 模型 | ⭐⭐⭐ |
+| MiMo-V2-Omni | 多模态模型 | ⭐⭐⭐⭐ |
+| MiMo-V2-TTS | 上一代语音合成 | ⭐⭐ |
+
+**推荐**: 代码和分析任务使用 `MiMo-V2.5-Pro`
+
 ### 前端配置
 ```typescript
 // 检测可用的检索模式
