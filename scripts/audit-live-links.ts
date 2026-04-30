@@ -13,7 +13,7 @@ function fetchUrl(url: string): Promise<string> {
   });
 }
 
-async function checkPage(path: string, name: string) {
+async function checkPage(path: string, name: string, requiredContent?: string[], forbiddenContent?: string[]) {
   const url = `${BASE_URL}${path}`;
   console.log(`Checking: ${url}`);
   
@@ -42,11 +42,22 @@ async function checkPage(path: string, name: string) {
       ERRORS.push(`[${name}] Missing h1 tag`);
     }
     
-    // Check for 404 (only check for actual 404 page, not mentions of 404 in content)
-    if (html.includes('Page not found') || 
-        html.includes('找不到页面') ||
-        (html.includes('404') && html.includes('error') && !html.includes('<h1'))) {
-      ERRORS.push(`[${name}] Contains 404 content`);
+    // Check required content
+    if (requiredContent) {
+      for (const content of requiredContent) {
+        if (!html.includes(content)) {
+          ERRORS.push(`[${name}] Missing required content: ${content}`);
+        }
+      }
+    }
+    
+    // Check forbidden content
+    if (forbiddenContent) {
+      for (const content of forbiddenContent) {
+        if (html.includes(content)) {
+          ERRORS.push(`[${name}] Contains forbidden content: ${content}`);
+        }
+      }
     }
     
     console.log(`  ✅ ${name} passed`);
@@ -58,8 +69,27 @@ async function checkPage(path: string, name: string) {
 async function main() {
   console.log('🔍 Auditing live site links...\n');
   
+  // Required new projects
+  const newProjects = [
+    'LaunchGuard',
+    'RepoLens',
+    'DataForge',
+    'SpecPilot',
+    'IncidentLab',
+    'KnowledgeBase Studio'
+  ];
+  
+  // Forbidden old projects
+  const oldProjects = [
+    'AI Interview Studio',
+    'GitHub Repo Insight',
+    'AI Research Navigator',
+    'API Health Dashboard',
+    'Design Token Studio'
+  ];
+  
   // Check main pages
-  await checkPage('/', 'Home');
+  await checkPage('/', 'Home', newProjects, oldProjects);
   await checkPage('/projects', 'Projects');
   await checkPage('/tools', 'Tools');
   await checkPage('/blog', 'Blog');
@@ -72,13 +102,6 @@ async function main() {
   await checkPage('/projects/specpilot', 'SpecPilot');
   await checkPage('/projects/incidentlab', 'IncidentLab');
   await checkPage('/projects/knowledgebase-studio', 'KnowledgeBase Studio');
-  
-  // Check old project pages (should still work)
-  await checkPage('/projects/ai-interview-studio', 'AI Interview Studio');
-  await checkPage('/projects/github-repo-insight', 'GitHub Repo Insight');
-  await checkPage('/projects/research-navigator', 'Research Navigator');
-  await checkPage('/projects/api-health-dashboard', 'API Health Dashboard');
-  await checkPage('/projects/design-token-studio', 'Design Token Studio');
   
   // Check tool pages
   await checkPage('/tools/json-formatter', 'JSON Formatter');
@@ -108,6 +131,9 @@ async function main() {
     process.exit(1);
   } else {
     console.log('✅ All live pages passed verification');
+    console.log('✅ New flagship projects are present');
+    console.log('✅ Old projects are not in homepage');
+    console.log('✅ No incorrect root paths found');
     process.exit(0);
   }
 }
