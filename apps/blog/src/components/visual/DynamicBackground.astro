@@ -1,35 +1,123 @@
 ---
-// Subtle architectural background for the product showcase.
+// Premium Dynamic Background with noise, grid, and gold orbs
 ---
 
 <div class="fixed inset-0 -z-10 overflow-hidden pointer-events-none" aria-hidden="true">
-  <div class="absolute inset-0 grid-bg opacity-25"></div>
-  <div class="absolute inset-0 blueprint-lines"></div>
-  <div class="absolute inset-0 vignette"></div>
+  {/* Noise Overlay */}
+  <div class="noise-overlay"></div>
+  
+  {/* Grid Background */}
+  <div class="grid-background"></div>
+  
+  {/* Blueprint Lines */}
+  <div class="blueprint-lines"></div>
+  
+  {/* Gold Orbs */}
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+  
+  {/* Vignette */}
+  <div class="vignette"></div>
 </div>
 
 <style>
+  .noise-overlay {
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    opacity: 0.4;
+    mix-blend-mode: overlay;
+  }
+  
+  .grid-background {
+    position: absolute;
+    inset: 0;
+    background-image: 
+      linear-gradient(rgba(212, 175, 55, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(212, 175, 55, 0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse at center, black 30%, transparent 70%);
+  }
+  
   .blueprint-lines {
+    position: absolute;
+    inset: 0;
     background-image:
-      linear-gradient(115deg, transparent 0 36%, rgba(212, 175, 55, 0.08) 36.2%, transparent 36.8% 100%),
-      linear-gradient(65deg, transparent 0 64%, rgba(96, 165, 250, 0.06) 64.2%, transparent 64.8% 100%);
+      linear-gradient(115deg, transparent 0 36%, rgba(212, 175, 55, 0.06) 36.2%, transparent 36.8% 100%),
+      linear-gradient(65deg, transparent 0 64%, rgba(212, 175, 55, 0.04) 64.2%, transparent 64.8% 100%);
     background-size: 760px 520px, 680px 460px;
     background-position: 10% 0, 90% 12%;
   }
-
+  
+  .orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(120px);
+    pointer-events: none;
+  }
+  
+  .orb-1 {
+    top: -10%;
+    left: -10%;
+    width: 40%;
+    height: 40%;
+    background: rgba(212, 175, 55, 0.05);
+    animation: orb-move-1 25s ease-in-out infinite;
+  }
+  
+  .orb-2 {
+    bottom: -10%;
+    right: -10%;
+    width: 40%;
+    height: 40%;
+    background: rgba(212, 175, 55, 0.04);
+    animation: orb-move-2 30s ease-in-out infinite;
+  }
+  
+  .orb-3 {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 30%;
+    height: 30%;
+    background: rgba(212, 175, 55, 0.03);
+    animation: orb-move-3 20s ease-in-out infinite;
+  }
+  
   .vignette {
+    position: absolute;
+    inset: 0;
     background:
-      radial-gradient(circle at 16% 10%, rgba(106, 166, 184, 0.14), transparent 24rem),
-      radial-gradient(circle at 82% 18%, rgba(214, 178, 74, 0.12), transparent 26rem),
+      radial-gradient(circle at 16% 10%, rgba(212, 175, 55, 0.08), transparent 24rem),
+      radial-gradient(circle at 82% 18%, rgba(212, 175, 55, 0.06), transparent 26rem),
       linear-gradient(180deg, rgba(13, 17, 24, 0.12), var(--bg-page) 96%),
       linear-gradient(90deg, var(--bg-page), transparent 22%, transparent 78%, var(--bg-page));
   }
-
-  .light .vignette {
-    background:
-      radial-gradient(circle at 16% 10%, rgba(106, 166, 184, 0.14), transparent 24rem),
-      radial-gradient(circle at 82% 18%, rgba(184, 134, 11, 0.12), transparent 26rem),
-      linear-gradient(180deg, rgba(255, 253, 248, 0.1), var(--bg-page) 96%),
-      linear-gradient(90deg, var(--bg-page), transparent 22%, transparent 78%, var(--bg-page));
+  
+  @keyframes orb-move-1 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    25% { transform: translate(50px, 30px) scale(1.1); }
+    50% { transform: translate(20px, 60px) scale(0.9); }
+    75% { transform: translate(-30px, 20px) scale(1.05); }
+  }
+  
+  @keyframes orb-move-2 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    25% { transform: translate(-40px, -20px) scale(1.05); }
+    50% { transform: translate(-20px, -50px) scale(0.95); }
+    75% { transform: translate(30px, -30px) scale(1.1); }
+  }
+  
+  @keyframes orb-move-3 {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); }
+    50% { transform: translate(-50%, -50%) scale(1.2); }
+  }
+  
+  @media (prefers-reduced-motion: reduce) {
+    .orb {
+      animation: none;
+    }
   }
 </style>
