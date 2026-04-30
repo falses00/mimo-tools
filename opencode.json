@@ -65,6 +65,173 @@
         "@playwright/mcp@latest"
       ],
       "enabled": true
+    },
+    "supabase": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "@supabase/mcp-server-supabase@latest"
+      ],
+      "enabled": true,
+      "environment": {
+        "SUPABASE_ACCESS_TOKEN": "{env:SUPABASE_ACCESS_TOKEN}"
+      }
+    },
+    "vercel": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "vercel-mcp-server@latest"
+      ],
+      "enabled": true,
+      "environment": {
+        "VERCEL_TOKEN": "{env:VERCEL_TOKEN}"
+      }
+    },
+    "sentry": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "@sentry/mcp-server@latest"
+      ],
+      "enabled": true,
+      "environment": {
+        "SENTRY_AUTH_TOKEN": "{env:SENTRY_AUTH_TOKEN}"
+      }
+    },
+    "figma": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "figma-developer-mcp@latest"
+      ],
+      "enabled": true,
+      "environment": {
+        "FIGMA_ACCESS_TOKEN": "{env:FIGMA_ACCESS_TOKEN}"
+      }
+    },
+    "linear": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "linear-mcp-server@latest"
+      ],
+      "enabled": true,
+      "environment": {
+        "LINEAR_API_KEY": "{env:LINEAR_API_KEY}"
+      }
+    },
+    "notion": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "@notionhq/notion-mcp-server@latest"
+      ],
+      "enabled": true,
+      "environment": {
+        "NOTION_API_KEY": "{env:NOTION_API_KEY}"
+      }
+    },
+    "resend": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "resend-mcp-server@latest"
+      ],
+      "enabled": true,
+      "environment": {
+        "RESEND_API_KEY": "{env:RESEND_API_KEY}"
+      }
+    },
+    "upstash": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "@upstash/mcp-server@latest"
+      ],
+      "enabled": true,
+      "environment": {
+        "UPSTASH_REDIS_REST_URL": "{env:UPSTASH_REDIS_REST_URL}",
+        "UPSTASH_REDIS_REST_TOKEN": "{env:UPSTASH_REDIS_REST_TOKEN}"
+      }
+    },
+    "context7": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "@context7/mcp@latest"
+      ],
+      "enabled": true
+    },
+    "brave-search": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "@modelcontextprotocol/server-brave-search@latest"
+      ],
+      "enabled": true,
+      "environment": {
+        "BRAVE_API_KEY": "{env:BRAVE_API_KEY}"
+      }
+    },
+    "memory": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "@modelcontextprotocol/server-memory@latest"
+      ],
+      "enabled": true
+    },
+    "filesystem": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "@modelcontextprotocol/server-filesystem@latest"
+      ],
+      "enabled": true,
+      "args": [
+        "--allowed-directories",
+        "I:\\MIMO"
+      ]
+    },
+    "sqlite": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "@modelcontextprotocol/server-sqlite@latest"
+      ],
+      "enabled": true
+    },
+    "puppeteer": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "@modelcontextprotocol/server-puppeteer@latest"
+      ],
+      "enabled": true
+    },
+    "everything": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "@modelcontextprotocol/server-everything@latest"
+      ],
+      "enabled": true
     }
   },
   "agent": {
