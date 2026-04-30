@@ -1,17 +1,39 @@
-# MIMO - 个人工具生态
+# MIMO - 个人工程工具生态
 
-一个开源、免费、无广告的开发者工具集合，包含实用工具、技术博客和个人导航站。
+一个开源、免费、全栈的个人工程工具生态，包含 6 个旗舰项目级工具、6 个组合 Quick Utilities、技术博客和完整后端 API。
 
-## 特性
+## 🚀 旗舰项目
 
-- **实用工具** - JSON格式化、Markdown预览、Cron生成器等
-- **技术博客** - 分享开发经验和技巧
-- **精美设计** - 现代UI，支持深色/浅色模式
-- **响应式** - 完美适配桌面和移动设备
-- **高性能** - 基于Astro静态生成，加载速度快
-- **隐私安全** - 所有工具纯前端处理，不上传数据
+| 项目 | 定位 | 技术亮点 |
+|------|------|----------|
+| **LaunchGuard** | Site Release QA Auditor | 链接审计、Base Path 检测、404 风险评估、SEO 检查 |
+| **RepoLens** | Codebase Quality Auditor | 仓库质量分析、评分、改进建议、报告导出 |
+| **DataForge** | Browser Data Workbench | 数据画像、SQL 查询、图表建议、CSV/JSON 导入 |
+| **SpecPilot** | API Contract & Mock Studio | OpenAPI 解析、Mock 生成、Schema 校验、代码生成 |
+| **IncidentLab** | Log & Incident Analyzer | 日志解析、异常检测、时间线、根因分析、报告导出 |
+| **KnowledgeBase Studio** | Local RAG & Citation Search | 文档索引、关键词搜索、检索问答、引用生成 |
 
-## 快速开始
+## 🛠️ Quick Utilities
+
+| 工具 | 功能 |
+|------|------|
+| **Format Studio** | JSON/YAML/TOML 格式化与验证 |
+| **Markdown Studio** | Markdown 预览、TOC、统计 |
+| **Regex Studio** | 正则表达式测试与模板 |
+| **Encode Studio** | URL/Base64/HTML 编码解码 |
+| **Time & ID Studio** | 时间戳、Cron、UUID 生成 |
+| **Design Utility** | 颜色、对比度、Token 预览 |
+
+## 🏗️ 技术栈
+
+- **前端**: Astro + Tailwind CSS + TypeScript
+- **后端**: Fastify + Node.js + TypeScript
+- **测试**: Vitest + Playwright
+- **部署**: GitHub Pages (前端) + Render (后端)
+
+## 🚀 快速开始
+
+### 前端开发
 
 ```bash
 # 安装依赖
@@ -20,54 +42,71 @@ npm install
 # 开发模式
 npm run dev
 
-# 构建生产版本
+# 构建
 npm run build
 
-# 运行测试
+# 测试
 npm test
 ```
 
-## 项目结构
+### 后端 API
 
+```bash
+# 安装依赖
+npm install
+
+# 开发模式
+npm run dev:api
+
+# 构建
+npm run build:api
+
+# 测试
+npm run test:api
 ```
-mimo/
-├── apps/
-│   ├── blog/          # Astro博客/门户站点
-│   └── tools/         # 工具应用
-├── packages/
-│   └── ui/            # 共享UI组件库
-├── docs/              # 项目文档
-└── .github/           # GitHub配置
-```
 
-## 可用工具
+## 📡 API Endpoints
 
-### 开发者工具
-1. **JSON Formatter** - JSON格式化、验证、差异比较
-2. **Regex Tester** - 正则表达式测试
-3. **Cron Helper** - Cron表达式可视化生成
-4. **URL Encoder/Decoder** - URL编码/解码，Query string解析
-5. **Base64 Encoder/Decoder** - Base64编码/解码，支持UTF-8
-6. **UUID Generator** - 生成v4 UUID，批量生成
+| Endpoint | 方法 | 功能 |
+|----------|------|------|
+| `/api/health` | GET | 健康检查 |
+| `/api/launchguard/audit` | POST | 链接审计 |
+| `/api/repolens/analyze` | POST | 仓库质量分析 |
+| `/api/dataforge/profile` | POST | 数据画像 |
+| `/api/dataforge/query` | POST | 数据查询 |
+| `/api/specpilot/parse` | POST | OpenAPI 解析 |
+| `/api/specpilot/validate` | POST | Schema 校验 |
+| `/api/incidentlab/analyze` | POST | 日志分析 |
+| `/api/knowledgebase/index` | POST | 文档索引 |
+| `/api/knowledgebase/ask` | POST | 检索问答 |
 
-### 写作工具
-7. **Markdown Previewer** - Markdown实时预览
-8. **Text Utilities** - 大小写转换、去空行、统计字符/单词/行数
+## 🔧 运行模式
 
-### 设计工具
-9. **Color Palette** - 颜色调色板生成
+### Static Demo Mode (GitHub Pages)
+- 前端静态部署
+- 使用前端 fallback 逻辑
+- 按钮真实产生结果
+- 不依赖后端
 
-### 日期时间
-10. **Timestamp Converter** - Unix timestamp与日期互转
+### API Mode (本地/Render)
+- 前端连接后端 API
+- 完整功能支持
+- 需要启动 `npm run dev:api`
 
-## 文档
+## 📚 文档
 
-- [项目规格书](PROJECT_SPEC.md)
-- [架构设计](ARCHITECTURE.md)
-- [任务清单](TASKS.md)
-- [贡献指南](CONTRIBUTING.md)
-- [安全政策](SECURITY.md)
+- [GitHub Pages 部署](docs/deploy-frontend-github-pages.md)
+- [Render API 部署](docs/deploy-api-render.md)
+- [数据路径说明](docs/data-paths.md)
 
-## 许可证
+## 🔒 安全
+
+- 不暴露 token
+- 不写 C 盘
+- `.data/` 目录已加入 `.gitignore`
+- CORS 白名单限制
+- 输入校验
+
+## 📄 许可证
 
 本项目采用 [MIT 许可证](LICENSE)。
