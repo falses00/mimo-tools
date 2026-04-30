@@ -8,6 +8,7 @@ import { incidentlabRoutes } from './routes/incidentlab.js';
 import { knowledgebaseRoutes } from './routes/knowledgebase.js';
 import { healthRoutes } from './routes/health.js';
 import { lifepilotRoutes } from './routes/lifepilot.js';
+import { interviewpilotRoutes } from './routes/interviewpilot.js';
 
 const fastify = Fastify({ logger: true });
 
@@ -31,6 +32,7 @@ await fastify.register(specpilotRoutes, { prefix: '/api/specpilot' });
 await fastify.register(incidentlabRoutes, { prefix: '/api/incidentlab' });
 await fastify.register(knowledgebaseRoutes, { prefix: '/api/knowledgebase' });
 await fastify.register(lifepilotRoutes, { prefix: '/api/lifepilot' });
+await fastify.register(interviewpilotRoutes, { prefix: '/api/interviewpilot' });
 
 // Start
 const start = async () => {

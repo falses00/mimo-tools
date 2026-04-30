@@ -1,0 +1,784 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+const base = import.meta.env.BASE_URL;
+const baseWithSlash = base.endsWith('/') ? base : `${base}/`;
+const apiBaseUrl = import.meta.env.PUBLIC_API_BASE_URL ?? '';
+---
+
+<Layout title="InterviewPilot AI 面试教练 - MIMO" description="简历/JD 匹配、模拟面试、回答评分、STAR 建议、复盘报告。">
+  <div class="interviewpilot-app" data-api-base-url={apiBaseUrl}>
+    {/* Hero */}
+    <section class="ip-hero">
+      <div class="container">
+        <div class="hero-badge">
+          <span class="badge-dot"></span>
+          <span>AI 面试教练</span>
+        </div>
+        <h1 class="hero-title">InterviewPilot</h1>
+        <p class="hero-subtitle">
+          粘贴简历和岗位 JD，自动分析技能匹配度、生成面试问题、提供 STAR 回答建议。
+        </p>
+      </div>
+    </section>
+
+    {/* Workbench */}
+    <section class="ip-workbench">
+      <div class="container">
+        <div class="workbench-grid">
+          {/* Left: Input */}
+          <div class="workbench-left">
+            {/* 新手引导 */}
+            <div class="guide-card">
+              <h3 class="guide-title">💡 新手引导</h3>
+              <p class="guide-text">粘贴简历和岗位 JD，系统会自动分析匹配度并生成面试问题。</p>
+              <button class="btn-use-example" id="btn-use-example">使用示例数据</button>
+            </div>
+
+            {/* 简历输入 */}
+            <div class="input-card">
+              <h3 class="input-title">📄 简历文本</h3>
+              <textarea id="input-resume" class="ip-textarea" placeholder="粘贴您的简历内容..." rows="6"></textarea>
+            </div>
+
+            {/* JD 输入 */}
+            <div class="input-card">
+              <h3 class="input-title">💼 岗位 JD</h3>
+              <textarea id="input-jd" class="ip-textarea" placeholder="粘贴岗位描述..." rows="6"></textarea>
+            </div>
+
+            {/* 操作按钮 */}
+            <div class="input-actions">
+              <button class="btn-analyze" id="btn-analyze">🚀 开始分析</button>
+              <button class="btn-clear" id="btn-clear">清空</button>
+            </div>
+          </div>
+
+          {/* Right: Results */}
+          <div class="workbench-right">
+            {/* Mode Badge */}
+            <div class="mode-badge-container">
+              <span id="mode-badge" class="mode-badge">{apiBaseUrl ? 'API 模式' : '本地模式'}</span>
+            </div>
+
+            {/* 空状态 */}
+            <div id="empty-state" class="empty-state">
+              <div class="empty-icon">🎯</div>
+              <h3 class="empty-title">开始分析</h3>
+              <p class="empty-text">粘贴简历和岗位 JD，系统会分析匹配度并生成面试问题</p>
+            </div>
+
+            {/* 匹配分数 */}
+            <div id="score-section" class="result-section hidden">
+              <h3 class="section-title">📊 匹配分数</h3>
+              <div class="score-display">
+                <div id="score-value" class="score-value">0</div>
+                <div class="score-label">匹配度</div>
+              </div>
+            </div>
+
+            {/* 技能覆盖 */}
+            <div id="skills-section" class="result-section hidden">
+              <h3 class="section-title">✅ 技能覆盖</h3>
+              <div id="skills-list" class="skills-list"></div>
+            </div>
+
+            {/* 缺口技能 */}
+            <div id="missing-section" class="result-section hidden">
+              <h3 class="section-title">⚠️ 缺口技能</h3>
+              <div id="missing-list" class="skills-list"></div>
+            </div>
+
+            {/* 简历建议 */}
+            <div id="suggestions-section" class="result-section hidden">
+              <h3 class="section-title">💡 简历改进建议</h3>
+              <div id="suggestions-list" class="suggestions-list"></div>
+            </div>
+
+            {/* 面试问题 */}
+            <div id="questions-section" class="result-section hidden">
+              <h3 class="section-title">❓ 面试问题</h3>
+              <div id="questions-list" class="questions-list"></div>
+            </div>
+
+            {/* 操作按钮 */}
+            <div id="action-buttons" class="action-buttons hidden">
+              <button class="btn-save" id="btn-save">💾 保存分析</button>
+              <button class="btn-export" id="btn-export">📄 导出报告</button>
+            </div>
+
+            {/* FAQ */}
+            <div class="faq-section">
+              <h3 class="faq-title">❓ 常见问题</h3>
+              <div class="faq-list">
+                <div class="faq-item">
+                  <div class="faq-question">分析准确吗？</div>
+                  <div class="faq-answer">基于关键词匹配，准确率约 70-80%。AI 增强模式可提高准确率。</div>
+                </div>
+                <div class="faq-item">
+                  <div class="faq-question">数据保存在哪里？</div>
+                  <div class="faq-answer">默认保存在浏览器本地存储。</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</Layout>
+
+<style>
+  .interviewpilot-app { min-height: 100vh; }
+  
+  .ip-hero {
+    padding: 6rem 0 3rem;
+    text-align: center;
+    background: linear-gradient(180deg, var(--bg-page) 0%, var(--bg-section) 100%);
+  }
+  
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 9999px;
+    background: var(--gold-subtle);
+    border: 1px solid var(--gold-border);
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--gold);
+    margin-bottom: 1.5rem;
+  }
+  
+  .badge-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: var(--gold);
+    animation: pulse 2s infinite;
+  }
+  
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+  
+  .hero-title {
+    font-size: 3rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, var(--gold) 0%, var(--gold-soft) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .hero-subtitle {
+    font-size: 1.125rem;
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+  
+  .ip-workbench { padding: 2rem 0 4rem; }
+  
+  .workbench-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 2rem;
+    align-items: start;
+  }
+  
+  @media (max-width: 1024px) {
+    .workbench-grid { grid-template-columns: 1fr; }
+  }
+  
+  .workbench-left, .workbench-right {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .guide-card, .input-card {
+    padding: 1.5rem;
+    border-radius: 1rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+  }
+  
+  .guide-title, .input-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+  }
+  
+  .guide-text {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    margin-bottom: 0.75rem;
+  }
+  
+  .btn-use-example {
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-default);
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+    cursor: pointer;
+  }
+  
+  .ip-textarea {
+    width: 100%;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    background: var(--bg-input);
+    border: 1px solid var(--border-default);
+    color: var(--text-primary);
+    font-size: 0.875rem;
+    line-height: 1.6;
+    resize: vertical;
+  }
+  
+  .ip-textarea:focus {
+    outline: none;
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px var(--gold-glow);
+  }
+  
+  .input-actions {
+    display: flex;
+    gap: 0.75rem;
+  }
+  
+  .btn-analyze {
+    flex: 1;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    background: linear-gradient(135deg, var(--gold) 0%, var(--gold-soft) 100%);
+    color: var(--bg-page);
+    font-weight: 600;
+    font-size: 0.875rem;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .btn-clear {
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-default);
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    cursor: pointer;
+  }
+  
+  .mode-badge {
+    display: inline-flex;
+    padding: 0.375rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: var(--gold-subtle);
+    color: var(--gold);
+    border: 1px solid var(--gold-border);
+  }
+  
+  .hidden { display: none !important; }
+  
+  .empty-state {
+    text-align: center;
+    padding: 3rem;
+    border-radius: 1rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+  }
+  
+  .empty-icon { font-size: 3rem; margin-bottom: 1rem; }
+  .empty-title { font-size: 1.25rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.5rem; }
+  .empty-text { font-size: 0.875rem; color: var(--text-muted); }
+  
+  .result-section {
+    padding: 1.5rem;
+    border-radius: 1rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+  }
+  
+  .section-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+  }
+  
+  .score-display {
+    text-align: center;
+    padding: 2rem;
+  }
+  
+  .score-value {
+    font-size: 4rem;
+    font-weight: 800;
+    color: var(--gold);
+  }
+  
+  .score-label {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    margin-top: 0.5rem;
+  }
+  
+  .skills-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  
+  .skill-badge {
+    padding: 0.375rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+  
+  .skill-matched {
+    background: var(--success-muted);
+    color: var(--success);
+    border: 1px solid rgba(74, 222, 128, 0.3);
+  }
+  
+  .skill-missing {
+    background: var(--warning-muted);
+    color: var(--warning);
+    border: 1px solid rgba(251, 191, 36, 0.3);
+  }
+  
+  .suggestions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .suggestion-item {
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    background: var(--bg-elevated);
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+  }
+  
+  .questions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .question-card {
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+  }
+  
+  .question-text {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.75rem;
+  }
+  
+  .question-meta {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .question-badge {
+    padding: 0.25rem 0.5rem;
+    border-radius: 9999px;
+    font-size: 0.625rem;
+    font-weight: 600;
+  }
+  
+  .badge-category {
+    background: var(--gold-subtle);
+    color: var(--gold);
+  }
+  
+  .badge-difficulty {
+    background: var(--bg-hover);
+    color: var(--text-muted);
+  }
+  
+  .star-section {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-subtle);
+  }
+  
+  .star-title {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--gold);
+    margin-bottom: 0.5rem;
+  }
+  
+  .star-item {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-bottom: 0.25rem;
+  }
+  
+  .action-buttons {
+    display: flex;
+    gap: 0.75rem;
+  }
+  
+  .btn-save, .btn-export {
+    flex: 1;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    font-size: 0.875rem;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .btn-save {
+    background: linear-gradient(135deg, var(--gold) 0%, var(--gold-soft) 100%);
+    color: var(--bg-page);
+  }
+  
+  .btn-export {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-default);
+    color: var(--text-secondary);
+  }
+  
+  .faq-section {
+    padding: 1.5rem;
+    border-radius: 1rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+  }
+  
+  .faq-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+  }
+  
+  .faq-item {
+    padding: 1rem;
+    border-radius: 0.5rem;
+    background: var(--bg-elevated);
+    margin-bottom: 0.75rem;
+  }
+  
+  .faq-question {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+  }
+  
+  .faq-answer {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+</style>
+
+<script>
+  const root = document.querySelector('.interviewpilot-app');
+  const apiBaseUrl = root?.getAttribute('data-api-base-url') || '';
+  
+  const inputResume = document.getElementById('input-resume') as HTMLTextAreaElement;
+  const inputJd = document.getElementById('input-jd') as HTMLTextAreaElement;
+  const btnAnalyze = document.getElementById('btn-analyze') as HTMLButtonElement;
+  const btnClear = document.getElementById('btn-clear') as HTMLButtonElement;
+  const btnUseExample = document.getElementById('btn-use-example') as HTMLButtonElement;
+  const btnSave = document.getElementById('btn-save') as HTMLButtonElement;
+  const btnExport = document.getElementById('btn-export') as HTMLButtonElement;
+  
+  let currentResult: any = null;
+  
+  // 示例数据
+  const exampleResume = `张三
+高级前端工程师 | 5年经验
+
+技能：
+- JavaScript/TypeScript, React, Vue, Angular
+- Node.js, Express, Fastify
+- HTML5, CSS3, Tailwind CSS
+- Git, CI/CD, Docker
+- REST API, GraphQL
+- MongoDB, PostgreSQL
+
+工作经历：
+ABC 科技公司 - 高级前端工程师 (2021-至今)
+- 负责公司核心产品的前端架构设计和开发
+- 使用 React + TypeScript 构建复杂的单页应用
+- 优化前端性能，页面加载速度提升 40%`;
+  
+  const exampleJd = `高级前端工程师 - 某科技公司
+
+职位要求：
+- 5年以上前端开发经验
+- 精通 React 或 Vue.js
+- 熟悉 TypeScript
+- 有 Node.js 后端开发经验
+- 了解微前端架构
+- 熟悉 CI/CD 流程
+- 有团队管理经验优先
+
+职责：
+- 负责公司核心产品的前端架构设计
+- 带领前端团队完成项目开发
+- 与产品、设计、后端团队协作`;
+  
+  // 本地分析
+  function analyzeLocally(resume: string, jd: string) {
+    const skillKeywords = {
+      frontend: ['javascript', 'typescript', 'react', 'vue', 'angular', 'html', 'css', 'tailwind'],
+      backend: ['node.js', 'python', 'java', 'express', 'fastify'],
+      database: ['mysql', 'postgresql', 'mongodb', 'redis'],
+      devops: ['docker', 'ci/cd', 'github actions', 'aws'],
+      tools: ['git', 'github', 'vscode', 'figma'],
+    };
+    
+    function extractSkills(text: string) {
+      const lower = text.toLowerCase();
+      const skills: string[] = [];
+      for (const keywords of Object.values(skillKeywords)) {
+        for (const kw of keywords) {
+          if (lower.includes(kw)) skills.push(kw);
+        }
+      }
+      return [...new Set(skills)];
+    }
+    
+    const resumeSkills = extractSkills(resume);
+    const jdSkills = extractSkills(jd);
+    const matched = resumeSkills.filter(s => jdSkills.includes(s));
+    const missing = jdSkills.filter(s => !resumeSkills.includes(s));
+    const score = jdSkills.length > 0 ? Math.round((matched.length / jdSkills.length) * 100) : 50;
+    
+    return {
+      matchScore: score,
+      matchedSkills: matched,
+      missingSkills: missing,
+      resumeSuggestions: [
+        missing.length > 0 ? `考虑添加以下技能经验：${missing.slice(0, 3).join('、')}` : '简历技能匹配度高',
+        '在简历中添加具体的项目成果和数据指标',
+        '突出与岗位要求匹配的工作经验',
+      ],
+      questions: [
+        {
+          question: '请描述您在 React 方面的项目经验',
+          category: '技术深度',
+          difficulty: 'medium',
+          starSuggestion: {
+            situation: '在 ABC 公司的项目中...',
+            task: '我负责...',
+            action: '我使用 React + TypeScript...',
+            result: '最终性能提升 40%...',
+          },
+        },
+        {
+          question: '岗位需要了解微前端架构，您打算如何学习？',
+          category: '学习能力',
+          difficulty: 'medium',
+          starSuggestion: {
+            situation: '我了解到微前端在这个岗位很重要',
+            task: '我计划...',
+            action: '我已经开始...',
+            result: '我相信在短时间内能够...',
+          },
+        },
+        {
+          question: '请描述一个您解决过的最有挑战性的技术问题',
+          category: '问题解决',
+          difficulty: 'hard',
+          starSuggestion: {
+            situation: '在之前的项目中...',
+            task: '作为核心开发者...',
+            action: '我分析了问题...',
+            result: '最终问题解决...',
+          },
+        },
+      ],
+      meta: { mode: 'local-rules', durationMs: 0 },
+    };
+  }
+  
+  // API 调用
+  async function callApi(resume: string, jd: string) {
+    if (!apiBaseUrl) return null;
+    try {
+      const response = await fetch(`${apiBaseUrl}/api/interviewpilot/analyze`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ resume, jd }),
+        signal: AbortSignal.timeout(30000),
+      });
+      if (!response.ok) throw new Error(`API error: ${response.status}`);
+      return await response.json();
+    } catch (error) {
+      console.error('API call failed:', error);
+      return null;
+    }
+  }
+  
+  // 显示结果
+  function showResults(result: any) {
+    currentResult = result;
+    
+    document.getElementById('empty-state')?.classList.add('hidden');
+    
+    // 分数
+    document.getElementById('score-section')?.classList.remove('hidden');
+    const scoreValue = document.getElementById('score-value');
+    if (scoreValue) scoreValue.textContent = result.matchScore.toString();
+    
+    // 匹配技能
+    if (result.matchedSkills.length > 0) {
+      document.getElementById('skills-section')?.classList.remove('hidden');
+      const skillsList = document.getElementById('skills-list');
+      if (skillsList) {
+        skillsList.innerHTML = result.matchedSkills.map((s: string) => 
+          `<span class="skill-badge skill-matched">${s}</span>`
+        ).join('');
+      }
+    }
+    
+    // 缺口技能
+    if (result.missingSkills.length > 0) {
+      document.getElementById('missing-section')?.classList.remove('hidden');
+      const missingList = document.getElementById('missing-list');
+      if (missingList) {
+        missingList.innerHTML = result.missingSkills.map((s: string) => 
+          `<span class="skill-badge skill-missing">${s}</span>`
+        ).join('');
+      }
+    }
+    
+    // 建议
+    document.getElementById('suggestions-section')?.classList.remove('hidden');
+    const suggestionsList = document.getElementById('suggestions-list');
+    if (suggestionsList) {
+      suggestionsList.innerHTML = result.resumeSuggestions.map((s: string) => 
+        `<div class="suggestion-item">${s}</div>`
+      ).join('');
+    }
+    
+    // 问题
+    document.getElementById('questions-section')?.classList.remove('hidden');
+    const questionsList = document.getElementById('questions-list');
+    if (questionsList) {
+      questionsList.innerHTML = result.questions.map((q: any) => `
+        <div class="question-card">
+          <div class="question-text">${q.question}</div>
+          <div class="question-meta">
+            <span class="question-badge badge-category">${q.category}</span>
+            <span class="question-badge badge-difficulty">${q.difficulty}</span>
+          </div>
+          <div class="star-section">
+            <div class="star-title">STAR 回答建议</div>
+            <div class="star-item"><strong>S:</strong> ${q.starSuggestion.situation}</div>
+            <div class="star-item"><strong>T:</strong> ${q.starSuggestion.task}</div>
+            <div class="star-item"><strong>A:</strong> ${q.starSuggestion.action}</div>
+            <div class="star-item"><strong>R:</strong> ${q.starSuggestion.result}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+    
+    // 操作按钮
+    document.getElementById('action-buttons')?.classList.remove('hidden');
+    
+    // Mode badge
+    const modeBadge = document.getElementById('mode-badge');
+    if (modeBadge) {
+      modeBadge.textContent = result.meta?.mode === 'api' ? 'API 模式' : '本地模式';
+    }
+  }
+  
+  // 分析
+  async function analyze() {
+    const resume = inputResume.value.trim();
+    const jd = inputJd.value.trim();
+    
+    if (!resume || !jd) {
+      alert('请填写简历和岗位 JD');
+      return;
+    }
+    
+    btnAnalyze.disabled = true;
+    btnAnalyze.textContent = '⏳ 分析中...';
+    
+    let result = null;
+    if (apiBaseUrl) {
+      result = await callApi(resume, jd);
+    }
+    
+    if (!result) {
+      result = analyzeLocally(resume, jd);
+    }
+    
+    showResults(result);
+    btnAnalyze.disabled = false;
+    btnAnalyze.textContent = '🚀 开始分析';
+  }
+  
+  // 事件监听
+  btnAnalyze?.addEventListener('click', analyze);
+  btnClear?.addEventListener('click', () => {
+    inputResume.value = '';
+    inputJd.value = '';
+    document.getElementById('empty-state')?.classList.remove('hidden');
+    document.getElementById('score-section')?.classList.add('hidden');
+    document.getElementById('skills-section')?.classList.add('hidden');
+    document.getElementById('missing-section')?.classList.add('hidden');
+    document.getElementById('suggestions-section')?.classList.add('hidden');
+    document.getElementById('questions-section')?.classList.add('hidden');
+    document.getElementById('action-buttons')?.classList.add('hidden');
+  });
+  btnUseExample?.addEventListener('click', () => {
+    inputResume.value = exampleResume;
+    inputJd.value = exampleJd;
+  });
+  btnSave?.addEventListener('click', () => {
+    if (currentResult) {
+      localStorage.setItem('mimo_interviewpilot_last', JSON.stringify(currentResult));
+      alert('已保存到本地');
+    }
+  });
+  btnExport?.addEventListener('click', () => {
+    if (!currentResult) return;
+    let md = `# InterviewPilot 分析报告\n\n`;
+    md += `**匹配分数**: ${currentResult.matchScore}%\n\n`;
+    md += `## 匹配技能\n\n${currentResult.matchedSkills.map((s: string) => `- ${s}`).join('\n')}\n\n`;
+    md += `## 缺口技能\n\n${currentResult.missingSkills.map((s: string) => `- ${s}`).join('\n')}\n\n`;
+    md += `## 面试问题\n\n`;
+    currentResult.questions.forEach((q: any, i: number) => {
+      md += `### ${i + 1}. ${q.question}\n\n`;
+      md += `**类别**: ${q.category} | **难度**: ${q.difficulty}\n\n`;
+      md += `**STAR 建议**:\n- S: ${q.starSuggestion.situation}\n- T: ${q.starSuggestion.task}\n- A: ${q.starSuggestion.action}\n- R: ${q.starSuggestion.result}\n\n`;
+    });
+    md += `---\n*由 InterviewPilot AI 面试教练生成*`;
+    
+    const blob = new Blob([md], { type: 'text/markdown' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `interview-report-${new Date().toISOString().split('T')[0]}.md`;
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+</script>
