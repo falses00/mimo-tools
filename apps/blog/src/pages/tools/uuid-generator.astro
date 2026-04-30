@@ -1,0 +1,209 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="UUID Generator - MIMO">
+  <main class="min-h-screen bg-background">
+    <div class="container mx-auto px-4 py-8">
+      <div class="mb-8">
+        <a href="/tools" class="text-primary hover:underline text-sm">&larr; 返回工具箱</a>
+        <h1 class="text-3xl font-bold mt-2">UUID Generator</h1>
+        <p class="text-muted-foreground mt-1">生成 v4 UUID，批量生成</p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Generator Section -->
+        <div class="p-6 rounded-xl border border-border bg-card">
+          <h2 class="text-lg font-semibold mb-4">生成 UUID</h2>
+          <div class="space-y-4">
+            <div>
+              <label for="uuid-count" class="block text-sm font-medium mb-2">生成数量</label>
+              <input
+                id="uuid-count"
+                type="number"
+                min="1"
+                max="100"
+                value="1"
+                class="w-full p-3 text-sm border border-input rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-ring"
+              />
+            </div>
+            <div class="flex flex-wrap gap-2">
+              <button id="btn-generate" class="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium">生成 UUID</button>
+              <button id="btn-generate-batch" class="px-4 py-2 bg-secondary text-secondary-foreground rounded-lg text-sm font-medium">批量生成 (10个)</button>
+              <button id="btn-generate-uppercase" class="px-4 py-2 bg-secondary text-secondary-foreground rounded-lg text-sm font-medium">大写</button>
+              <button id="btn-generate-no-dash" class="px-4 py-2 bg-secondary text-secondary-foreground rounded-lg text-sm font-medium">无横线</button>
+              <button id="btn-copy" class="px-4 py-2 bg-secondary text-secondary-foreground rounded-lg text-sm font-medium">复制全部</button>
+              <button id="btn-clear" class="px-4 py-2 bg-destructive text-destructive-foreground rounded-lg text-sm font-medium">清空</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Output Section -->
+        <div class="p-6 rounded-xl border border-border bg-card">
+          <h2 class="text-lg font-semibold mb-4">生成结果</h2>
+          <div class="space-y-4">
+            <div>
+              <label for="uuid-output" class="block text-sm font-medium mb-2">UUID 列表</label>
+              <textarea
+                id="uuid-output"
+                class="w-full h-64 p-4 font-mono text-sm border border-input rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-ring"
+                readonly
+                placeholder="点击生成按钮创建 UUID..."
+              ></textarea>
+            </div>
+            <div class="flex justify-between text-sm text-muted-foreground">
+              <span id="uuid-count-display">已生成: 0 个</span>
+              <span id="uuid-format-display">格式: v4 标准</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- UUID Info Section -->
+        <div class="lg:col-span-2 p-6 rounded-xl border border-border bg-card">
+          <h2 class="text-lg font-semibold mb-4">UUID 信息</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <h3 class="text-sm font-medium mb-2">UUID 结构</h3>
+              <div class="p-3 bg-muted rounded-lg font-mono text-sm">
+                <div class="text-primary">xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx</div>
+                <div class="text-muted-foreground mt-2">
+                  <div>• x: 随机十六进制数字</div>
+                  <div>• 4: UUID 版本号</div>
+                  <div>• y: 变体位 (8, 9, a, 或 b)</div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <h3 class="text-sm font-medium mb-2">示例 UUID</h3>
+              <div class="space-y-2">
+                <div class="p-2 bg-muted rounded font-mono text-sm">550e8400-e29b-41d4-a716-446655440000</div>
+                <div class="p-2 bg-muted rounded font-mono text-sm">6ba7b810-9dad-41d4-80b4-00c04fd430c8</div>
+                <div class="p-2 bg-muted rounded font-mono text-sm">f47ac10b-58cc-4372-a567-0e02b2c3d479</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="status-bar" class="mt-4 p-3 rounded-lg text-sm hidden"></div>
+
+      <div class="mt-12 p-6 rounded-xl border border-border bg-card">
+        <h2 class="text-xl font-semibold mb-4">使用说明</h2>
+        <ul class="space-y-2 text-sm">
+          <li><strong>生成 UUID</strong> - 生成指定数量的 v4 UUID</li>
+          <li><strong>批量生成</strong> - 一次生成 10 个 UUID</li>
+          <li><strong>大写</strong> - 生成大写的 UUID</li>
+          <li><strong>无横线</strong> - 生成不含横线的 UUID</li>
+          <li><strong>复制全部</strong> - 复制所有生成的 UUID</li>
+          <li><strong>清空</strong> - 清空输出区域</li>
+        </ul>
+        <div class="mt-4 p-4 bg-muted rounded-lg">
+          <h3 class="text-sm font-medium mb-2">什么是 UUID？</h3>
+          <p class="text-sm text-muted-foreground">
+            UUID (Universally Unique Identifier) 是一个 128 位的标识符，
+            用于在计算机系统中唯一标识信息。UUID v4 是基于随机数生成的，
+            碰撞概率极低，常用于数据库主键、会话 ID、事务 ID 等场景。
+          </p>
+        </div>
+      </div>
+    </div>
+  </main>
+</Layout>
+
+<script>
+  const uuidCount = document.getElementById('uuid-count') as HTMLInputElement;
+  const uuidOutput = document.getElementById('uuid-output') as HTMLTextAreaElement;
+  const uuidCountDisplay = document.getElementById('uuid-count-display') as HTMLSpanElement;
+  const uuidFormatDisplay = document.getElementById('uuid-format-display') as HTMLSpanElement;
+  const statusBar = document.getElementById('status-bar') as HTMLDivElement;
+
+  let generatedCount = 0;
+  let currentFormat: 'standard' | 'uppercase' | 'no-dash' = 'standard';
+
+  function showStatus(msg: string, type: 'success' | 'error' | 'info') {
+    statusBar.className = `mt-4 p-3 rounded-lg text-sm block ${
+      type === 'success' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' :
+      type === 'error' ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400' :
+      'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
+    }`;
+    statusBar.textContent = msg;
+  }
+
+  function generateUUID(): string {
+    // Generate UUID v4
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      const r = Math.random() * 16 | 0;
+      const v = c === 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
+  }
+
+  function formatUUID(uuid: string): string {
+    switch (currentFormat) {
+      case 'uppercase':
+        return uuid.toUpperCase();
+      case 'no-dash':
+        return uuid.replace(/-/g, '');
+      default:
+        return uuid;
+    }
+  }
+
+  function generateUUIDs(count: number) {
+    const uuids: string[] = [];
+    for (let i = 0; i < count; i++) {
+      uuids.push(formatUUID(generateUUID()));
+    }
+    
+    const currentOutput = uuidOutput.value;
+    const newOutput = currentOutput ? currentOutput + '\n' + uuids.join('\n') : uuids.join('\n');
+    uuidOutput.value = newOutput;
+    
+    generatedCount += count;
+    uuidCountDisplay.textContent = `已生成: ${generatedCount} 个`;
+    
+    showStatus(`成功生成 ${count} 个 UUID`, 'success');
+  }
+
+  // Button event listeners
+  document.getElementById('btn-generate')?.addEventListener('click', () => {
+    const count = parseInt(uuidCount.value) || 1;
+    if (count < 1 || count > 100) {
+      showStatus('数量必须在 1-100 之间', 'error');
+      return;
+    }
+    generateUUIDs(count);
+  });
+
+  document.getElementById('btn-generate-batch')?.addEventListener('click', () => {
+    generateUUIDs(10);
+  });
+
+  document.getElementById('btn-generate-uppercase')?.addEventListener('click', () => {
+    currentFormat = 'uppercase';
+    uuidFormatDisplay.textContent = '格式: v4 大写';
+    generateUUIDs(1);
+  });
+
+  document.getElementById('btn-generate-no-dash')?.addEventListener('click', () => {
+    currentFormat = 'no-dash';
+    uuidFormatDisplay.textContent = '格式: v4 无横线';
+    generateUUIDs(1);
+  });
+
+  document.getElementById('btn-copy')?.addEventListener('click', () => {
+    if (!uuidOutput.value) {
+      showStatus('没有可复制的内容', 'error');
+      return;
+    }
+    navigator.clipboard.writeText(uuidOutput.value);
+    showStatus('已复制到剪贴板', 'success');
+  });
+
+  document.getElementById('btn-clear')?.addEventListener('click', () => {
+    uuidOutput.value = '';
+    generatedCount = 0;
+    uuidCountDisplay.textContent = '已生成: 0 个';
+    statusBar.className = 'mt-4 p-3 rounded-lg text-sm hidden';
+  });
+</script>

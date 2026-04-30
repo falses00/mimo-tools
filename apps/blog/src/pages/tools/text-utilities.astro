@@ -1,0 +1,187 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Text Utilities - MIMO">
+  <main class="min-h-screen bg-background">
+    <div class="container mx-auto px-4 py-8">
+      <div class="mb-8">
+        <a href="/tools" class="text-primary hover:underline text-sm">&larr; 返回工具箱</a>
+        <h1 class="text-3xl font-bold mt-2">Text Utilities</h1>
+        <p class="text-muted-foreground mt-1">大小写转换、去空行、去首尾空格、统计字符/单词/行数</p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Input Section -->
+        <div>
+          <label for="input-text" class="block text-sm font-medium mb-2">输入文本</label>
+          <textarea
+            id="input-text"
+            class="w-full h-64 p-4 font-mono text-sm border border-input rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-ring"
+            placeholder="在此输入文本..."
+          ></textarea>
+          <div class="flex flex-wrap gap-2 mt-4">
+            <button id="btn-uppercase" class="px-3 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium">转大写</button>
+            <button id="btn-lowercase" class="px-3 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium">转小写</button>
+            <button id="btn-capitalize" class="px-3 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium">首字母大写</button>
+            <button id="btn-reverse" class="px-3 py-2 bg-secondary text-secondary-foreground rounded-lg text-sm font-medium">反转</button>
+            <button id="btn-trim" class="px-3 py-2 bg-secondary text-secondary-foreground rounded-lg text-sm font-medium">去首尾空格</button>
+            <button id="btn-remove-empty-lines" class="px-3 py-2 bg-secondary text-secondary-foreground rounded-lg text-sm font-medium">去空行</button>
+            <button id="btn-sort-lines" class="px-3 py-2 bg-secondary text-secondary-foreground rounded-lg text-sm font-medium">排序行</button>
+            <button id="btn-remove-duplicates" class="px-3 py-2 bg-secondary text-secondary-foreground rounded-lg text-sm font-medium">去重行</button>
+            <button id="btn-copy" class="px-3 py-2 bg-secondary text-secondary-foreground rounded-lg text-sm font-medium">复制结果</button>
+            <button id="btn-clear" class="px-3 py-2 bg-destructive text-destructive-foreground rounded-lg text-sm font-medium">清空</button>
+          </div>
+        </div>
+
+        <!-- Output Section -->
+        <div>
+          <label for="output-text" class="block text-sm font-medium mb-2">输出结果</label>
+          <textarea
+            id="output-text"
+            class="w-full h-64 p-4 font-mono text-sm border border-input rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-ring"
+            readonly
+            placeholder="结果将显示在这里..."
+          ></textarea>
+
+          <!-- Statistics -->
+          <div class="mt-4 p-4 rounded-lg border border-border bg-card">
+            <h3 class="text-sm font-medium mb-3">文本统计</h3>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
+              <div>
+                <div class="text-muted-foreground">字符数</div>
+                <div id="stat-chars" class="text-2xl font-bold">0</div>
+              </div>
+              <div>
+                <div class="text-muted-foreground">单词数</div>
+                <div id="stat-words" class="text-2xl font-bold">0</div>
+              </div>
+              <div>
+                <div class="text-muted-foreground">行数</div>
+                <div id="stat-lines" class="text-2xl font-bold">0</div>
+              </div>
+              <div>
+                <div class="text-muted-foreground">段落数</div>
+                <div id="stat-paragraphs" class="text-2xl font-bold">0</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="status-bar" class="mt-4 p-3 rounded-lg text-sm hidden"></div>
+
+      <div class="mt-12 p-6 rounded-xl border border-border bg-card">
+        <h2 class="text-xl font-semibold mb-4">使用说明</h2>
+        <ul class="space-y-2 text-sm">
+          <li><strong>转大写</strong> - 将所有字母转换为大写</li>
+          <li><strong>转小写</strong> - 将所有字母转换为小写</li>
+          <li><strong>首字母大写</strong> - 将每个单词的首字母大写</li>
+          <li><strong>反转</strong> - 反转整个文本</li>
+          <li><strong>去首尾空格</strong> - 移除每行首尾的空格</li>
+          <li><strong>去空行</strong> - 移除所有空行</li>
+          <li><strong>排序行</strong> - 按字母顺序排序所有行</li>
+          <li><strong>去重行</strong> - 移除重复的行</li>
+          <li><strong>复制</strong> - 将输出复制到剪贴板</li>
+          <li><strong>清空</strong> - 清除所有输入和输出</li>
+        </ul>
+      </div>
+    </div>
+  </main>
+</Layout>
+
+<script>
+  const inputText = document.getElementById('input-text') as HTMLTextAreaElement;
+  const outputText = document.getElementById('output-text') as HTMLTextAreaElement;
+  const statusBar = document.getElementById('status-bar') as HTMLDivElement;
+  const statChars = document.getElementById('stat-chars') as HTMLDivElement;
+  const statWords = document.getElementById('stat-words') as HTMLDivElement;
+  const statLines = document.getElementById('stat-lines') as HTMLDivElement;
+  const statParagraphs = document.getElementById('stat-paragraphs') as HTMLDivElement;
+
+  function showStatus(msg: string, type: 'success' | 'error' | 'info') {
+    statusBar.className = `mt-4 p-3 rounded-lg text-sm block ${
+      type === 'success' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' :
+      type === 'error' ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400' :
+      'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
+    }`;
+    statusBar.textContent = msg;
+  }
+
+  function updateStats(text: string) {
+    const chars = text.length;
+    const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+    const lines = text ? text.split('\n').length : 0;
+    const paragraphs = text.trim() ? text.trim().split(/\n\s*\n/).length : 0;
+
+    statChars.textContent = chars.toString();
+    statWords.textContent = words.toString();
+    statLines.textContent = lines.toString();
+    statParagraphs.textContent = paragraphs.toString();
+  }
+
+  function processText(processor: (text: string) => string) {
+    const input = inputText.value;
+    if (!input.trim()) {
+      showStatus('请输入文本', 'error');
+      return;
+    }
+    outputText.value = processor(input);
+    updateStats(outputText.value);
+    showStatus('处理成功', 'success');
+  }
+
+  // Button event listeners
+  document.getElementById('btn-uppercase')?.addEventListener('click', () => {
+    processText(text => text.toUpperCase());
+  });
+
+  document.getElementById('btn-lowercase')?.addEventListener('click', () => {
+    processText(text => text.toLowerCase());
+  });
+
+  document.getElementById('btn-capitalize')?.addEventListener('click', () => {
+    processText(text => text.replace(/\b\w/g, l => l.toUpperCase()));
+  });
+
+  document.getElementById('btn-reverse')?.addEventListener('click', () => {
+    processText(text => text.split('').reverse().join(''));
+  });
+
+  document.getElementById('btn-trim')?.addEventListener('click', () => {
+    processText(text => text.split('\n').map(line => line.trim()).join('\n'));
+  });
+
+  document.getElementById('btn-remove-empty-lines')?.addEventListener('click', () => {
+    processText(text => text.split('\n').filter(line => line.trim()).join('\n'));
+  });
+
+  document.getElementById('btn-sort-lines')?.addEventListener('click', () => {
+    processText(text => text.split('\n').sort().join('\n'));
+  });
+
+  document.getElementById('btn-remove-duplicates')?.addEventListener('click', () => {
+    processText(text => [...new Set(text.split('\n'))].join('\n'));
+  });
+
+  document.getElementById('btn-copy')?.addEventListener('click', () => {
+    if (!outputText.value) {
+      showStatus('没有可复制的内容', 'error');
+      return;
+    }
+    navigator.clipboard.writeText(outputText.value);
+    showStatus('已复制到剪贴板', 'success');
+  });
+
+  document.getElementById('btn-clear')?.addEventListener('click', () => {
+    inputText.value = '';
+    outputText.value = '';
+    statusBar.className = 'mt-4 p-3 rounded-lg text-sm hidden';
+    updateStats('');
+  });
+
+  // Update stats on input
+  inputText?.addEventListener('input', () => {
+    updateStats(inputText.value);
+  });
+</script>

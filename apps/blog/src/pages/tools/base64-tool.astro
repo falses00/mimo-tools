@@ -1,0 +1,182 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Base64 Encoder/Decoder - MIMO">
+  <main class="min-h-screen bg-background">
+    <div class="container mx-auto px-4 py-8">
+      <div class="mb-8">
+        <a href="/tools" class="text-primary hover:underline text-sm">&larr; 返回工具箱</a>
+        <h1 class="text-3xl font-bold mt-2">Base64 Encoder/Decoder</h1>
+        <p class="text-muted-foreground mt-1">Base64 编码/解码，支持 UTF-8</p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Input Section -->
+        <div>
+          <label for="input-base64" class="block text-sm font-medium mb-2">输入文本</label>
+          <textarea
+            id="input-base64"
+            class="w-full h-48 p-4 font-mono text-sm border border-input rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-ring"
+            placeholder="输入要编码或解码的文本..."
+          ></textarea>
+          <div class="flex flex-wrap gap-2 mt-4">
+            <button id="btn-encode" class="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium">Base64 编码</button>
+            <button id="btn-decode" class="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium">Base64 解码</button>
+            <button id="btn-example-encode" class="px-4 py-2 bg-secondary text-secondary-foreground rounded-lg text-sm font-medium">编码示例</button>
+            <button id="btn-example-decode" class="px-4 py-2 bg-secondary text-secondary-foreground rounded-lg text-sm font-medium">解码示例</button>
+            <button id="btn-copy" class="px-4 py-2 bg-secondary text-secondary-foreground rounded-lg text-sm font-medium">复制结果</button>
+            <button id="btn-clear" class="px-4 py-2 bg-destructive text-destructive-foreground rounded-lg text-sm font-medium">清空</button>
+          </div>
+        </div>
+
+        <!-- Output Section -->
+        <div>
+          <label for="output-base64" class="block text-sm font-medium mb-2">输出结果</label>
+          <textarea
+            id="output-base64"
+            class="w-full h-48 p-4 font-mono text-sm border border-input rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-ring"
+            readonly
+            placeholder="结果将显示在这里..."
+          ></textarea>
+
+          <!-- Info Section -->
+          <div class="mt-4 p-4 rounded-lg border border-border bg-card">
+            <h3 class="text-sm font-medium mb-3">编码信息</h3>
+            <div class="grid grid-cols-2 gap-4 text-sm">
+              <div>
+                <div class="text-muted-foreground">输入长度</div>
+                <div id="info-input-length" class="font-mono">0</div>
+              </div>
+              <div>
+                <div class="text-muted-foreground">输出长度</div>
+                <div id="info-output-length" class="font-mono">0</div>
+              </div>
+              <div>
+                <div class="text-muted-foreground">编码比例</div>
+                <div id="info-ratio" class="font-mono">-</div>
+              </div>
+              <div>
+                <div class="text-muted-foreground">字符集</div>
+                <div id="info-charset" class="font-mono">UTF-8</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="status-bar" class="mt-4 p-3 rounded-lg text-sm hidden"></div>
+
+      <div class="mt-12 p-6 rounded-xl border border-border bg-card">
+        <h2 class="text-xl font-semibold mb-4">使用说明</h2>
+        <ul class="space-y-2 text-sm">
+          <li><strong>Base64 编码</strong> - 将文本编码为 Base64 格式</li>
+          <li><strong>Base64 解码</strong> - 将 Base64 解码为原始文本</li>
+          <li><strong>编码示例</strong> - 加载示例文本进行编码</li>
+          <li><strong>解码示例</strong> - 加载示例 Base64 进行解码</li>
+          <li><strong>复制</strong> - 将输出复制到剪贴板</li>
+          <li><strong>清空</strong> - 清除所有输入和输出</li>
+        </ul>
+        <div class="mt-4 p-4 bg-muted rounded-lg">
+          <h3 class="text-sm font-medium mb-2">什么是 Base64？</h3>
+          <p class="text-sm text-muted-foreground">
+            Base64 是一种基于 64 个可打印字符来表示二进制数据的编码方式。
+            它常用于在处理文本数据的场合，表示、传输、存储一些二进制数据，
+            例如在电子邮件中传输附件，或者在网页中嵌入图片数据。
+          </p>
+        </div>
+      </div>
+    </div>
+  </main>
+</Layout>
+
+<script>
+  const inputBase64 = document.getElementById('input-base64') as HTMLTextAreaElement;
+  const outputBase64 = document.getElementById('output-base64') as HTMLTextAreaElement;
+  const statusBar = document.getElementById('status-bar') as HTMLDivElement;
+  const infoInputLength = document.getElementById('info-input-length') as HTMLDivElement;
+  const infoOutputLength = document.getElementById('info-output-length') as HTMLDivElement;
+  const infoRatio = document.getElementById('info-ratio') as HTMLDivElement;
+
+  function showStatus(msg: string, type: 'success' | 'error' | 'info') {
+    statusBar.className = `mt-4 p-3 rounded-lg text-sm block ${
+      type === 'success' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' :
+      type === 'error' ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400' :
+      'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
+    }`;
+    statusBar.textContent = msg;
+  }
+
+  function updateInfo(inputLength: number, outputLength: number) {
+    infoInputLength.textContent = inputLength.toString();
+    infoOutputLength.textContent = outputLength.toString();
+    infoRatio.textContent = outputLength > 0 ? (outputLength / inputLength).toFixed(2) + 'x' : '-';
+  }
+
+  // Button event listeners
+  document.getElementById('btn-encode')?.addEventListener('click', () => {
+    const input = inputBase64.value;
+    if (!input.trim()) {
+      showStatus('请输入文本', 'error');
+      return;
+    }
+    try {
+      // Use TextEncoder for UTF-8 support
+      const encoder = new TextEncoder();
+      const data = encoder.encode(input);
+      const base64 = btoa(String.fromCharCode(...data));
+      outputBase64.value = base64;
+      updateInfo(input.length, base64.length);
+      showStatus('Base64 编码成功', 'success');
+    } catch (error) {
+      showStatus(`编码失败: ${error}`, 'error');
+    }
+  });
+
+  document.getElementById('btn-decode')?.addEventListener('click', () => {
+    const input = inputBase64.value;
+    if (!input.trim()) {
+      showStatus('请输入 Base64 字符串', 'error');
+      return;
+    }
+    try {
+      const binaryStr = atob(input);
+      const bytes = new Uint8Array(binaryStr.length);
+      for (let i = 0; i < binaryStr.length; i++) {
+        bytes[i] = binaryStr.charCodeAt(i);
+      }
+      const decoder = new TextDecoder('utf-8');
+      outputBase64.value = decoder.decode(bytes);
+      updateInfo(input.length, outputBase64.value.length);
+      showStatus('Base64 解码成功', 'success');
+    } catch (error) {
+      showStatus(`解码失败: ${error}`, 'error');
+    }
+  });
+
+  document.getElementById('btn-example-encode')?.addEventListener('click', () => {
+    inputBase64.value = 'Hello, World! 你好，世界！';
+    showStatus('已加载编码示例', 'info');
+  });
+
+  document.getElementById('btn-example-decode')?.addEventListener('click', () => {
+    inputBase64.value = 'SGVsbG8sIFdvcmxkIQ==';
+    showStatus('已加载解码示例', 'info');
+  });
+
+  document.getElementById('btn-copy')?.addEventListener('click', () => {
+    if (!outputBase64.value) {
+      showStatus('没有可复制的内容', 'error');
+      return;
+    }
+    navigator.clipboard.writeText(outputBase64.value);
+    showStatus('已复制到剪贴板', 'success');
+  });
+
+  document.getElementById('btn-clear')?.addEventListener('click', () => {
+    inputBase64.value = '';
+    outputBase64.value = '';
+    statusBar.className = 'mt-4 p-3 rounded-lg text-sm hidden';
+    updateInfo(0, 0);
+  });
+</script>

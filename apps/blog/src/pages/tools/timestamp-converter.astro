@@ -1,0 +1,240 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Timestamp Converter - MIMO">
+  <main class="min-h-screen bg-background">
+    <div class="container mx-auto px-4 py-8">
+      <div class="mb-8">
+        <a href="/tools" class="text-primary hover:underline text-sm">&larr; 返回工具箱</a>
+        <h1 class="text-3xl font-bold mt-2">Timestamp Converter</h1>
+        <p class="text-muted-foreground mt-1">Unix timestamp 与日期互转，本地时间/UTC 显示</p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Current Timestamp -->
+        <div class="p-6 rounded-xl border border-border bg-card">
+          <h2 class="text-lg font-semibold mb-4">当前时间</h2>
+          <div class="space-y-4">
+            <div>
+              <div class="text-sm text-muted-foreground">Unix Timestamp (秒)</div>
+              <div id="current-timestamp-seconds" class="text-2xl font-mono font-bold">-</div>
+            </div>
+            <div>
+              <div class="text-sm text-muted-foreground">Unix Timestamp (毫秒)</div>
+              <div id="current-timestamp-millis" class="text-2xl font-mono font-bold">-</div>
+            </div>
+            <div>
+              <div class="text-sm text-muted-foreground">本地时间</div>
+              <div id="current-local" class="text-lg font-mono">-</div>
+            </div>
+            <div>
+              <div class="text-sm text-muted-foreground">UTC 时间</div>
+              <div id="current-utc" class="text-lg font-mono">-</div>
+            </div>
+          </div>
+          <button id="btn-refresh" class="mt-4 px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium">刷新</button>
+        </div>
+
+        <!-- Timestamp to Date -->
+        <div class="p-6 rounded-xl border border-border bg-card">
+          <h2 class="text-lg font-semibold mb-4">Timestamp → 日期</h2>
+          <div class="space-y-4">
+            <div>
+              <label for="input-timestamp" class="block text-sm font-medium mb-2">输入 Timestamp</label>
+              <input
+                id="input-timestamp"
+                type="text"
+                class="w-full p-3 font-mono text-sm border border-input rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-ring"
+                placeholder="输入 Unix timestamp (秒或毫秒)"
+              />
+            </div>
+            <div class="flex gap-2">
+              <button id="btn-convert-to-date" class="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium">转换</button>
+              <button id="btn-now" class="px-4 py-2 bg-secondary text-secondary-foreground rounded-lg text-sm font-medium">当前时间</button>
+            </div>
+            <div class="space-y-2">
+              <div>
+                <div class="text-sm text-muted-foreground">本地时间</div>
+                <div id="result-local" class="font-mono text-sm p-2 bg-muted rounded">-</div>
+              </div>
+              <div>
+                <div class="text-sm text-muted-foreground">UTC 时间</div>
+                <div id="result-utc" class="font-mono text-sm p-2 bg-muted rounded">-</div>
+              </div>
+              <div>
+                <div class="text-sm text-muted-foreground">ISO 8601</div>
+                <div id="result-iso" class="font-mono text-sm p-2 bg-muted rounded break-all">-</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Date to Timestamp -->
+        <div class="p-6 rounded-xl border border-border bg-card lg:col-span-2">
+          <h2 class="text-lg font-semibold mb-4">日期 → Timestamp</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label for="input-date" class="block text-sm font-medium mb-2">选择日期和时间</label>
+              <input
+                id="input-date"
+                type="datetime-local"
+                class="w-full p-3 font-mono text-sm border border-input rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-ring"
+              />
+            </div>
+            <div class="flex items-end gap-2">
+              <button id="btn-convert-to-timestamp" class="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium">转换</button>
+              <button id="btn-now-date" class="px-4 py-2 bg-secondary text-secondary-foreground rounded-lg text-sm font-medium">当前时间</button>
+            </div>
+          </div>
+          <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <div class="text-sm text-muted-foreground">Timestamp (秒)</div>
+              <div id="result-timestamp-seconds" class="font-mono text-sm p-2 bg-muted rounded">-</div>
+            </div>
+            <div>
+              <div class="text-sm text-muted-foreground">Timestamp (毫秒)</div>
+              <div id="result-timestamp-millis" class="font-mono text-sm p-2 bg-muted rounded">-</div>
+            </div>
+            <div>
+              <div class="text-sm text-muted-foreground">ISO 8601</div>
+              <div id="result-date-iso" class="font-mono text-sm p-2 bg-muted rounded break-all">-</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="status-bar" class="mt-4 p-3 rounded-lg text-sm hidden"></div>
+
+      <div class="mt-12 p-6 rounded-xl border border-border bg-card">
+        <h2 class="text-xl font-semibold mb-4">使用说明</h2>
+        <ul class="space-y-2 text-sm">
+          <li><strong>当前时间</strong> - 显示当前的 Unix timestamp 和日期时间</li>
+          <li><strong>Timestamp → 日期</strong> - 将 Unix timestamp 转换为可读日期</li>
+          <li><strong>日期 → Timestamp</strong> - 将日期转换为 Unix timestamp</li>
+          <li><strong>秒/毫秒</strong> - 支持秒级和毫秒级 timestamp</li>
+          <li><strong>本地时间/UTC</strong> - 同时显示本地时间和 UTC 时间</li>
+          <li><strong>ISO 8601</strong> - 显示 ISO 8601 格式的日期时间</li>
+        </ul>
+        <div class="mt-4 p-4 bg-muted rounded-lg">
+          <h3 class="text-sm font-medium mb-2">什么是 Unix Timestamp？</h3>
+          <p class="text-sm text-muted-foreground">
+            Unix timestamp 是自 1970年1月1日 00:00:00 UTC 以来经过的秒数。
+            它是一种在计算机系统中广泛使用的时间表示方式，
+            常用于数据库存储、API 接口、日志记录等场景。
+          </p>
+        </div>
+      </div>
+    </div>
+  </main>
+</Layout>
+
+<script>
+  const currentTimestampSeconds = document.getElementById('current-timestamp-seconds') as HTMLDivElement;
+  const currentTimestampMillis = document.getElementById('current-timestamp-millis') as HTMLDivElement;
+  const currentLocal = document.getElementById('current-local') as HTMLDivElement;
+  const currentUtc = document.getElementById('current-utc') as HTMLDivElement;
+  const inputTimestamp = document.getElementById('input-timestamp') as HTMLInputElement;
+  const resultLocal = document.getElementById('result-local') as HTMLDivElement;
+  const resultUtc = document.getElementById('result-utc') as HTMLDivElement;
+  const resultIso = document.getElementById('result-iso') as HTMLDivElement;
+  const inputDate = document.getElementById('input-date') as HTMLInputElement;
+  const resultTimestampSeconds = document.getElementById('result-timestamp-seconds') as HTMLDivElement;
+  const resultTimestampMillis = document.getElementById('result-timestamp-millis') as HTMLDivElement;
+  const resultDateIso = document.getElementById('result-date-iso') as HTMLDivElement;
+  const statusBar = document.getElementById('status-bar') as HTMLDivElement;
+
+  function showStatus(msg: string, type: 'success' | 'error' | 'info') {
+    statusBar.className = `mt-4 p-3 rounded-lg text-sm block ${
+      type === 'success' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' :
+      type === 'error' ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400' :
+      'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
+    }`;
+    statusBar.textContent = msg;
+  }
+
+  function updateCurrentTime() {
+    const now = new Date();
+    const timestampSeconds = Math.floor(now.getTime() / 1000);
+    const timestampMillis = now.getTime();
+    
+    currentTimestampSeconds.textContent = timestampSeconds.toString();
+    currentTimestampMillis.textContent = timestampMillis.toString();
+    currentLocal.textContent = now.toLocaleString('zh-CN');
+    currentUtc.textContent = now.toUTCString();
+  }
+
+  function convertTimestampToDate() {
+    const input = inputTimestamp.value.trim();
+    if (!input) {
+      showStatus('请输入 timestamp', 'error');
+      return;
+    }
+    
+    const timestamp = parseInt(input);
+    if (isNaN(timestamp)) {
+      showStatus('无效的 timestamp', 'error');
+      return;
+    }
+    
+    // Determine if it's seconds or milliseconds
+    const date = new Date(timestamp > 1e12 ? timestamp : timestamp * 1000);
+    
+    if (isNaN(date.getTime())) {
+      showStatus('无效的 timestamp', 'error');
+      return;
+    }
+    
+    resultLocal.textContent = date.toLocaleString('zh-CN');
+    resultUtc.textContent = date.toUTCString();
+    resultIso.textContent = date.toISOString();
+    showStatus('转换成功', 'success');
+  }
+
+  function convertDateToTimestamp() {
+    const input = inputDate.value;
+    if (!input) {
+      showStatus('请选择日期和时间', 'error');
+      return;
+    }
+    
+    const date = new Date(input);
+    if (isNaN(date.getTime())) {
+      showStatus('无效的日期', 'error');
+      return;
+    }
+    
+    const timestampSeconds = Math.floor(date.getTime() / 1000);
+    const timestampMillis = date.getTime();
+    
+    resultTimestampSeconds.textContent = timestampSeconds.toString();
+    resultTimestampMillis.textContent = timestampMillis.toString();
+    resultDateIso.textContent = date.toISOString();
+    showStatus('转换成功', 'success');
+  }
+
+  // Initialize
+  updateCurrentTime();
+  setInterval(updateCurrentTime, 1000);
+
+  // Button event listeners
+  document.getElementById('btn-refresh')?.addEventListener('click', updateCurrentTime);
+
+  document.getElementById('btn-convert-to-date')?.addEventListener('click', convertTimestampToDate);
+
+  document.getElementById('btn-now')?.addEventListener('click', () => {
+    const now = new Date();
+    inputTimestamp.textContent = Math.floor(now.getTime() / 1000).toString();
+    convertTimestampToDate();
+  });
+
+  document.getElementById('btn-convert-to-timestamp')?.addEventListener('click', convertDateToTimestamp);
+
+  document.getElementById('btn-now-date')?.addEventListener('click', () => {
+    const now = new Date();
+    const offset = now.getTimezoneOffset() * 60000;
+    const localISOTime = (new Date(now.getTime() - offset)).toISOString().slice(0, 16);
+    inputDate.value = localISOTime;
+    convertDateToTimestamp();
+  });
+</script>

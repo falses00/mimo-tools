@@ -1,0 +1,230 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="URL Encoder/Decoder - MIMO">
+  <main class="min-h-screen bg-background">
+    <div class="container mx-auto px-4 py-8">
+      <div class="mb-8">
+        <a href="/tools" class="text-primary hover:underline text-sm">&larr; 返回工具箱</a>
+        <h1 class="text-3xl font-bold mt-2">URL Encoder/Decoder</h1>
+        <p class="text-muted-foreground mt-1">URL 编码/解码，Query string 解析</p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Input Section -->
+        <div>
+          <label for="input-url" class="block text-sm font-medium mb-2">输入 URL 或文本</label>
+          <textarea
+            id="input-url"
+            class="w-full h-48 p-4 font-mono text-sm border border-input rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-ring"
+            placeholder="输入 URL 或要编码的文本..."
+          ></textarea>
+          <div class="flex flex-wrap gap-2 mt-4">
+            <button id="btn-encode" class="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium">URL 编码</button>
+            <button id="btn-decode" class="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium">URL 解码</button>
+            <button id="btn-encode-component" class="px-4 py-2 bg-secondary text-secondary-foreground rounded-lg text-sm font-medium">编码组件</button>
+            <button id="btn-decode-component" class="px-4 py-2 bg-secondary text-secondary-foreground rounded-lg text-sm font-medium">解码组件</button>
+            <button id="btn-parse-query" class="px-4 py-2 bg-secondary text-secondary-foreground rounded-lg text-sm font-medium">解析 Query</button>
+            <button id="btn-example" class="px-4 py-2 bg-secondary text-secondary-foreground rounded-lg text-sm font-medium">示例</button>
+            <button id="btn-copy" class="px-4 py-2 bg-secondary text-secondary-foreground rounded-lg text-sm font-medium">复制结果</button>
+            <button id="btn-clear" class="px-4 py-2 bg-destructive text-destructive-foreground rounded-lg text-sm font-medium">清空</button>
+          </div>
+        </div>
+
+        <!-- Output Section -->
+        <div>
+          <label for="output-url" class="block text-sm font-medium mb-2">输出结果</label>
+          <textarea
+            id="output-url"
+            class="w-full h-48 p-4 font-mono text-sm border border-input rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-ring"
+            readonly
+            placeholder="结果将显示在这里..."
+          ></textarea>
+
+          <!-- Query String Parser -->
+          <div id="query-parser" class="mt-4 hidden">
+            <label class="block text-sm font-medium mb-2">Query String 解析结果</label>
+            <div id="query-params" class="p-4 rounded-lg border border-border bg-card overflow-auto max-h-48">
+              <table class="w-full text-sm">
+                <thead>
+                  <tr class="border-b border-border">
+                    <th class="text-left py-2 px-2 font-medium">参数</th>
+                    <th class="text-left py-2 px-2 font-medium">值</th>
+                  </tr>
+                </thead>
+                <tbody id="query-table-body">
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="status-bar" class="mt-4 p-3 rounded-lg text-sm hidden"></div>
+
+      <div class="mt-12 p-6 rounded-xl border border-border bg-card">
+        <h2 class="text-xl font-semibold mb-4">使用说明</h2>
+        <ul class="space-y-2 text-sm">
+          <li><strong>URL 编码</strong> - 编码整个 URL（包括特殊字符）</li>
+          <li><strong>URL 解码</strong> - 解码 URL 编码的字符串</li>
+          <li><strong>编码组件</strong> - 使用 encodeURIComponent 编码</li>
+          <li><strong>解码组件</strong> - 使用 decodeURIComponent 解码</li>
+          <li><strong>解析 Query</strong> - 解析 URL 中的查询参数</li>
+          <li><strong>示例</strong> - 加载示例 URL</li>
+          <li><strong>复制</strong> - 将输出复制到剪贴板</li>
+          <li><strong>清空</strong> - 清除所有输入和输出</li>
+        </ul>
+      </div>
+    </div>
+  </main>
+</Layout>
+
+<script>
+  const inputUrl = document.getElementById('input-url') as HTMLTextAreaElement;
+  const outputUrl = document.getElementById('output-url') as HTMLTextAreaElement;
+  const statusBar = document.getElementById('status-bar') as HTMLDivElement;
+  const queryParser = document.getElementById('query-parser') as HTMLDivElement;
+  const queryTableBody = document.getElementById('query-table-body') as HTMLTableSectionElement;
+
+  function showStatus(msg: string, type: 'success' | 'error' | 'info') {
+    statusBar.className = `mt-4 p-3 rounded-lg text-sm block ${
+      type === 'success' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' :
+      type === 'error' ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400' :
+      'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
+    }`;
+    statusBar.textContent = msg;
+  }
+
+  function parseQueryString(url: string) {
+    try {
+      const urlObj = new URL(url);
+      const params = new URLSearchParams(urlObj.search);
+      const result: Array<{key: string, value: string}> = [];
+      
+      params.forEach((value, key) => {
+        result.push({ key, value });
+      });
+      
+      return result;
+    } catch {
+      // If not a full URL, try to parse as query string
+      const params = new URLSearchParams(url);
+      const result: Array<{key: string, value: string}> = [];
+      
+      params.forEach((value, key) => {
+        result.push({ key, value });
+      });
+      
+      return result;
+    }
+  }
+
+  function displayQueryParams(params: Array<{key: string, value: string}>) {
+    if (params.length === 0) {
+      queryParser.classList.add('hidden');
+      return;
+    }
+    
+    queryParser.classList.remove('hidden');
+    queryTableBody.innerHTML = params.map(p => 
+      `<tr class="border-b border-border/50">
+        <td class="py-2 px-2 font-mono text-primary">${p.key}</td>
+        <td class="py-2 px-2 font-mono">${p.value}</td>
+      </tr>`
+    ).join('');
+  }
+
+  // Button event listeners
+  document.getElementById('btn-encode')?.addEventListener('click', () => {
+    const input = inputUrl.value;
+    if (!input.trim()) {
+      showStatus('请输入 URL 或文本', 'error');
+      return;
+    }
+    try {
+      outputUrl.value = encodeURI(input);
+      showStatus('URL 编码成功', 'success');
+    } catch (error) {
+      showStatus(`编码失败: ${error}`, 'error');
+    }
+  });
+
+  document.getElementById('btn-decode')?.addEventListener('click', () => {
+    const input = inputUrl.value;
+    if (!input.trim()) {
+      showStatus('请输入要解码的 URL', 'error');
+      return;
+    }
+    try {
+      outputUrl.value = decodeURI(input);
+      showStatus('URL 解码成功', 'success');
+    } catch (error) {
+      showStatus(`解码失败: ${error}`, 'error');
+    }
+  });
+
+  document.getElementById('btn-encode-component')?.addEventListener('click', () => {
+    const input = inputUrl.value;
+    if (!input.trim()) {
+      showStatus('请输入文本', 'error');
+      return;
+    }
+    try {
+      outputUrl.value = encodeURIComponent(input);
+      showStatus('组件编码成功', 'success');
+    } catch (error) {
+      showStatus(`编码失败: ${error}`, 'error');
+    }
+  });
+
+  document.getElementById('btn-decode-component')?.addEventListener('click', () => {
+    const input = inputUrl.value;
+    if (!input.trim()) {
+      showStatus('请输入要解码的文本', 'error');
+      return;
+    }
+    try {
+      outputUrl.value = decodeURIComponent(input);
+      showStatus('组件解码成功', 'success');
+    } catch (error) {
+      showStatus(`解码失败: ${error}`, 'error');
+    }
+  });
+
+  document.getElementById('btn-parse-query')?.addEventListener('click', () => {
+    const input = inputUrl.value;
+    if (!input.trim()) {
+      showStatus('请输入 URL', 'error');
+      return;
+    }
+    try {
+      const params = parseQueryString(input);
+      displayQueryParams(params);
+      showStatus(`解析到 ${params.length} 个参数`, 'success');
+    } catch (error) {
+      showStatus(`解析失败: ${error}`, 'error');
+    }
+  });
+
+  document.getElementById('btn-example')?.addEventListener('click', () => {
+    inputUrl.value = 'https://example.com/search?q=hello world&lang=zh-CN&page=1';
+    showStatus('已加载示例', 'info');
+  });
+
+  document.getElementById('btn-copy')?.addEventListener('click', () => {
+    if (!outputUrl.value) {
+      showStatus('没有可复制的内容', 'error');
+      return;
+    }
+    navigator.clipboard.writeText(outputUrl.value);
+    showStatus('已复制到剪贴板', 'success');
+  });
+
+  document.getElementById('btn-clear')?.addEventListener('click', () => {
+    inputUrl.value = '';
+    outputUrl.value = '';
+    statusBar.className = 'mt-4 p-3 rounded-lg text-sm hidden';
+    queryParser.classList.add('hidden');
+  });
+</script>
