@@ -3,12 +3,14 @@ import ThemeToggle from './ThemeToggle.astro';
 
 const { pathname } = Astro.url;
 const isHome = pathname === '/';
+const isProjects = pathname.startsWith('/projects');
 const isTools = pathname.startsWith('/tools');
 const isBlog = pathname.startsWith('/blog');
 const isAbout = pathname === '/about';
 
 const navItems = [
   { href: '/', label: '首页', active: isHome },
+  { href: '/projects', label: '旗舰项目', active: isProjects },
   { href: '/tools', label: '工具', active: isTools },
   { href: '/blog', label: '博客', active: isBlog },
   { href: '/about', label: '关于', active: isAbout },
