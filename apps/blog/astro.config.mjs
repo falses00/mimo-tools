@@ -4,6 +4,8 @@ import tailwind from '@astrojs/tailwind';
 import mdx from '@astrojs/mdx';
 
 export default defineConfig({
+  site: 'https://falses00.github.io',
+  base: '/mimo-tools',
   integrations: [
     react(),
     tailwind({

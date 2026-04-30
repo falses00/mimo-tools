@@ -4,6 +4,8 @@ import Hero from '../components/home/Hero.astro';
 import FeaturedTools from '../components/home/FeaturedTools.astro';
 import { getFeaturedProjects } from '../data/projects';
 
+const base = import.meta.env.BASE_URL;
+const baseWithSlash = base.endsWith('/') ? base : `${base}/`;
 const featuredProjects = getFeaturedProjects();
 ---
 
@@ -28,7 +30,7 @@ const featuredProjects = getFeaturedProjects();
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
         {featuredProjects.map(project => (
           <a
-            href={project.path}
+            href={`${baseWithSlash}projects/${project.id}`}
             class="group block rounded-xl p-8 transition-all duration-300"
             style="background: var(--bg-card); border: 1px solid var(--border-subtle);"
           >
@@ -60,7 +62,7 @@ const featuredProjects = getFeaturedProjects();
       </div>
 
       <div class="text-center">
-        <a href="/projects" class="btn btn-primary px-8 py-3">
+        <a href={`${baseWithSlash}projects`} class="btn btn-primary px-8 py-3">
           查看所有旗舰项目
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-2">
             <path d="M5 12h14" />
