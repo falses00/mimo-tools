@@ -42,11 +42,23 @@ mimo/
 
 ## 可用工具
 
+### 开发者工具
 1. **JSON Formatter** - JSON格式化、验证、差异比较
-2. **Markdown Previewer** - Markdown实时预览
+2. **Regex Tester** - 正则表达式测试
 3. **Cron Helper** - Cron表达式可视化生成
-4. **Color Palette** - 颜色调色板生成
-5. **Regex Tester** - 正则表达式测试
+4. **URL Encoder/Decoder** - URL编码/解码，Query string解析
+5. **Base64 Encoder/Decoder** - Base64编码/解码，支持UTF-8
+6. **UUID Generator** - 生成v4 UUID，批量生成
+
+### 写作工具
+7. **Markdown Previewer** - Markdown实时预览
+8. **Text Utilities** - 大小写转换、去空行、统计字符/单词/行数
+
+### 设计工具
+9. **Color Palette** - 颜色调色板生成
+
+### 日期时间
+10. **Timestamp Converter** - Unix timestamp与日期互转
 
 ## 文档
 
