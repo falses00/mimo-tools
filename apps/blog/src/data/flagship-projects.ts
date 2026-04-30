@@ -4,7 +4,7 @@ export interface FlagshipProject {
   tagline: string;
   description: string;
   icon: string;
-  category: 'quality' | 'data' | 'api' | 'incident' | 'knowledge';
+  category: 'life' | 'quality' | 'data' | 'api' | 'incident' | 'knowledge';
   tags: string[];
   path: string;
   featured: boolean;
@@ -18,6 +18,24 @@ export interface FlagshipProject {
 }
 
 export const flagshipProjects: FlagshipProject[] = [
+  {
+    id: 'lifepilot',
+    name: 'LifePilot',
+    tagline: 'AI 生活管家',
+    description: '用一句话记录今天做了什么、接下来要做什么，自动生成已办、待办、提醒和生活计划。',
+    icon: '🎯',
+    category: 'life',
+    tags: ['AI', '生活管理', '自然语言', '待办', '习惯'],
+    path: '/projects/lifepilot',
+    featured: true,
+    status: 'available',
+    techStack: ['TypeScript', 'NLP', 'localStorage', 'Fastify'],
+    capabilities: ['自然语言解析', '自动分类', '待办管理', '习惯追踪', '账单记录', '日报导出'],
+    highlights: ['一句话输入', '智能分类', '本地优先', 'API Mode', '历史记录'],
+    isFrontendOnly: false,
+    hasBackend: true,
+    hasRAG: false,
+  },
   {
     id: 'launchguard',
     name: 'LaunchGuard',
