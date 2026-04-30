@@ -1,0 +1,164 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+const base = import.meta.env.BASE_URL;
+const baseWithSlash = base.endsWith('/') ? base : `${base}/`;
+const apiBaseUrl = import.meta.env.PUBLIC_API_BASE_URL ?? '';
+---
+
+<Layout title="KnowledgePilot 个人知识库 RAG 助手 - MIMO" description="文档上传、chunk、检索、引用问答、sources/citations。">
+  <div class="knowledgepilot-app" data-api-base-url={apiBaseUrl}>
+    <section class="kp-hero">
+      <div class="container">
+        <div class="hero-badge">
+          <span class="badge-dot"></span>
+          <span>个人知识库 / RAG 助手</span>
+        </div>
+        <h1 class="hero-title">KnowledgePilot</h1>
+        <p class="hero-subtitle">上传文档、构建索引、搜索、问答。支持检索增强生成，每个回答都有引用来源。</p>
+      </div>
+    </section>
+    <section class="kp-workbench">
+      <div class="container">
+        <div class="workbench-grid">
+          <div class="workbench-left">
+            <div class="guide-card">
+              <h3 class="guide-title">💡 新手引导</h3>
+              <p class="guide-text">1. 粘贴或上传文档</p>
+              <p class="guide-text">2. 构建索引</p>
+              <p class="guide-text">3. 搜索或提问</p>
+              <button class="btn-use-example" id="btn-use-example">使用示例文档</button>
+            </div>
+            <div class="input-card">
+              <h3 class="input-title">📄 文档内容</h3>
+              <textarea id="input-docs" class="kp-textarea" placeholder="粘贴文档内容..." rows="10"></textarea>
+              <div class="input-actions">
+                <button class="btn-build" id="btn-build">🔍 构建索引</button>
+                <button class="btn-clear" id="btn-clear">清空</button>
+              </div>
+            </div>
+            <div class="input-card">
+              <h3 class="input-title">❓ 搜索 / 问答</h3>
+              <input id="input-query" class="kp-input" placeholder="输入关键词或问题..." />
+              <div class="input-actions">
+                <button class="btn-search" id="btn-search">🔍 搜索</button>
+                <button class="btn-ask" id="btn-ask">❓ 问答</button>
+              </div>
+            </div>
+          </div>
+          <div class="workbench-right">
+            <div class="mode-badge-container">
+              <span id="mode-badge" class="mode-badge">{apiBaseUrl ? 'API 模式' : '本地模式'}</span>
+            </div>
+            <div id="empty-state" class="empty-state">
+              <div class="empty-icon">📚</div>
+              <h3 class="empty-title">开始使用</h3>
+              <p class="empty-text">粘贴文档内容，构建索引，然后搜索或提问</p>
+            </div>
+            <div id="search-section" class="result-section hidden">
+              <h3 class="section-title">🔍 搜索结果</h3>
+              <div id="search-results" class="search-results"></div>
+            </div>
+            <div id="answer-section" class="result-section hidden">
+              <h3 class="section-title">❓ 问答结果</h3>
+              <div id="answer-content" class="answer-content"></div>
+              <div id="answer-sources" class="answer-sources">
+                <h4 class="sources-title">📚 引用来源</h4>
+                <div id="sources-list" class="sources-list"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</Layout>
+
+<style>
+  .knowledgepilot-app { min-height: 100vh; }
+  .kp-hero { padding: 6rem 0 3rem; text-align: center; background: linear-gradient(180deg, var(--bg-page) 0%, var(--bg-section) 100%); }
+  .hero-badge { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; border-radius: 9999px; background: var(--gold-subtle); border: 1px solid var(--gold-border); font-size: 0.75rem; font-weight: 600; color: var(--gold); margin-bottom: 1.5rem; }
+  .badge-dot { width: 0.5rem; height: 0.5rem; border-radius: 50%; background: var(--gold); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+  .hero-title { font-size: 3rem; font-weight: 800; margin-bottom: 1rem; background: linear-gradient(135deg, var(--gold) 0%, var(--gold-soft) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .hero-subtitle { font-size: 1.125rem; color: var(--text-secondary); max-width: 600px; margin: 0 auto; line-height: 1.6; }
+  .kp-workbench { padding: 2rem 0 4rem; }
+  .workbench-grid { display: grid; grid-template-columns: 1fr 1.5fr; gap: 2rem; align-items: start; }
+  @media (max-width: 1024px) { .workbench-grid { grid-template-columns: 1fr; } }
+  .workbench-left, .workbench-right { display: flex; flex-direction: column; gap: 1.5rem; }
+  .guide-card, .input-card { padding: 1.5rem; border-radius: 1rem; background: var(--bg-card); border: 1px solid var(--border-subtle); }
+  .guide-title, .input-title { font-size: 1rem; font-weight: 600; color: var(--text-primary); margin-bottom: 1rem; }
+  .guide-text { font-size: 0.875rem; color: var(--text-muted); margin-bottom: 0.25rem; }
+  .btn-use-example { margin-top: 0.75rem; padding: 0.5rem 1rem; border-radius: 0.5rem; background: var(--bg-elevated); border: 1px solid var(--border-default); color: var(--text-secondary); font-size: 0.75rem; cursor: pointer; }
+  .kp-textarea { width: 100%; padding: 1rem; border-radius: 0.5rem; background: var(--bg-input); border: 1px solid var(--border-default); color: var(--text-primary); font-size: 0.875rem; line-height: 1.6; resize: vertical; }
+  .kp-textarea:focus, .kp-input:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px var(--gold-glow); }
+  .kp-input { width: 100%; padding: 0.75rem 1rem; border-radius: 0.5rem; background: var(--bg-input); border: 1px solid var(--border-default); color: var(--text-primary); font-size: 0.875rem; }
+  .input-actions { display: flex; gap: 0.75rem; margin-top: 1rem; }
+  .btn-build, .btn-search, .btn-ask { flex: 1; padding: 0.75rem 1.5rem; border-radius: 0.5rem; background: linear-gradient(135deg, var(--gold) 0%, var(--gold-soft) 100%); color: var(--bg-page); font-weight: 600; font-size: 0.875rem; border: none; cursor: pointer; }
+  .btn-clear { padding: 0.75rem 1.5rem; border-radius: 0.5rem; background: var(--bg-elevated); border: 1px solid var(--border-default); color: var(--text-secondary); font-size: 0.875rem; cursor: pointer; }
+  .mode-badge { display: inline-flex; padding: 0.375rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; background: var(--gold-subtle); color: var(--gold); border: 1px solid var(--gold-border); }
+  .hidden { display: none !important; }
+  .empty-state { text-align: center; padding: 3rem; border-radius: 1rem; background: var(--bg-card); border: 1px solid var(--border-subtle); }
+  .empty-icon { font-size: 3rem; margin-bottom: 1rem; }
+  .empty-title { font-size: 1.25rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.5rem; }
+  .empty-text { font-size: 0.875rem; color: var(--text-muted); }
+  .result-section { padding: 1.5rem; border-radius: 1rem; background: var(--bg-card); border: 1px solid var(--border-subtle); }
+  .section-title { font-size: 1rem; font-weight: 600; color: var(--text-primary); margin-bottom: 1rem; }
+  .search-results { display: flex; flex-direction: column; gap: 0.75rem; }
+  .search-result { padding: 1rem; border-radius: 0.5rem; background: var(--bg-elevated); border-left: 3px solid var(--gold); }
+  .result-title { font-size: 0.875rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.25rem; }
+  .result-content { font-size: 0.8rem; color: var(--text-muted); }
+  .answer-content { padding: 1rem; border-radius: 0.5rem; background: var(--bg-elevated); font-size: 0.875rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 1rem; }
+  .sources-title { font-size: 0.875rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.75rem; }
+  .sources-list { display: flex; flex-direction: column; gap: 0.5rem; }
+  .source-item { padding: 0.75rem; border-radius: 0.5rem; background: var(--bg-elevated); font-size: 0.8rem; }
+  .source-title { font-weight: 600; color: var(--gold); margin-bottom: 0.25rem; }
+  .source-snippet { color: var(--text-muted); }
+</style>
+
+<script>
+  const root = document.querySelector('.knowledgepilot-app');
+  const apiBaseUrl = root?.getAttribute('data-api-base-url') || '';
+  const inputDocs = document.getElementById('input-docs');
+  const inputQuery = document.getElementById('input-query');
+  let currentDocs = [];
+  const exampleDocs = `# MIMO 项目\nMIMO 是一个个人工程工具生态。\n\n# LifePilot\nLifePilot 是 AI 生活管家。\n\n# InterviewPilot\nInterviewPilot 是 AI 面试教练。`;
+  
+  document.getElementById('btn-build')?.addEventListener('click', () => {
+    const text = inputDocs.value.trim();
+    if (!text) { alert('请粘贴文档内容'); return; }
+    const chunks = text.split(/\n\s*\n/).filter(s => s.trim());
+    currentDocs = chunks.map((chunk, i) => ({ id: `doc-${i}`, title: chunk.split('\n')[0].replace(/^#\s*/, '').substring(0, 50), content: chunk }));
+    alert(`已构建索引，共 ${currentDocs.length} 个文档块`);
+  });
+  
+  document.getElementById('btn-search')?.addEventListener('click', () => {
+    const query = inputQuery.value.trim().toLowerCase();
+    if (!query) { alert('请输入搜索关键词'); return; }
+    if (currentDocs.length === 0) { alert('请先构建索引'); return; }
+    const results = currentDocs.filter(doc => doc.content.toLowerCase().includes(query) || doc.title.toLowerCase().includes(query));
+    document.getElementById('empty-state')?.classList.add('hidden');
+    document.getElementById('answer-section')?.classList.add('hidden');
+    document.getElementById('search-section')?.classList.remove('hidden');
+    const searchResults = document.getElementById('search-results');
+    searchResults.innerHTML = results.length === 0 ? '<div class="search-result"><div class="result-title">未找到结果</div></div>' : results.map(r => `<div class="search-result"><div class="result-title">${r.title}</div><div class="result-content">${r.content.substring(0, 200)}...</div></div>`).join('');
+  });
+  
+  document.getElementById('btn-ask')?.addEventListener('click', () => {
+    const question = inputQuery.value.trim().toLowerCase();
+    if (!question) { alert('请输入问题'); return; }
+    if (currentDocs.length === 0) { alert('请先构建索引'); return; }
+    const keywords = question.split(/\s+/);
+    const scored = currentDocs.map(doc => ({ ...doc, score: keywords.filter(k => doc.content.toLowerCase().includes(k)).length })).filter(d => d.score > 0).sort((a, b) => b.score - a.score);
+    const sources = scored.slice(0, 3);
+    const answer = sources.length > 0 ? `根据检索结果，找到 ${sources.length} 个相关文档：\n${sources.map(s => `- ${s.title}`).join('\n')}` : '未找到相关内容';
+    document.getElementById('empty-state')?.classList.add('hidden');
+    document.getElementById('search-section')?.classList.add('hidden');
+    document.getElementById('answer-section')?.classList.remove('hidden');
+    document.getElementById('answer-content').textContent = answer;
+    document.getElementById('sources-list').innerHTML = sources.map(s => `<div class="source-item"><div class="source-title">${s.title}</div><div class="source-snippet">${s.content.substring(0, 150)}...</div></div>`).join('');
+  });
+  
+  document.getElementById('btn-clear')?.addEventListener('click', () => { inputDocs.value = ''; inputQuery.value = ''; currentDocs = []; document.getElementById('empty-state')?.classList.remove('hidden'); document.getElementById('search-section')?.classList.add('hidden'); document.getElementById('answer-section')?.classList.add('hidden'); });
+  document.getElementById('btn-use-example')?.addEventListener('click', () => { inputDocs.value = exampleDocs; });
+</script>
