@@ -342,7 +342,10 @@ const labels: Record<string, { input: string; action: string; output: string; as
       const data = await response.json();
       return { ok: true, mode: 'api', data, durationMs: Date.now() - start };
     } catch (error) {
-      return { ok: false, mode: 'api-error-fallback', error: error.message, durationMs: 0 };
+      const errorMsg = error.name === 'TimeoutError' 
+        ? 'Request timeout (30s) - API may be cold starting' 
+        : error.message;
+      return { ok: false, mode: 'api-error-fallback', error: errorMsg, durationMs: Date.now() - start };
     }
   }
 
@@ -437,7 +440,12 @@ const labels: Record<string, { input: string; action: string; output: string; as
     }
     
     // Show loading
-    output.innerHTML = '<p style="color: var(--text-muted);">⏳ Connecting to Render API...</p>';
+    output.innerHTML = `
+      <div style="text-align: center; padding: 2rem;">
+        <p style="color: var(--text-muted); margin-bottom: 0.5rem;">⏳ Connecting to Render API...</p>
+        <p style="color: var(--text-disabled); font-size: 0.75rem;">Render free instance may need 30-60s cold start</p>
+      </div>
+    `;
     if (outputModeBadge) outputModeBadge.textContent = '运行中...';
     
     // Try API first
@@ -457,7 +465,18 @@ const labels: Record<string, { input: string; action: string; output: string; as
       updateModeBadge(result ? 'api-error-fallback' : 'static-fallback', result?.durationMs);
       
       try {
-        output.innerHTML = getLocalResult(text);
+        const localResult = getLocalResult(text);
+        const retryButton = result ? `
+          <div style="margin-top: 1rem; padding: 0.75rem; border-radius: var(--radius-md); background: var(--warning-muted); border: 1px solid rgba(251, 191, 36, 0.3);">
+            <p style="color: var(--warning); font-size: 0.875rem; margin-bottom: 0.5rem;">
+              ⚠️ API ${fallbackReason.includes('timeout') ? '可能正在冷启动' : '请求失败'}
+            </p>
+            <button class="btn btn-secondary" onclick="this.closest('.project-workbench').querySelector('[data-run]').click()" style="font-size: 0.75rem;">
+              🔄 Retry API
+            </button>
+          </div>
+        ` : '';
+        output.innerHTML = localResult + retryButton;
         if (outputModeBadge) outputModeBadge.textContent = result ? 'Fallback' : 'Static Demo';
       } catch (error) {
         output.innerHTML = `<p class="error-text">解析失败：${esc(error.message || error)}</p>`;
