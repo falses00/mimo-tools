@@ -1,90 +1,96 @@
 ---
-import HeroScene from '../visual/HeroScene';
-
 const base = import.meta.env.BASE_URL;
 const baseWithSlash = base.endsWith('/') ? base : `${base}/`;
 ---
 
 <section class="hero-stage relative overflow-hidden">
   <div class="container relative">
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-      {/* Left: Text Content */}
-      <div class="flex flex-col gap-6">
-        {/* Badge */}
-        <div class="hero-pill inline-flex items-center self-start px-4 py-1.5 rounded-full">
-          <span class="relative flex h-2 w-2 mr-2">
-            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--gold)] opacity-75"></span>
-            <span class="relative inline-flex rounded-full h-2 w-2" style="background: var(--gold);"></span>
-          </span>
-          <span class="text-xs font-bold uppercase tracking-widest font-mono" style="color: var(--text-muted);">MIMO Engineering</span>
+    <div class="hero-content">
+      {/* Badge */}
+      <div class="hero-pill inline-flex items-center self-start px-4 py-1.5 rounded-full mb-6">
+        <span class="relative flex h-2 w-2 mr-2">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--gold)] opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2 w-2" style="background: var(--gold);"></span>
+        </span>
+        <span class="text-xs font-bold uppercase tracking-widest font-mono" style="color: var(--text-muted);">Fullstack Engineering</span>
+      </div>
+
+      {/* Title */}
+      <h1 class="hero-title text-4xl md:text-5xl lg:text-6xl font-black leading-tight tracking-tight mb-6">
+        <span style="color: var(--text-primary);">MIMO</span>
+        <span class="block mt-2 animate-shine bg-[linear-gradient(110deg,var(--gold-deep),45%,var(--gold),55%,var(--gold-deep))] bg-[length:200%_100%] bg-clip-text text-transparent font-black tracking-tighter" style="--shine-duration:4s">
+          全栈工程工具生态
+        </span>
+      </h1>
+
+      {/* Description */}
+      <p class="text-lg leading-relaxed max-w-2xl mb-8" style="color: var(--text-secondary);">
+        6 个旗舰项目工作台、Render 后端 API、本地 RAG 检索、数据工作台。前端精美，后端真实可用。
+      </p>
+
+      {/* Feature Points */}
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-10">
+        <div class="feature-point">
+          <div class="feature-icon">⚡</div>
+          <div class="feature-text">Render API</div>
         </div>
-
-        {/* Title */}
-        <h1 class="hero-title text-4xl md:text-5xl lg:text-6xl font-black leading-tight tracking-tight">
-          <div class="overflow-hidden">
-            <span style="color: var(--text-primary);">MIMO</span>
-          </div>
-          <span class="animate-shine bg-[linear-gradient(110deg,var(--gold-deep),45%,var(--gold),55%,var(--gold-deep))] bg-[length:200%_100%] bg-clip-text text-transparent text-4xl md:text-5xl lg:text-6xl mt-2 font-black tracking-tighter drop-shadow-lg inline-block" style="--shine-duration:4s">
-            专业工程工具生态
-          </span>
-        </h1>
-
-        {/* Description */}
-        <p class="text-lg leading-relaxed max-w-xl" style="color: var(--text-secondary);">
-          6 个旗舰项目工作台、完整后端 API、RAG 检索系统、3D 暗金高级视觉。所有工具纯前端处理，数据不离开浏览器。
-        </p>
-
-        {/* Feature Points */}
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-2">
-          <div class="hero-point flex items-center gap-2 text-sm" style="color: var(--text-secondary);">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0" style="color: var(--gold);">
-              <path d="M21.801 10A10 10 0 1 1 17 3.335"></path>
-              <path d="m9 11 3 3L22 4"></path>
-            </svg>
-            Fullstack API with Render
-          </div>
-          <div class="hero-point flex items-center gap-2 text-sm" style="color: var(--text-secondary);">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0" style="color: var(--gold);">
-              <path d="M21.801 10A10 10 0 1 1 17 3.335"></path>
-              <path d="m9 11 3 3L22 4"></path>
-            </svg>
-            Local RAG Retrieval
-          </div>
-          <div class="hero-point flex items-center gap-2 text-sm" style="color: var(--text-secondary);">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0" style="color: var(--gold);">
-              <path d="M21.801 10A10 10 0 1 1 17 3.335"></path>
-              <path d="m9 11 3 3L22 4"></path>
-            </svg>
-            6 Flagship Workbenches
-          </div>
-          <div class="hero-point flex items-center gap-2 text-sm" style="color: var(--text-secondary);">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0" style="color: var(--gold);">
-              <path d="M21.801 10A10 10 0 1 1 17 3.335"></path>
-              <path d="m9 11 3 3L22 4"></path>
-            </svg>
-            GitHub Pages + Render API
-          </div>
+        <div class="feature-point">
+          <div class="feature-icon">🔍</div>
+          <div class="feature-text">RAG 检索</div>
         </div>
-
-        {/* CTA Buttons */}
-        <div class="flex flex-wrap gap-4 mt-4">
-          <a href={`${baseWithSlash}projects`} class="hero-btn group btn-gold px-8 py-3 text-sm tracking-widest uppercase">
-            探索项目
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-2 group-hover:translate-x-1 transition-transform">
-              <path d="M5 12h14" />
-              <path d="m12 5 7 7-7 7" />
-            </svg>
-          </a>
-          <a href={`${baseWithSlash}tools`} class="hero-btn btn-ghost px-8 py-3 text-sm tracking-widest uppercase">
-            浏览工具
-          </a>
+        <div class="feature-point">
+          <div class="feature-icon">🛠️</div>
+          <div class="feature-text">6 个工作台</div>
+        </div>
+        <div class="feature-point">
+          <div class="feature-icon">🚀</div>
+          <div class="feature-text">全栈部署</div>
         </div>
       </div>
 
-      {/* Right: 3D Scene */}
-      <div class="relative hidden lg:block">
-        <div class="hero-visual">
-          <HeroScene client:visible />
+      {/* CTA Buttons */}
+      <div class="flex flex-wrap gap-4">
+        <a href={`${baseWithSlash}projects`} class="btn-gold px-8 py-3 text-sm tracking-widest uppercase">
+          探索项目
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-2 inline">
+            <path d="M5 12h14" />
+            <path d="m12 5 7 7-7 7" />
+          </svg>
+        </a>
+        <a href={`${baseWithSlash}tools`} class="btn-ghost px-8 py-3 text-sm tracking-widest uppercase">
+          浏览工具
+        </a>
+      </div>
+
+      {/* Terminal Preview */}
+      <div class="terminal-preview mt-12">
+        <div class="terminal-header">
+          <div class="terminal-dots">
+            <span class="dot dot-red"></span>
+            <span class="dot dot-yellow"></span>
+            <span class="dot dot-green"></span>
+          </div>
+          <div class="terminal-title">mimo-tools ~ api</div>
+        </div>
+        <div class="terminal-body">
+          <div class="terminal-line">
+            <span class="terminal-prompt">$</span>
+            <span class="terminal-command">curl https://mimo-tools-api.onrender.com/api/health</span>
+          </div>
+          <div class="terminal-line terminal-output">
+            <span class="terminal-success">status: ok, version: 1.0.0</span>
+          </div>
+          <div class="terminal-line">
+            <span class="terminal-prompt">$</span>
+            <span class="terminal-command">npm run verify:api</span>
+          </div>
+          <div class="terminal-line terminal-output">
+            <span class="terminal-success">7/7 endpoints passed</span>
+          </div>
+          <div class="terminal-line">
+            <span class="terminal-prompt">$</span>
+            <span class="terminal-cursor">_</span>
+          </div>
         </div>
       </div>
     </div>
@@ -99,9 +105,14 @@ const baseWithSlash = base.endsWith('/') ? base : `${base}/`;
     align-items: center;
   }
 
+  .hero-content {
+    max-width: 800px;
+  }
+
   .hero-pill {
     background: rgba(11, 13, 18, 0.6);
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 9999px;
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
   }
 
@@ -109,23 +120,109 @@ const baseWithSlash = base.endsWith('/') ? base : `${base}/`;
     text-wrap: balance;
   }
 
-  .hero-visual {
-    position: relative;
-    width: 100%;
-    height: 500px;
-    border-radius: 1.5rem;
-    overflow: hidden;
+  .feature-point {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    border-radius: 1rem;
+    background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.06);
-    background: rgba(11, 13, 18, 0.5);
-    box-shadow: 
-      0 0 50px rgba(0, 0, 0, 0.3),
-      0 0 30px rgba(212, 175, 55, 0.05);
   }
 
-  :global(.hero-visual canvas) {
-    width: 100% !important;
-    height: 100% !important;
-    display: block;
+  .feature-icon {
+    font-size: 1.5rem;
+  }
+
+  .feature-text {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* Terminal Preview */
+  .terminal-preview {
+    max-width: 600px;
+    border-radius: 1rem;
+    overflow: hidden;
+    background: rgba(11, 13, 18, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 
+      0 25px 50px rgba(0, 0, 0, 0.5),
+      0 0 0 1px rgba(255, 255, 255, 0.05),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+
+  .terminal-header {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    background: rgba(255, 255, 255, 0.02);
+  }
+
+  .terminal-dots {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .dot {
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 50%;
+  }
+
+  .dot-red { background: #ff5f57; }
+  .dot-yellow { background: #febc2e; }
+  .dot-green { background: #28c840; }
+
+  .terminal-title {
+    flex: 1;
+    text-align: center;
+    font-size: 0.75rem;
+    font-family: monospace;
+    color: rgba(255, 255, 255, 0.3);
+  }
+
+  .terminal-body {
+    padding: 1.5rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    line-height: 1.8;
+  }
+
+  .terminal-line {
+    margin-bottom: 0.5rem;
+  }
+
+  .terminal-prompt {
+    color: var(--gold);
+    margin-right: 0.75rem;
+  }
+
+  .terminal-command {
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  .terminal-output {
+    padding-left: 1.5rem;
+  }
+
+  .terminal-success {
+    color: #4ade80;
+  }
+
+  .terminal-cursor {
+    color: var(--gold);
+    animation: blink 1s infinite;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
   }
 
   @keyframes shine {
@@ -137,7 +234,7 @@ const baseWithSlash = base.endsWith('/') ? base : `${base}/`;
     animation: shine var(--shine-duration, 4s) linear infinite;
   }
 
-  @media (max-width: 1024px) {
+  @media (max-width: 768px) {
     .hero-stage {
       min-height: auto;
       padding: 6rem 0 3rem;
@@ -145,16 +242,6 @@ const baseWithSlash = base.endsWith('/') ? base : `${base}/`;
 
     .hero-title {
       font-size: 2.5rem;
-    }
-  }
-
-  @media (max-width: 640px) {
-    .hero-stage {
-      padding: 5rem 0 2rem;
-    }
-
-    .hero-title {
-      font-size: 2rem;
     }
   }
 </style>
