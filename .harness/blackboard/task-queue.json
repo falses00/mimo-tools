@@ -1,58 +1,9 @@
 [
-  {
-    "id": "G3-T1",
-    "gate": "gate-3-github-repos",
-    "agent": "github-agent",
-    "status": "in-progress",
-    "title": "检查 gh auth 状态"
-  },
-  {
-    "id": "G3-T2",
-    "gate": "gate-3-github-repos",
-    "agent": "github-agent",
-    "status": "pending",
-    "title": "检查 6 个 GitHub 仓库是否存在"
-  },
-  {
-    "id": "G3-T3",
-    "gate": "gate-3-github-repos",
-    "agent": "github-agent",
-    "status": "pending",
-    "title": "创建不存在的 GitHub 仓库"
-  },
-  {
-    "id": "G3-T4",
-    "gate": "gate-3-github-repos",
-    "agent": "project-scaffold-agent",
-    "status": "pending",
-    "title": "初始化每个独立项目 git remote"
-  },
-  {
-    "id": "G3-T5",
-    "gate": "gate-3-github-repos",
-    "agent": "release-agent",
-    "status": "pending",
-    "title": "提交并 push 每个独立项目"
-  },
-  {
-    "id": "G3-T6",
-    "gate": "gate-3-github-repos",
-    "agent": "portfolio-agent",
-    "status": "pending",
-    "title": "更新 Portfolio Hub repoUrl"
-  },
-  {
-    "id": "G3-T7",
-    "gate": "gate-3-github-repos",
-    "agent": "qa-agent",
-    "status": "pending",
-    "title": "验证 Portfolio Hub 项目链接"
-  },
-  {
-    "id": "G3-T8",
-    "gate": "gate-3-github-repos",
-    "agent": "harness-controller-agent",
-    "status": "pending",
-    "title": "更新 gate-3 evidence 和 STATUS"
-  }
+  {"id": "G4-T1", "gate": "gate-4-lifepilot", "agent": "master-planner-agent", "status": "in-progress", "title": "读取 mimo-lifepilot scaffold 并制定独立化计划"},
+  {"id": "G4-T2", "gate": "gate-4-lifepilot", "agent": "frontend-agent", "status": "pending", "title": "实现独立 apps/web LifePilot 前端"},
+  {"id": "G4-T3", "gate": "gate-4-lifepilot", "agent": "backend-agent", "status": "pending", "title": "实现独立 apps/api LifePilot 后端"},
+  {"id": "G4-T4", "gate": "gate-4-lifepilot", "agent": "frontend-agent", "status": "pending", "title": "接入 SplineScene 或 fallback 视觉系统"},
+  {"id": "G4-T5", "gate": "gate-4-lifepilot", "agent": "qa-agent", "status": "pending", "title": "添加并运行 API/前端测试"},
+  {"id": "G4-T6", "gate": "gate-4-lifepilot", "agent": "release-agent", "status": "pending", "title": "commit/push mimo-lifepilot 并更新 Portfolio Hub"},
+  {"id": "G4-T7", "gate": "gate-4-lifepilot", "agent": "harness-controller-agent", "status": "pending", "title": "更新 Gate 4 evidence 和 STATUS"}
 ]
