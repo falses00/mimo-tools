@@ -1,0 +1,58 @@
+[
+  {
+    "id": "G3-T1",
+    "gate": "gate-3-github-repos",
+    "agent": "github-agent",
+    "status": "in-progress",
+    "title": "检查 gh auth 状态"
+  },
+  {
+    "id": "G3-T2",
+    "gate": "gate-3-github-repos",
+    "agent": "github-agent",
+    "status": "pending",
+    "title": "检查 6 个 GitHub 仓库是否存在"
+  },
+  {
+    "id": "G3-T3",
+    "gate": "gate-3-github-repos",
+    "agent": "github-agent",
+    "status": "pending",
+    "title": "创建不存在的 GitHub 仓库"
+  },
+  {
+    "id": "G3-T4",
+    "gate": "gate-3-github-repos",
+    "agent": "project-scaffold-agent",
+    "status": "pending",
+    "title": "初始化每个独立项目 git remote"
+  },
+  {
+    "id": "G3-T5",
+    "gate": "gate-3-github-repos",
+    "agent": "release-agent",
+    "status": "pending",
+    "title": "提交并 push 每个独立项目"
+  },
+  {
+    "id": "G3-T6",
+    "gate": "gate-3-github-repos",
+    "agent": "portfolio-agent",
+    "status": "pending",
+    "title": "更新 Portfolio Hub repoUrl"
+  },
+  {
+    "id": "G3-T7",
+    "gate": "gate-3-github-repos",
+    "agent": "qa-agent",
+    "status": "pending",
+    "title": "验证 Portfolio Hub 项目链接"
+  },
+  {
+    "id": "G3-T8",
+    "gate": "gate-3-github-repos",
+    "agent": "harness-controller-agent",
+    "status": "pending",
+    "title": "更新 gate-3 evidence 和 STATUS"
+  }
+]
