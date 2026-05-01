@@ -69,17 +69,17 @@ async function checkPage(path: string, name: string, requiredContent?: string[],
 async function main() {
   console.log('🔍 Auditing live site links...\n');
   
-  // Required new projects
+  // New flagship projects (current Portfolio Hub)
   const newProjects = [
-    'LaunchGuard',
-    'RepoLens',
-    'DataForge',
-    'SpecPilot',
-    'IncidentLab',
-    'KnowledgeBase Studio'
+    'LifePilot',
+    'InterviewPilot',
+    'RepoPilot',
+    'KnowledgePilot',
+    'OpsPilot',
+    'MIMO Utilities'
   ];
   
-  // Forbidden old projects
+  // Old projects that should NOT be on homepage
   const oldProjects = [
     'AI Interview Studio',
     'GitHub Repo Insight',
@@ -94,14 +94,23 @@ async function main() {
   await checkPage('/tools', 'Tools');
   await checkPage('/blog', 'Blog');
   await checkPage('/about', 'About');
+  await checkPage('/learning', 'Learning');
+  await checkPage('/analysis', 'Analysis');
   
-  // Check new flagship project pages
-  await checkPage('/projects/launchguard', 'LaunchGuard');
-  await checkPage('/projects/repolens', 'RepoLens');
-  await checkPage('/projects/dataforge', 'DataForge');
-  await checkPage('/projects/specpilot', 'SpecPilot');
-  await checkPage('/projects/incidentlab', 'IncidentLab');
-  await checkPage('/projects/knowledgebase-studio', 'KnowledgeBase Studio');
+  // Check standalone project pages
+  await checkPage('/projects/lifepilot', 'LifePilot');
+  await checkPage('/projects/interviewpilot', 'InterviewPilot');
+  await checkPage('/projects/repopilot', 'RepoPilot');
+  await checkPage('/projects/knowledgepilot', 'KnowledgePilot');
+  await checkPage('/projects/opspilot', 'OpsPilot');
+  
+  // Check old project compatibility pages
+  await checkPage('/projects/launchguard', 'LaunchGuard (compat)');
+  await checkPage('/projects/repolens', 'RepoLens (compat)');
+  await checkPage('/projects/dataforge', 'DataForge (compat)');
+  await checkPage('/projects/specpilot', 'SpecPilot (compat)');
+  await checkPage('/projects/incidentlab', 'IncidentLab (compat)');
+  await checkPage('/projects/knowledgebase-studio', 'KnowledgeBase Studio (compat)');
   
   // Check tool pages
   await checkPage('/tools/json-formatter', 'JSON Formatter');
@@ -119,6 +128,14 @@ async function main() {
   await checkPage('/blog/why-mimo', 'Blog: Why MIMO');
   await checkPage('/blog/ai-workflow', 'Blog: AI Workflow');
   await checkPage('/blog/opencode-mimo', 'Blog: OpenCode MIMO');
+  
+  // Check learning pages
+  await checkPage('/learning/why-portfolio-platform', 'Learning: Why Portfolio');
+  await checkPage('/learning/github-pages-render-api', 'Learning: GitHub Pages');
+  
+  // Check analysis pages
+  await checkPage('/analysis/rag-solutions-analysis', 'Analysis: RAG Solutions');
+  await checkPage('/analysis/github-security-audit', 'Analysis: GitHub Security');
   
   console.log('\n');
   
