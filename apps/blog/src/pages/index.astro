@@ -1,165 +1,194 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import Hero from '../components/home/Hero.astro';
-import ThreeDCard from '../components/visual/ThreeDCard.astro';
-import { getFeaturedProjects } from '../data/flagship-projects';
-import { workbenchLanes } from '../data/workbench';
+import { getFeaturedProjects } from '../data/portfolio';
+import { getRecentLearning } from '../data/learning';
+import { getRecentAnalysis } from '../data/analysis';
 
 const base = import.meta.env.BASE_URL;
 const baseWithSlash = base.endsWith('/') ? base : `${base}/`;
+
 const featuredProjects = getFeaturedProjects();
+const recentLearning = getRecentLearning(3);
+const recentAnalysis = getRecentAnalysis(3);
+
+const techStack = [
+  { name: 'Astro', desc: '静态站点生成' },
+  { name: 'React', desc: 'UI 组件' },
+  { name: 'Node.js', desc: '后端运行时' },
+  { name: 'Fastify', desc: 'API 框架' },
+  { name: 'Supabase', desc: '数据库 & RAG' },
+  { name: 'Render', desc: 'API 部署' },
+  { name: 'Playwright', desc: 'E2E 测试' },
+  { name: 'OpenCode', desc: '多 Agent 开发' },
+];
 ---
 
 <Layout title="MIMO - 个人工程工具生态">
-  <Hero />
-
-  {/* Workbench Section */}
-  <section class="section-sm relative" style="background: var(--bg-section); border-top: 1px solid var(--border-subtle); border-bottom: 1px solid var(--border-subtle);">
+  {/* Hero Section */}
+  <section class="hero-section">
     <div class="container">
-      <div class="grid grid-cols-1 lg:grid-cols-[0.78fr_1.22fr] gap-10 items-start">
-        <div>
-          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-lg mb-5" style="background: var(--gold-subtle); border: 1px solid var(--gold-border);">
-            <span class="text-xs font-medium" style="color: var(--gold-soft);">Workbench</span>
-          </div>
-          <h2 class="text-3xl sm:text-4xl font-bold mb-5" style="color: var(--text-primary);">
-            不另建空壳项目，先把现有能力组织成专业入口
-          </h2>
-          <p class="text-base leading-relaxed mb-6" style="color: var(--text-muted);">
-            当前站点已经具备展示、工具、博客和 API 基础。工作台负责把这些能力整合成可浏览、可验证、可继续扩展的个人工程门面。
-          </p>
-          <a href={`${baseWithSlash}workbench`} class="btn-gold inline-flex items-center gap-2">
-            查看部署与接入状态
-          </a>
+      <div class="hero-content">
+        <div class="hero-badge">
+          <span class="badge-dot"></span>
+          <span>全栈工程师 / AI 工程师</span>
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {workbenchLanes.map(lane => (
-            <a
-              href={`${baseWithSlash}${lane.href.replace(/^\//, '')}`}
-              class="group block rounded-lg p-5 transition-all duration-200"
-              style="background: var(--bg-card); border: 1px solid var(--border-subtle);"
-            >
-              <div class="flex items-center justify-between gap-3 mb-4">
-                <h3 class="text-lg font-semibold" style="color: var(--text-primary);">{lane.title}</h3>
-                <span class="text-xs" style="color: var(--gold-soft);">{lane.status}</span>
-              </div>
-              <p class="text-sm leading-relaxed" style="color: var(--text-muted);">{lane.description}</p>
-              <div class="mt-4 text-xs font-medium" style="color: var(--text-secondary);">{lane.metric}</div>
-            </a>
-          ))}
+        <h1 class="hero-title">
+          MIMO
+          <span class="hero-subtitle">个人工程工具生态</span>
+        </h1>
+        <p class="hero-description">
+          专注于 AI 应用、全栈开发、RAG 检索、DevOps 工具和多 Agent 工作流。
+          每个旗舰项目都是独立完整产品，拥有自己的前后端、数据库、测试和部署方案。
+        </p>
+        <div class="hero-actions">
+          <a href={`${baseWithSlash}projects`} class="btn btn-primary">查看项目</a>
+          <a href={`${baseWithSlash}learning`} class="btn btn-secondary">学习资料</a>
+          <a href={`${baseWithSlash}analysis`} class="btn btn-secondary">分析总结</a>
+          <a href="https://github.com/falses00" target="_blank" rel="noopener noreferrer" class="btn btn-ghost">GitHub</a>
         </div>
       </div>
     </div>
   </section>
-  
-  {/* Flagship Projects Section */}
-  <section class="section relative">
-    <div class="container">
-      <div class="text-center mb-16">
-        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-6 glass-panel">
-          <span class="text-xs font-medium" style="color: var(--gold);">旗舰项目</span>
-        </div>
-        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6" style="color: var(--text-primary);">
-          Flagship Projects
-        </h2>
-        <p class="text-lg max-w-2xl mx-auto" style="color: var(--text-muted);">
-          真正有技术含量的工程项目，展示质量审计、数据分析、API 工具、故障分析、知识检索能力
-        </p>
-      </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+  {/* Featured Projects */}
+  <section class="section">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">🚀 旗舰项目</h2>
+        <p class="section-desc">独立完整产品，拥有自己的前后端、数据库、测试和部署</p>
+      </div>
+      <div class="projects-grid">
         {featuredProjects.map(project => (
-          <ThreeDCard href={`${baseWithSlash}projects/${project.id}`} featured>
-            <div class="p-8">
-              <div class="flex items-start gap-4 mb-6">
-                <div class="flex items-center justify-center w-16 h-16 rounded-2xl flex-shrink-0" style="background: var(--gold-subtle); border: 1px solid var(--gold-border);">
-                  <span class="text-3xl">{project.icon}</span>
-                </div>
-                <div>
-                  <h3 class="text-xl font-bold mb-1" style="color: var(--text-primary);">
-                    {project.name}
-                  </h3>
-                  <p class="text-sm" style="color: var(--gold-soft);">{project.tagline}</p>
-                </div>
-              </div>
-              <p class="mb-6" style="color: var(--text-secondary);">
-                {project.description}
-              </p>
-              <div class="flex flex-wrap gap-2 mb-4">
-                {project.capabilities.slice(0, 4).map(cap => (
-                  <span class="badge-gold">{cap}</span>
-                ))}
-              </div>
-              <div class="flex flex-wrap gap-2">
-                {project.techStack.slice(0, 3).map(tech => (
-                  <span class="text-xs px-2 py-1 rounded" style="background: var(--bg-surface); color: var(--text-muted);">
-                    {tech}
-                  </span>
-                ))}
-              </div>
+          <a href={project.demoUrl || project.githubUrl || `${baseWithSlash}projects`} class="project-card">
+            <div class="project-icon">{project.icon}</div>
+            <h3 class="project-name">{project.name}</h3>
+            <p class="project-tagline">{project.tagline}</p>
+            <div class="project-tags">
+              {project.techStack.slice(0, 3).map(tech => (
+                <span class="tag">{tech}</span>
+              ))}
             </div>
-          </ThreeDCard>
+            <span class:list={['badge', project.status === 'production' ? 'badge-success' : 'badge-gold']}>
+              {project.status === 'production' ? '已上线' : '开发中'}
+            </span>
+          </a>
         ))}
       </div>
-
-      <div class="text-center">
-        <a href={`${baseWithSlash}projects`} class="btn-gold inline-flex items-center gap-2">
-          查看所有旗舰项目
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M5 12h14" />
-            <path d="m12 5 7 7-7 7" />
-          </svg>
-        </a>
+      <div class="section-footer">
+        <a href={`${baseWithSlash}projects`} class="btn btn-secondary">查看所有项目</a>
       </div>
     </div>
   </section>
 
-  {/* Quick Utilities Section */}
-  <section class="section relative">
+  {/* Recent Learning */}
+  <section class="section section-alt">
     <div class="container">
-      <div class="text-center mb-16">
-        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-6 glass-panel">
-          <span class="text-xs font-medium" style="color: var(--gold);">Quick Utilities</span>
-        </div>
-        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6" style="color: var(--text-primary);">
-          组合工具套件
-        </h2>
-        <p class="text-lg max-w-2xl mx-auto" style="color: var(--text-muted);">
-          6 个精心设计的组合工具，覆盖格式化、编码、时间、设计等常用场景
-        </p>
+      <div class="section-header">
+        <h2 class="section-title">📚 最新学习资料</h2>
+        <p class="section-desc">前端、后端、AI、RAG、部署、多 Agent 开发和项目复盘</p>
       </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {[
-          { icon: '📝', name: 'Format Studio', desc: 'JSON/YAML/TOML 格式化与验证', href: '/tools/json-formatter' },
-          { icon: '✍️', name: 'Markdown Studio', desc: 'Markdown 预览、TOC、统计', href: '/tools/markdown-previewer' },
-          { icon: '🔤', name: 'Regex Studio', desc: '正则表达式测试与模板', href: '/tools/regex-tester' },
-          { icon: '🔗', name: 'Encode Studio', desc: 'URL/Base64/HTML 编码解码', href: '/tools/url-encoder' },
-          { icon: '⏱️', name: 'Time & ID Studio', desc: '时间戳、Cron、UUID 生成', href: '/tools/timestamp-converter' },
-          { icon: '🎨', name: 'Design Utility', desc: '颜色、对比度、Token 预览', href: '/tools/color-palette' },
-        ].map(tool => (
-          <ThreeDCard href={`${baseWithSlash}${tool.href.substring(1)}`}>
-            <div class="p-6">
-              <div class="flex items-center gap-3 mb-4">
-                <span class="text-2xl">{tool.icon}</span>
-                <h3 class="text-lg font-semibold" style="color: var(--text-primary);">
-                  {tool.name}
-                </h3>
-              </div>
-              <p class="text-sm" style="color: var(--text-muted);">{tool.desc}</p>
-            </div>
-          </ThreeDCard>
+      <div class="articles-grid">
+        {recentLearning.map(article => (
+          <a href={`${baseWithSlash}learning/${article.slug}`} class="article-card">
+            <span class="badge badge-gold">{article.category}</span>
+            <h3 class="article-title">{article.title}</h3>
+            <p class="article-desc">{article.description}</p>
+            <span class="article-meta">{article.date} · {article.readingTime}</span>
+          </a>
         ))}
       </div>
+      <div class="section-footer">
+        <a href={`${baseWithSlash}learning`} class="btn btn-secondary">查看所有学习资料</a>
+      </div>
+    </div>
+  </section>
 
-      <div class="text-center mt-12">
-        <a href={`${baseWithSlash}tools`} class="btn-ghost inline-flex items-center gap-2">
-          查看所有工具
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M5 12h14" />
-            <path d="m12 5 7 7-7 7" />
-          </svg>
-        </a>
+  {/* Recent Analysis */}
+  <section class="section">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">📊 最新分析总结</h2>
+        <p class="section-desc">竞品分析、技术选型、架构复盘、安全审查</p>
+      </div>
+      <div class="articles-grid">
+        {recentAnalysis.map(report => (
+          <a href={`${baseWithSlash}analysis/${report.slug}`} class="article-card">
+            <span class="badge badge-gold">{report.category}</span>
+            <h3 class="article-title">{report.title}</h3>
+            <p class="article-desc">{report.description}</p>
+            <div class="article-conclusion">{report.conclusion}</div>
+          </a>
+        ))}
+      </div>
+      <div class="section-footer">
+        <a href={`${baseWithSlash}analysis`} class="btn btn-secondary">查看所有分析总结</a>
+      </div>
+    </div>
+  </section>
+
+  {/* Tech Stack */}
+  <section class="section section-alt">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">⚙️ 技术栈</h2>
+        <p class="section-desc">当前项目使用的核心技术</p>
+      </div>
+      <div class="tech-grid">
+        {techStack.map(tech => (
+          <div class="tech-card">
+            <div class="tech-name">{tech.name}</div>
+            <div class="tech-desc">{tech.desc}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {/* About CTA */}
+  <section class="section">
+    <div class="container">
+      <div class="about-cta">
+        <h2 class="section-title">👋 关于我</h2>
+        <p class="section-desc">全栈工程师 / AI 工程师，专注于 AI 应用、全栈开发和多 Agent 工作流</p>
+        <a href={`${baseWithSlash}about`} class="btn btn-primary">了解更多</a>
       </div>
     </div>
   </section>
 </Layout>
+
+<style>
+  .hero-section { padding: 8rem 0 4rem; text-align: center; background: linear-gradient(180deg, var(--bg-page) 0%, var(--bg-section) 100%); }
+  .hero-badge { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; border-radius: 9999px; background: var(--gold-subtle); border: 1px solid var(--gold-border); font-size: 0.75rem; font-weight: 600; color: var(--gold); margin-bottom: 2rem; }
+  .badge-dot { width: 0.5rem; height: 0.5rem; border-radius: 50%; background: var(--gold); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+  .hero-title { font-size: 4rem; font-weight: 800; margin-bottom: 1.5rem; background: linear-gradient(135deg, var(--gold) 0%, var(--gold-soft) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .hero-subtitle { display: block; font-size: 2rem; margin-top: 0.5rem; }
+  .hero-description { font-size: 1.125rem; color: var(--text-secondary); max-width: 600px; margin: 0 auto 2rem; line-height: 1.6; }
+  .hero-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; }
+  .section { padding: 4rem 0; }
+  .section-alt { background: var(--bg-section); }
+  .section-header { text-align: center; margin-bottom: 3rem; }
+  .section-title { font-size: 2rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem; }
+  .section-desc { color: var(--text-muted); }
+  .section-footer { text-align: center; margin-top: 2rem; }
+  .projects-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; }
+  .project-card { display: block; padding: 1.5rem; border-radius: 1rem; background: var(--bg-card); border: 1px solid var(--border-subtle); transition: all 0.2s; }
+  .project-card:hover { border-color: var(--gold-border); transform: translateY(-2px); box-shadow: var(--shadow-gold); }
+  .project-icon { font-size: 2rem; margin-bottom: 1rem; }
+  .project-name { font-size: 1.25rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.25rem; }
+  .project-tagline { font-size: 0.875rem; color: var(--text-muted); margin-bottom: 1rem; }
+  .project-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
+  .tag { padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.75rem; background: var(--bg-elevated); color: var(--text-muted); }
+  .articles-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; }
+  .article-card { display: block; padding: 1.5rem; border-radius: 1rem; background: var(--bg-card); border: 1px solid var(--border-subtle); transition: all 0.2s; }
+  .article-card:hover { border-color: var(--gold-border); }
+  .article-title { font-size: 1.125rem; font-weight: 600; color: var(--text-primary); margin: 0.75rem 0 0.5rem; }
+  .article-desc { font-size: 0.875rem; color: var(--text-muted); margin-bottom: 0.75rem; }
+  .article-meta { font-size: 0.75rem; color: var(--text-muted); }
+  .article-conclusion { padding: 0.75rem; border-radius: 0.5rem; background: var(--bg-elevated); font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.75rem; }
+  .tech-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1rem; }
+  .tech-card { padding: 1rem; border-radius: 0.75rem; background: var(--bg-card); border: 1px solid var(--border-subtle); text-align: center; }
+  .tech-name { font-weight: 600; color: var(--text-primary); margin-bottom: 0.25rem; }
+  .tech-desc { font-size: 0.75rem; color: var(--text-muted); }
+  .about-cta { text-align: center; padding: 3rem; border-radius: 1rem; background: var(--bg-card); border: 1px solid var(--gold-border); }
+</style>
