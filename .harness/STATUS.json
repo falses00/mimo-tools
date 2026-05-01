@@ -1,19 +1,17 @@
 {
-  "phase": "global-audit",
-  "loop": 1,
+  "phase": "portfolio-hub-restructuring",
+  "loop": 2,
   "currentProject": "portfolio-hub",
   "completedProjects": [],
-  "activeGate": "gate-0-discovery",
+  "activeGate": "gate-1-portfolio-split",
   "blocked": false,
   "blockers": [],
-  "next": "create harness structure and start portfolio hub restructuring",
-  "timestamp": "2026-04-30T19:15:00Z",
+  "next": "update homepage and learning/analysis pages",
+  "timestamp": "2026-05-01T03:20:00Z",
   "status": {
     "github-pages": "deployed",
     "render-api": "running",
-    "current-pages": 35,
-    "current-api-routes": 10,
-    "new-projects": ["lifepilot", "interviewpilot", "repopilot", "knowledgepilot", "opspilot"],
-    "old-projects": ["launchguard", "repolens", "dataforge", "specpilot", "incidentlab", "knowledgebase-studio"]
+    "standalone-projects": "scaffolded",
+    "portfolio-hub": "in-progress"
   }
 }

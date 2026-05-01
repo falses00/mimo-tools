@@ -1,0 +1,113 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { learningArticles } from '../data/learning';
+
+const base = import.meta.env.BASE_URL;
+const baseWithSlash = base.endsWith('/') ? base : `${base}/`;
+
+const categories = [
+  { id: 'frontend', name: '前端工程', icon: '🎨' },
+  { id: 'backend', name: '后端与 API', icon: '⚙️' },
+  { id: 'database', name: '数据库与 Supabase', icon: '🗄️' },
+  { id: 'ai', name: 'AI / RAG', icon: '🤖' },
+  { id: 'devops', name: 'GitHub / DevOps', icon: '🚀' },
+  { id: 'agent', name: '多 Agent 工作流', icon: '🔄' },
+  { id: 'review', name: '项目复盘', icon: '📝' },
+];
+---
+
+<Layout title="学习资料中心 - MIMO">
+  <div class="section">
+    <div class="container">
+      {/* Header */}
+      <div class="text-center mb-16">
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-6 glass-panel">
+          <span class="text-xs font-medium" style="color: var(--gold-soft);">学习资料中心</span>
+        </div>
+        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6" style="color: var(--text-primary);">
+          📚 学习资料中心
+        </h1>
+        <p class="text-lg max-w-2xl mx-auto" style="color: var(--text-muted);">
+          系统整理前端、后端、AI、RAG、部署、多 Agent 开发和项目复盘资料
+        </p>
+      </div>
+
+      {/* Categories */}
+      <div class="flex flex-wrap justify-center gap-3 mb-12">
+        <button class="btn btn-primary category-btn" data-category="all">全部</button>
+        {categories.map(cat => (
+          <button class="btn btn-secondary category-btn" data-category={cat.id}>
+            {cat.icon} {cat.name}
+          </button>
+        ))}
+      </div>
+
+      {/* Articles Grid */}
+      <div id="articles-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {learningArticles.map(article => (
+          <a
+            href={`${baseWithSlash}learning/${article.slug}`}
+            class="group block rounded-xl p-6 transition-all duration-300 article-card"
+            style="background: var(--bg-card); border: 1px solid var(--border-subtle);"
+            data-category={article.category}
+          >
+            <div class="flex items-center gap-2 mb-4">
+              <span class="badge badge-gold text-xs">{article.category}</span>
+              <span class="text-xs" style="color: var(--text-muted);">{article.readingTime}</span>
+            </div>
+            <h2 class="text-lg font-semibold mb-2 group-hover:text-[var(--gold-primary)] transition-colors" style="color: var(--text-primary);">
+              {article.title}
+            </h2>
+            <p class="text-sm mb-4" style="color: var(--text-muted);">
+              {article.description}
+            </p>
+            <div class="flex flex-wrap gap-2">
+              {article.tags.slice(0, 3).map(tag => (
+                <span class="badge text-xs" style="background: var(--bg-elevated); border-color: var(--border-subtle); color: var(--text-muted);">
+                  {tag}
+                </span>
+              ))}
+            </div>
+            <div class="mt-4 text-xs" style="color: var(--text-muted);">
+              {article.date}
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  const categoryBtns = document.querySelectorAll('.category-btn');
+  const articleCards = document.querySelectorAll('.article-card');
+
+  let currentCategory = 'all';
+
+  function filterArticles() {
+    articleCards.forEach(card => {
+      const category = card.getAttribute('data-category') || '';
+      if (currentCategory === 'all' || category === currentCategory) {
+        (card as HTMLElement).style.display = '';
+      } else {
+        (card as HTMLElement).style.display = 'none';
+      }
+    });
+  }
+
+  categoryBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const category = btn.getAttribute('data-category') || 'all';
+      currentCategory = category;
+
+      categoryBtns.forEach(b => {
+        b.classList.remove('btn-primary');
+        b.classList.add('btn-secondary');
+      });
+      btn.classList.remove('btn-secondary');
+      btn.classList.add('btn-primary');
+
+      filterArticles();
+    });
+  });
+</script>

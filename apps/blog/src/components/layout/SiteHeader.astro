@@ -10,16 +10,16 @@ const relativePath = pathname.replace(baseWithSlash, '/').replace('//', '/');
 const isHome = relativePath === '/' || relativePath === '';
 const isProjects = relativePath.startsWith('/projects');
 const isTools = relativePath.startsWith('/tools');
-const isBlog = relativePath.startsWith('/blog');
-const isWorkbench = relativePath.startsWith('/workbench');
+const isLearning = relativePath.startsWith('/learning');
+const isAnalysis = relativePath.startsWith('/analysis');
 const isAbout = relativePath === '/about';
 
 const navItems = [
   { href: baseWithSlash, label: '首页', active: isHome },
-  { href: `${baseWithSlash}projects`, label: '旗舰项目', active: isProjects },
+  { href: `${baseWithSlash}projects`, label: '项目', active: isProjects },
+  { href: `${baseWithSlash}learning`, label: '学习资料', active: isLearning },
+  { href: `${baseWithSlash}analysis`, label: '分析总结', active: isAnalysis },
   { href: `${baseWithSlash}tools`, label: '工具', active: isTools },
-  { href: `${baseWithSlash}workbench`, label: '工作台', active: isWorkbench },
-  { href: `${baseWithSlash}blog`, label: '博客', active: isBlog },
   { href: `${baseWithSlash}about`, label: '关于', active: isAbout },
 ];
 ---
