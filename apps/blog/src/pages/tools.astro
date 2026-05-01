@@ -1,192 +1,69 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { tools, categories } from '../data/tools';
 
 const base = import.meta.env.BASE_URL;
 const baseWithSlash = base.endsWith('/') ? base : `${base}/`;
+
+const toolStudios = [
+  { name: 'Format Studio', desc: 'JSON/YAML/TOML 格式化与验证', icon: '📝', href: '/tools/json-formatter' },
+  { name: 'Markdown Studio', desc: 'Markdown 预览、TOC、统计', icon: '✍️', href: '/tools/markdown-previewer' },
+  { name: 'Regex Studio', desc: '正则表达式测试与模板', icon: '🔤', href: '/tools/regex-tester' },
+  { name: 'Encode Studio', desc: 'URL/Base64/HTML 编码解码', icon: '🔗', href: '/tools/url-encoder' },
+  { name: 'Time & ID Studio', desc: '时间戳、Cron、UUID 生成', icon: '⏱️', href: '/tools/timestamp-converter' },
+  { name: 'Design Utility', desc: '颜色、对比度、Token 预览', icon: '🎨', href: '/tools/color-palette' },
+];
 ---
 
-<Layout title="工具箱 - MIMO">
+<Layout title="工具集合 - MIMO">
   <div class="section">
     <div class="container">
       {/* Header */}
-      <div class="text-center mb-12">
-        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full mb-4" style="background: var(--gold-subtle); border: 1px solid var(--gold-border);">
-          <span class="text-xs font-medium" style="color: var(--gold-soft);">工具箱</span>
+      <div class="text-center mb-16">
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-6 glass-panel">
+          <span class="text-xs font-medium" style="color: var(--gold-soft);">工具集合</span>
         </div>
-        <h1 class="text-4xl sm:text-5xl font-bold mb-4" style="color: var(--text-primary);">
-          🛠️ 实用工具集合
+        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6" style="color: var(--text-primary);">
+          🛠️ 工具集合
         </h1>
         <p class="text-lg max-w-2xl mx-auto" style="color: var(--text-muted);">
-          所有工具纯前端处理，数据不离开浏览器。无需安装，即开即用。
+          6 个组合工具套件，覆盖格式化、编码、时间、设计等常用场景
         </p>
       </div>
 
-      {/* Search and Filter */}
-      <div class="max-w-4xl mx-auto mb-12">
-        <div class="flex flex-col sm:flex-row gap-4">
-          {/* Search */}
-          <div class="flex-1">
-            <input
-              type="text"
-              id="search-input"
-              placeholder="搜索工具..."
-              class="input"
-            />
-          </div>
-          {/* Category Filter */}
-          <div class="flex flex-wrap gap-2">
-            <button
-              class="btn btn-primary category-btn"
-              data-category="all"
-            >
-              全部
-            </button>
-            {categories.map(cat => (
-              <button
-                class="btn btn-secondary category-btn"
-                data-category={cat.id}
-              >
-                {cat.icon} {cat.name}
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Tools Grid */}
-      <div id="tools-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {tools.map(tool => (
-          <a
-            href={`${baseWithSlash}tools/${tool.id}`}
-            class="group block rounded-xl p-6 transition-all duration-300 tool-card"
-            style="background: var(--bg-card); border: 1px solid var(--border-subtle);"
-            data-category={tool.category}
-            data-name={tool.name.toLowerCase()}
-            data-description={tool.description.toLowerCase()}
-            data-tags={tool.tags.join(' ').toLowerCase()}
-          >
-            {/* Icon */}
-            <div class="flex items-center justify-center w-12 h-12 rounded-xl mb-4" style="background: var(--gold-subtle); border: 1px solid var(--gold-border);">
-              <span class="text-2xl" style="color: var(--gold-primary);">{tool.icon}</span>
-            </div>
-
-            {/* Title */}
-            <h3 class="text-lg font-semibold mb-2 transition-colors duration-200 group-hover:text-[var(--gold-primary)]" style="color: var(--text-primary);">
-              {tool.name}
-            </h3>
-
-            {/* Description */}
-            <p class="text-sm mb-4" style="color: var(--text-muted);">
-              {tool.description}
-            </p>
-
-            {/* Tags */}
-            <div class="flex flex-wrap gap-2">
-              {tool.tags.slice(0, 3).map(tag => (
-                <span class="badge text-xs" style="background: var(--bg-elevated); border-color: var(--border-subtle); color: var(--text-muted);">
-                  {tag}
-                </span>
-              ))}
-            </div>
-
-            {/* Arrow */}
-            <div class="mt-4 flex items-center gap-1 text-sm font-medium opacity-0 group-hover:opacity-100 transition-all duration-200 translate-x-0 group-hover:translate-x-1" style="color: var(--gold-primary);">
-              <span>使用工具</span>
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M5 12h14" />
-                <path d="m12 5 7 7-7 7" />
-              </svg>
-            </div>
+      {/* Tool Studios */}
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+        {toolStudios.map(tool => (
+          <a href={`${baseWithSlash}${tool.href.substring(1)}`} class="tool-card">
+            <div class="tool-icon">{tool.icon}</div>
+            <h3 class="tool-name">{tool.name}</h3>
+            <p class="tool-desc">{tool.desc}</p>
+            <span class="badge badge-gold text-xs">MIMO Utilities</span>
           </a>
         ))}
       </div>
 
-      {/* Empty State */}
-      <div id="empty-state" class="hidden text-center py-16">
-        <div class="text-6xl mb-4">🔍</div>
-        <h3 class="text-xl font-semibold mb-2" style="color: var(--text-primary);">未找到匹配的工具</h3>
-        <p style="color: var(--text-muted);">尝试使用不同的关键词或分类筛选</p>
-      </div>
-
-      {/* Stats */}
-      <div class="mt-16 grid grid-cols-2 sm:grid-cols-4 gap-8 text-center">
-        <div class="p-4 rounded-xl" style="background: var(--bg-elevated); border: 1px solid var(--border-subtle);">
-          <div class="text-3xl font-bold" style="color: var(--gold-primary);">10+</div>
-          <div class="text-sm mt-1" style="color: var(--text-muted);">工具总数</div>
-        </div>
-        <div class="p-4 rounded-xl" style="background: var(--bg-elevated); border: 1px solid var(--border-subtle);">
-          <div class="text-3xl font-bold" style="color: var(--gold-primary);">4</div>
-          <div class="text-sm mt-1" style="color: var(--text-muted);">工具分类</div>
-        </div>
-        <div class="p-4 rounded-xl" style="background: var(--bg-elevated); border: 1px solid var(--border-subtle);">
-          <div class="text-3xl font-bold" style="color: var(--gold-primary);">100%</div>
-          <div class="text-sm mt-1" style="color: var(--text-muted);">前端处理</div>
-        </div>
-        <div class="p-4 rounded-xl" style="background: var(--bg-elevated); border: 1px solid var(--border-subtle);">
-          <div class="text-3xl font-bold" style="color: var(--gold-primary);">0</div>
-          <div class="text-sm mt-1" style="color: var(--text-muted);">数据上传</div>
-        </div>
+      {/* MIMO Utilities Info */}
+      <div class="info-card">
+        <h3 class="info-title">📦 MIMO Utilities</h3>
+        <p class="info-text">
+          这些工具正在迁移到独立项目 <strong>mimo-utilities</strong>。
+          迁移完成后，个人站将只展示入口，工具功能将在独立项目中提供。
+        </p>
+        <a href="https://github.com/falses00/mimo-utilities" target="_blank" rel="noopener noreferrer" class="btn btn-ghost">
+          GitHub 仓库
+        </a>
       </div>
     </div>
   </div>
 </Layout>
 
-<script>
-  const searchInput = document.getElementById('search-input') as HTMLInputElement;
-  const categoryBtns = document.querySelectorAll('.category-btn');
-  const toolCards = document.querySelectorAll('.tool-card');
-  const emptyState = document.getElementById('empty-state');
-
-  let currentCategory = 'all';
-  let currentSearch = '';
-
-  function filterTools() {
-    let visibleCount = 0;
-
-    toolCards.forEach(card => {
-      const category = card.getAttribute('data-category') || '';
-      const name = card.getAttribute('data-name') || '';
-      const description = card.getAttribute('data-description') || '';
-      const tags = card.getAttribute('data-tags') || '';
-
-      const matchesCategory = currentCategory === 'all' || category === currentCategory;
-      const matchesSearch = !currentSearch || 
-        name.includes(currentSearch) || 
-        description.includes(currentSearch) || 
-        tags.includes(currentSearch);
-
-      if (matchesCategory && matchesSearch) {
-        (card as HTMLElement).style.display = '';
-        visibleCount++;
-      } else {
-        (card as HTMLElement).style.display = 'none';
-      }
-    });
-
-    if (emptyState) {
-      emptyState.classList.toggle('hidden', visibleCount > 0);
-    }
-  }
-
-  categoryBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const category = btn.getAttribute('data-category') || 'all';
-      currentCategory = category;
-
-      categoryBtns.forEach(b => {
-        b.classList.remove('btn-primary');
-        b.classList.add('btn-secondary');
-      });
-      btn.classList.remove('btn-secondary');
-      btn.classList.add('btn-primary');
-
-      filterTools();
-    });
-  });
-
-  searchInput?.addEventListener('input', (e) => {
-    currentSearch = (e.target as HTMLInputElement).value.toLowerCase();
-    filterTools();
-  });
-</script>
+<style>
+  .tool-card { display: block; padding: 1.5rem; border-radius: 1rem; background: var(--bg-card); border: 1px solid var(--border-subtle); transition: all 0.2s; }
+  .tool-card:hover { border-color: var(--gold-border); transform: translateY(-2px); box-shadow: var(--shadow-gold); }
+  .tool-icon { font-size: 2rem; margin-bottom: 1rem; }
+  .tool-name { font-size: 1.25rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.5rem; }
+  .tool-desc { font-size: 0.875rem; color: var(--text-muted); margin-bottom: 1rem; }
+  .info-card { padding: 2rem; border-radius: 1rem; background: var(--bg-card); border: 1px solid var(--gold-border); text-align: center; }
+  .info-title { font-size: 1.5rem; font-weight: 700; color: var(--text-primary); margin-bottom: 1rem; }
+  .info-text { color: var(--text-secondary); margin-bottom: 1.5rem; max-width: 600px; margin-left: auto; margin-right: auto; }
+</style>
