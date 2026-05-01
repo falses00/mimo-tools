@@ -1,7 +1,5 @@
 import { FastifyInstance } from 'fastify';
-
 const startTime = Date.now();
-
 export async function healthRoutes(fastify: FastifyInstance) {
   fastify.get('/api/health', async () => {
     const requestStart = Date.now();

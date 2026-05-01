@@ -1,8 +1,10 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import SplineScene from '../components/visual/SplineScene.astro';
 import { getFeaturedProjects } from '../data/portfolio';
 import { getRecentLearning } from '../data/learning';
 import { getRecentAnalysis } from '../data/analysis';
+import { getSplineSceneUrl } from '../data/splineScenes';
 
 const base = import.meta.env.BASE_URL;
 const baseWithSlash = base.endsWith('/') ? base : `${base}/`;
@@ -45,6 +47,9 @@ const techStack = [
           <a href={`${baseWithSlash}learning`} class="btn btn-secondary">学习资料</a>
           <a href={`${baseWithSlash}analysis`} class="btn btn-secondary">分析总结</a>
           <a href="https://github.com/falses00" target="_blank" rel="noopener noreferrer" class="btn btn-ghost">GitHub</a>
+        </div>
+        <div class="hero-scene">
+          <SplineScene sceneKey="portfolio" sceneUrl={getSplineSceneUrl('portfolio')} title="Portfolio Hub 3D Scene" height="360px" />
         </div>
       </div>
     </div>
@@ -165,6 +170,7 @@ const techStack = [
   .hero-subtitle { display: block; font-size: 2rem; margin-top: 0.5rem; }
   .hero-description { font-size: 1.125rem; color: var(--text-secondary); max-width: 600px; margin: 0 auto 2rem; line-height: 1.6; }
   .hero-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; }
+  .hero-scene { max-width: 880px; margin: 3rem auto 0; position: relative; z-index: 0; }
   .section { padding: 4rem 0; }
   .section-alt { background: var(--bg-section); }
   .section-header { text-align: center; margin-bottom: 3rem; }

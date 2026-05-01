@@ -10,9 +10,7 @@ import { healthRoutes } from './routes/health.js';
 import { lifepilotRoutes } from './routes/lifepilot.js';
 import { interviewpilotRoutes } from './routes/interviewpilot.js';
 import { repopilotRoutes } from './routes/repopilot.js';
-
 const fastify = Fastify({ logger: true });
-
 // CORS
 await fastify.register(cors, {
   origin: [
@@ -23,7 +21,6 @@ await fastify.register(cors, {
   ],
   methods: ['GET', 'POST'],
 });
-
 // Routes
 await fastify.register(healthRoutes);
 await fastify.register(launchguardRoutes, { prefix: '/api/launchguard' });
@@ -35,17 +32,14 @@ await fastify.register(knowledgebaseRoutes, { prefix: '/api/knowledgebase' });
 await fastify.register(lifepilotRoutes, { prefix: '/api/lifepilot' });
 await fastify.register(interviewpilotRoutes, { prefix: '/api/interviewpilot' });
 await fastify.register(repopilotRoutes, { prefix: '/api/repopilot' });
-
 // Start
 const start = async () => {
   try {
     const port = parseInt(process.env.PORT || '8787');
     await fastify.listen({ port, host: '0.0.0.0' });
-    console.log(`🚀 MIMO API running at http://localhost:${port}`);
   } catch (err) {
     fastify.log.error(err);
     process.exit(1);
   }
 };
-
 start();

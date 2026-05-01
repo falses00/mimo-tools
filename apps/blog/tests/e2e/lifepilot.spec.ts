@@ -20,7 +20,6 @@ test.describe('LifePilot - AI 生活管家', () => {
     // 检查生成按钮
     await expect(page.locator('#btn-generate')).toBeVisible();
     
-    console.log('✅ 页面加载正确');
   });
 
   test('新手引导可用', async ({ page }) => {
@@ -35,7 +34,6 @@ test.describe('LifePilot - AI 生活管家', () => {
     const value = await input.inputValue();
     expect(value.length).toBeGreaterThan(0);
     
-    console.log('✅ 新手引导可用');
   });
 
   test('生成生活计划', async ({ page }) => {
@@ -54,7 +52,6 @@ test.describe('LifePilot - AI 生活管家', () => {
     // 检查待办区域
     await expect(page.locator('#todos-section')).toBeVisible();
     
-    console.log('✅ 生成生活计划成功');
   });
 
   test('编辑事项', async ({ page }) => {
@@ -68,7 +65,6 @@ test.describe('LifePilot - AI 生活管家', () => {
     const count = await items.count();
     expect(count).toBeGreaterThan(0);
     
-    console.log('✅ 编辑事项可用');
   });
 
   test('保存功能', async ({ page }) => {
@@ -86,7 +82,6 @@ test.describe('LifePilot - AI 生活管家', () => {
       await dialog.accept();
     });
     
-    console.log('✅ 保存功能可用');
   });
 
   test('导出 Markdown', async ({ page }) => {
@@ -98,7 +93,6 @@ test.describe('LifePilot - AI 生活管家', () => {
     // 检查导出按钮
     await expect(page.locator('#btn-export')).toBeVisible();
     
-    console.log('✅ 导出 Markdown 可用');
   });
 
   test('清空功能', async ({ page }) => {
@@ -113,7 +107,6 @@ test.describe('LifePilot - AI 生活管家', () => {
     const value = await input.inputValue();
     expect(value).toBe('');
     
-    console.log('✅ 清空功能可用');
   });
 
   test('localStorage 保存和恢复', async ({ page }) => {
@@ -132,7 +125,6 @@ test.describe('LifePilot - AI 生活管家', () => {
     });
     expect(history).toBeTruthy();
     
-    console.log('✅ localStorage 保存成功');
   });
 
   test('移动端布局', async ({ page }) => {
@@ -145,7 +137,6 @@ test.describe('LifePilot - AI 生活管家', () => {
     const viewportWidth = await page.evaluate(() => window.innerWidth);
     expect(bodyWidth).toBeLessThanOrEqual(viewportWidth + 10);
     
-    console.log('✅ 移动端布局正常');
   });
 
   test('控制台无错误', async ({ page }) => {
@@ -168,9 +159,7 @@ test.describe('LifePilot - AI 生活管家', () => {
     );
     
     if (criticalErrors.length > 0) {
-      console.log('⚠️ 控制台错误:', criticalErrors);
     } else {
-      console.log('✅ 无关键控制台错误');
     }
     
     expect(criticalErrors).toHaveLength(0);

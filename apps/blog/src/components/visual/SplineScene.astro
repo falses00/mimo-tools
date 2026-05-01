@@ -10,34 +10,28 @@ const { sceneKey, sceneUrl = '', title = '', height = '400px' } = Astro.props;
 const hasScene = !!sceneUrl;
 ---
 
-<div class="spline-wrapper" style={`height: ${height};`}>
-  {hasScene ? (
-    <div class="spline-container">
-      <iframe 
-        src={sceneUrl}
-        frameborder="0"
-        width="100%"
-        height="100%"
-        allow="autoplay; fullscreen"
-        loading="lazy"
-        title={title || sceneKey}
-      ></iframe>
-    </div>
-  ) : (
-    <div class="spline-fallback">
-      <div class="fallback-visual">
-        <div class="orb orb-1"></div>
-        <div class="orb orb-2"></div>
-        <div class="orb orb-3"></div>
-        <div class="grid-bg"></div>
-        <div class="content">
-          <div class="icon">✨</div>
-          <div class="label">{title || sceneKey}</div>
-          <div class="hint">3D 视觉效果</div>
-        </div>
+<div
+  class="spline-wrapper"
+  style={`height: ${height};`}
+  data-spline-wrapper={hasScene ? 'true' : 'false'}
+  data-scene-url={sceneUrl}
+  data-scene-title={title || sceneKey}
+  data-scene-status={hasScene ? 'temporary-demo-scene' : 'fallback'}
+>
+  {hasScene && <div class="spline-container" aria-hidden="true"></div>}
+  <div class="spline-fallback">
+    <div class="fallback-visual">
+      <div class="orb orb-1"></div>
+      <div class="orb orb-2"></div>
+      <div class="orb orb-3"></div>
+      <div class="grid-bg"></div>
+      <div class="content">
+        <div class="icon" aria-hidden="true">✨</div>
+        <div class="label">{title || sceneKey}</div>
+        <div class="hint">3D 视觉效果</div>
       </div>
     </div>
-  )}
+  </div>
 </div>
 
 <style>
@@ -51,25 +45,40 @@ const hasScene = !!sceneUrl;
   }
   
   .spline-container {
+    position: absolute;
+    inset: 0;
     width: 100%;
     height: 100%;
+    opacity: 0;
+    transition: opacity 240ms ease;
+  }
+
+  .spline-wrapper.is-loaded .spline-container {
+    opacity: 1;
   }
   
   .spline-container iframe {
     width: 100%;
     height: 100%;
     border: none;
+    pointer-events: none;
   }
   
   .spline-fallback {
+    position: absolute;
+    inset: 0;
     width: 100%;
     height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    position: relative;
     overflow: hidden;
     background: linear-gradient(135deg, #0b0d12 0%, #11151d 50%, #171c26 100%);
+  }
+
+  .spline-wrapper.is-loaded .spline-fallback {
+    opacity: 0;
+    pointer-events: none;
   }
   
   .fallback-visual {
@@ -151,4 +160,68 @@ const hasScene = !!sceneUrl;
     0%, 100% { transform: translateY(0) scale(1); }
     50% { transform: translateY(-20px) scale(1.05); }
   }
+
+  @media (max-width: 767px), (prefers-reduced-motion: reduce) {
+    .spline-container {
+      display: none;
+    }
+
+    .orb {
+      animation: none;
+    }
+  }
 </style>
+
+<script>
+  const shouldKeepFallback = () => {
+    const isMobile = window.matchMedia('(max-width: 767px)').matches;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const connection = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection;
+
+    return isMobile || reduceMotion || connection?.saveData === true;
+  };
+
+  const mountSplineScenes = () => {
+    if (shouldKeepFallback()) return;
+
+    document.querySelectorAll<HTMLElement>('[data-spline-wrapper="true"]').forEach((wrapper) => {
+      if (wrapper.dataset.splineMounted === 'true') return;
+
+      const sceneUrl = wrapper.dataset.sceneUrl;
+      const sceneTitle = wrapper.dataset.sceneTitle || 'Spline scene';
+      const container = wrapper.querySelector<HTMLElement>('.spline-container');
+
+      if (!sceneUrl || !container) return;
+
+      wrapper.dataset.splineMounted = 'true';
+
+      const iframe = document.createElement('iframe');
+      iframe.src = sceneUrl;
+      iframe.title = sceneTitle;
+      iframe.loading = 'lazy';
+      iframe.allow = 'autoplay; fullscreen';
+      iframe.referrerPolicy = 'strict-origin-when-cross-origin';
+      iframe.style.pointerEvents = 'none';
+      iframe.setAttribute('frameborder', '0');
+      iframe.setAttribute('aria-hidden', 'true');
+
+      iframe.addEventListener('load', () => {
+        wrapper.classList.add('is-loaded');
+        container.setAttribute('aria-hidden', 'false');
+      });
+
+      iframe.addEventListener('error', () => {
+        wrapper.classList.remove('is-loaded');
+        container.replaceChildren();
+      });
+
+      container.appendChild(iframe);
+    });
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', mountSplineScenes, { once: true });
+  } else {
+    mountSplineScenes();
+  }
+</script>

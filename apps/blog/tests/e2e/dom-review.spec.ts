@@ -3,7 +3,6 @@ import { test, expect } from '@playwright/test';
 test('MIMO Site - DOM Structure Review', async ({ page }) => {
   test.setTimeout(120000);
   
-  console.log('\n========== DETAILED DOM STRUCTURE ==========\n');
   
   // Homepage
   await page.goto('/');
@@ -33,11 +32,8 @@ test('MIMO Site - DOM Structure Review', async ({ page }) => {
     return getElementInfo(document.body);
   });
   
-  console.log('--- Homepage Body Structure ---');
-  console.log(homepageStructure.substring(0, 2000));
   
   // Check specific elements
-  console.log('\n--- Homepage Key Elements ---');
   
   const heroSection = await page.evaluate(() => {
     const h1 = document.querySelector('h1');
@@ -48,7 +44,6 @@ test('MIMO Site - DOM Structure Review', async ({ page }) => {
       hasGradient: section?.innerHTML.includes('gradient') || false
     };
   });
-  console.log('Hero Section:', heroSection);
   
   const navInfo = await page.evaluate(() => {
     const nav = document.querySelector('nav');
@@ -61,7 +56,6 @@ test('MIMO Site - DOM Structure Review', async ({ page }) => {
       }))
     };
   });
-  console.log('Navigation:', navInfo);
   
   const featuredTools = await page.evaluate(() => {
     const cards = document.querySelectorAll('[href^="/tools/"]');
@@ -72,10 +66,8 @@ test('MIMO Site - DOM Structure Review', async ({ page }) => {
       tags: Array.from(card.querySelectorAll('span')).map(s => s.textContent?.trim()).filter(Boolean)
     }));
   });
-  console.log('\nFeatured Tools:', JSON.stringify(featuredTools, null, 2));
   
   // Tools page
-  console.log('\n\n========== TOOLS PAGE STRUCTURE ==========\n');
   await page.goto('/tools');
   await page.waitForLoadState('networkidle');
   
@@ -98,10 +90,8 @@ test('MIMO Site - DOM Structure Review', async ({ page }) => {
       }))
     };
   });
-  console.log('Tools Page Info:', JSON.stringify(toolsPageInfo, null, 2));
   
   // JSON Formatter page
-  console.log('\n\n========== JSON FORMATTER PAGE ==========\n');
   await page.goto('/tools/json-formatter');
   await page.waitForLoadState('networkidle');
   
@@ -120,10 +110,8 @@ test('MIMO Site - DOM Structure Review', async ({ page }) => {
       hasOutput: !!output
     };
   });
-  console.log('JSON Formatter:', JSON.stringify(jsonFormatterInfo, null, 2));
   
   // Blog page
-  console.log('\n\n========== BLOG PAGE STRUCTURE ==========\n');
   await page.goto('/blog');
   await page.waitForLoadState('networkidle');
   
@@ -142,10 +130,8 @@ test('MIMO Site - DOM Structure Review', async ({ page }) => {
       }))
     };
   });
-  console.log('Blog Info:', JSON.stringify(blogInfo, null, 2));
   
   // Check CSS Custom Properties
-  console.log('\n\n========== CSS CUSTOM PROPERTIES ==========\n');
   const cssVars = await page.evaluate(() => {
     const root = document.documentElement;
     const computedStyle = getComputedStyle(root);
@@ -162,10 +148,8 @@ test('MIMO Site - DOM Structure Review', async ({ page }) => {
     
     return vars;
   });
-  console.log('CSS Variables:', JSON.stringify(cssVars, null, 2));
   
   // Check responsive breakpoints
-  console.log('\n\n========== RESPONSIVE BREAKPOINTS ==========\n');
   
   const viewports = [
     { name: 'Mobile', width: 375, height: 812 },
@@ -189,8 +173,6 @@ test('MIMO Site - DOM Structure Review', async ({ page }) => {
       };
     });
     
-    console.log(`${viewport.name} (${viewport.width}px):`, layoutInfo);
   }
   
-  console.log('\n\n========== REVIEW COMPLETE ==========');
 });
