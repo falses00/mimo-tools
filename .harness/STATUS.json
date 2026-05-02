@@ -1,25 +1,12 @@
 {
-  "phase": "all-projects-independentized",
-  "loop": 9,
-  "currentProject": "all",
-  "completedProjects": ["mimo-lifepilot", "mimo-interviewpilot", "mimo-repopilot", "mimo-knowledgepilot", "mimo-opspilot", "mimo-utilities"],
-  "activeGate": "gate-10-final-review",
+  "phase": "product-grade-visual-rebuild",
+  "activeGate": "gate-13-product-grade-visual-rebuild",
   "blocked": false,
   "blockers": [],
-  "next": "final review and validation",
-  "timestamp": "2026-05-02T00:15:00Z",
+  "next": "start portfolio hub visual rebuild",
   "status": {
-    "github-pages": "deployed",
-    "render-api": "running",
-    "standalone-projects": "all-pushed",
-    "portfolio-hub": "completed",
-    "spline-visual": "prepared-needs-user-scene-urls",
-    "gate-4": "passed",
-    "gate-4-5": "passed",
-    "gate-5": "passed",
-    "gate-6": "passed",
-    "gate-7": "passed",
-    "gate-8": "passed",
-    "gate-9": "passed"
+    "gate-12": "rejected",
+    "gate-11": "needs-rework",
+    "reason": "online pages load but are not product-grade; Spline rendering is broken; standalone apps are shallow shells"
   }
 }

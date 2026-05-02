@@ -11,31 +11,27 @@ const hasScene = !!sceneUrl;
 ---
 
 <div
-  class="spline-wrapper"
+  class="hero-visual-wrapper"
   style={`height: ${height};`}
-  data-spline-wrapper={hasScene ? 'true' : 'false'}
+  data-scene-wrapper={hasScene ? 'true' : 'false'}
   data-scene-url={sceneUrl}
   data-scene-title={title || sceneKey}
-  data-scene-status={hasScene ? 'temporary-demo-scene' : 'fallback'}
 >
-  {hasScene && <div class="spline-container" aria-hidden="true"></div>}
-  <div class="spline-fallback">
-    <div class="fallback-visual">
-      <div class="orb orb-1"></div>
-      <div class="orb orb-2"></div>
-      <div class="orb orb-3"></div>
-      <div class="grid-bg"></div>
-      <div class="content">
-        <div class="icon" aria-hidden="true">✨</div>
-        <div class="label">{title || sceneKey}</div>
-        <div class="hint">3D 视觉效果</div>
-      </div>
+  {hasScene && <div class="scene-container" aria-hidden="true"></div>}
+  <div class="fallback-visual">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+    <div class="grid-bg"></div>
+    <div class="content">
+      <div class="icon" aria-hidden="true">✨</div>
+      <div class="label">{title || sceneKey}</div>
     </div>
   </div>
 </div>
 
 <style>
-  .spline-wrapper {
+  .hero-visual-wrapper {
     position: relative;
     width: 100%;
     border-radius: 1rem;
@@ -44,7 +40,7 @@ const hasScene = !!sceneUrl;
     border: 1px solid var(--border-subtle);
   }
   
-  .spline-container {
+  .scene-container {
     position: absolute;
     inset: 0;
     width: 100%;
@@ -53,18 +49,18 @@ const hasScene = !!sceneUrl;
     transition: opacity 240ms ease;
   }
 
-  .spline-wrapper.is-loaded .spline-container {
+  .hero-visual-wrapper.is-loaded .scene-container {
     opacity: 1;
   }
   
-  .spline-container iframe {
+  .scene-container iframe {
     width: 100%;
     height: 100%;
     border: none;
     pointer-events: none;
   }
   
-  .spline-fallback {
+  .fallback-visual {
     position: absolute;
     inset: 0;
     width: 100%;
@@ -76,18 +72,9 @@ const hasScene = !!sceneUrl;
     background: linear-gradient(135deg, #0b0d12 0%, #11151d 50%, #171c26 100%);
   }
 
-  .spline-wrapper.is-loaded .spline-fallback {
+  .hero-visual-wrapper.is-loaded .fallback-visual {
     opacity: 0;
     pointer-events: none;
-  }
-  
-  .fallback-visual {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
   }
   
   .orb {
@@ -151,21 +138,15 @@ const hasScene = !!sceneUrl;
     margin-bottom: 0.5rem;
   }
   
-  .hint {
-    font-size: 0.75rem;
-    color: var(--text-muted);
-  }
-  
   @keyframes float {
     0%, 100% { transform: translateY(0) scale(1); }
     50% { transform: translateY(-20px) scale(1.05); }
   }
 
   @media (max-width: 767px), (prefers-reduced-motion: reduce) {
-    .spline-container {
+    .scene-container {
       display: none;
     }
-
     .orb {
       animation: none;
     }
@@ -173,24 +154,17 @@ const hasScene = !!sceneUrl;
 </style>
 
 <script>
-  const shouldKeepFallback = () => {
+  const mountScenes = () => {
     const isMobile = window.matchMedia('(max-width: 767px)').matches;
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const connection = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection;
+    if (isMobile || reduceMotion) return;
 
-    return isMobile || reduceMotion || connection?.saveData === true;
-  };
-
-  const mountSplineScenes = () => {
-    if (shouldKeepFallback()) return;
-
-    document.querySelectorAll<HTMLElement>('[data-spline-wrapper="true"]').forEach((wrapper) => {
+    document.querySelectorAll('[data-scene-wrapper="true"]').forEach((wrapper) => {
       if (wrapper.dataset.splineMounted === 'true') return;
 
       const sceneUrl = wrapper.dataset.sceneUrl;
-      const sceneTitle = wrapper.dataset.sceneTitle || 'Spline scene';
-      const container = wrapper.querySelector<HTMLElement>('.spline-container');
-
+      const sceneTitle = wrapper.dataset.sceneTitle || '';
+      const container = wrapper.querySelector('.scene-container');
       if (!sceneUrl || !container) return;
 
       wrapper.dataset.splineMounted = 'true';
@@ -207,7 +181,6 @@ const hasScene = !!sceneUrl;
 
       iframe.addEventListener('load', () => {
         wrapper.classList.add('is-loaded');
-        container.setAttribute('aria-hidden', 'false');
       });
 
       iframe.addEventListener('error', () => {
@@ -220,8 +193,8 @@ const hasScene = !!sceneUrl;
   };
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', mountSplineScenes, { once: true });
+    document.addEventListener('DOMContentLoaded', mountScenes, { once: true });
   } else {
-    mountSplineScenes();
+    mountScenes();
   }
 </script>
