@@ -26,7 +26,7 @@ export const portfolioProjects: PortfolioProject[] = [
     techStack: ['TypeScript', 'Fastify', 'Tailwind CSS', 'Supabase'],
     status: 'production',
     githubUrl: 'https://github.com/falses00/mimo-lifepilot',
-    demoUrl: 'https://falses00.github.io/mimo-tools/projects/lifepilot',
+    demoUrl: 'https://falses00.github.io/mimo-lifepilot/',
     highlights: ['一句话输入', '智能分类', 'API Mode', '历史记录', '导出日报'],
   },
   {
@@ -40,7 +40,7 @@ export const portfolioProjects: PortfolioProject[] = [
     techStack: ['TypeScript', 'Fastify', 'Tailwind CSS', 'Supabase'],
     status: 'production',
     githubUrl: 'https://github.com/falses00/mimo-interviewpilot',
-    demoUrl: 'https://falses00.github.io/mimo-tools/projects/interviewpilot',
+    demoUrl: 'https://falses00.github.io/mimo-interviewpilot/',
     highlights: ['简历分析', 'JD 匹配', '面试问题', 'STAR 建议', '报告导出'],
   },
   {
@@ -54,7 +54,7 @@ export const portfolioProjects: PortfolioProject[] = [
     techStack: ['TypeScript', 'Fastify', 'GitHub API', 'Tailwind CSS'],
     status: 'production',
     githubUrl: 'https://github.com/falses00/mimo-repopilot',
-    demoUrl: 'https://falses00.github.io/mimo-tools/projects/repopilot',
+    demoUrl: 'https://falses00.github.io/mimo-repopilot/',
     highlights: ['GitHub 热榜', '危险脚本检测', '部署计划', '本地 Runner'],
   },
   {
@@ -68,7 +68,7 @@ export const portfolioProjects: PortfolioProject[] = [
     techStack: ['TypeScript', 'Fastify', 'MiniSearch', 'Tailwind CSS'],
     status: 'production',
     githubUrl: 'https://github.com/falses00/mimo-knowledgepilot',
-    demoUrl: 'https://falses00.github.io/mimo-tools/projects/knowledgepilot',
+    demoUrl: 'https://falses00.github.io/mimo-knowledgepilot/',
     highlights: ['文档检索', '引用来源', '本地优先', 'API Mode'],
   },
   {
@@ -82,7 +82,7 @@ export const portfolioProjects: PortfolioProject[] = [
     techStack: ['TypeScript', 'Fastify', 'Chart.js', 'Tailwind CSS'],
     status: 'production',
     githubUrl: 'https://github.com/falses00/mimo-opspilot',
-    demoUrl: 'https://falses00.github.io/mimo-tools/projects/opspilot',
+    demoUrl: 'https://falses00.github.io/mimo-opspilot/',
     highlights: ['API 健康检查', '日志分析', '事故复盘', '服务监控'],
   },
   {
@@ -96,7 +96,7 @@ export const portfolioProjects: PortfolioProject[] = [
     techStack: ['TypeScript', 'Astro', 'Tailwind CSS'],
     status: 'production',
     githubUrl: 'https://github.com/falses00/mimo-utilities',
-    demoUrl: 'https://falses00.github.io/mimo-tools/tools',
+    demoUrl: 'https://falses00.github.io/mimo-utilities/',
     highlights: ['JSON 格式化', 'Markdown 预览', '正则测试', 'URL 编码'],
   },
 ];
