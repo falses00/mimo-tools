@@ -1,5 +1,10 @@
 {
   "$schema": "https://opencode.ai/config.json",
+  "default_agent": "swarm-master",
+  "instructions": [
+    ".harness/HARNESS_DRIVER.md",
+    ".harness/AGENT_PROTOCOL.md"
+  ],
   "permission": {
     "*": "allow",
     "edit": "allow",
@@ -14,30 +19,19 @@
       "git log*": "allow",
       "git add*": "allow",
       "git commit*": "allow",
-      "git branch*": "allow",
-      "git checkout*": "allow",
-      "git switch*": "allow",
-      "git pull*": "allow",
-      "git push*": "ask",
+      "git push*": "allow",
       "npm *": "allow",
-      "pnpm *": "allow",
-      "bun *": "allow",
       "npx *": "allow",
-      "gh auth status*": "allow",
-      "gh repo view*": "allow",
-      "gh repo create*": "ask",
-      "gh repo edit*": "ask",
-      "gh workflow*": "ask",
-      "gh api*": "ask",
-      "rm -rf *": "ask",
-      "sudo *": "ask",
-      "chmod -R *": "ask",
-      "chown -R *": "ask",
-      "curl * | sh*": "ask",
-      "wget * | sh*": "ask",
-      "npm publish*": "ask",
-      "pnpm publish*": "ask",
-      "bun publish*": "ask"
+      "gh *": "allow",
+      "curl *": "allow",
+      "grep *": "allow",
+      "find *": "allow",
+      "mkdir *": "allow",
+      "cat *": "allow",
+      "rm -rf*": "deny",
+      "sudo *": "deny",
+      "curl *| sh": "deny",
+      "git push --force*": "deny"
     }
   },
   "mcp": {

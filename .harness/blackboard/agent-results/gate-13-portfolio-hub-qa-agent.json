@@ -1,0 +1,23 @@
+{
+  "gate": "gate-13",
+  "project": "portfolio-hub",
+  "agent": "qa-agent",
+  "taskId": "G13-1A",
+  "status": "done",
+  "summary": "Portfolio Hub 线上状态验证通过",
+  "evidence": [
+    "6 个新项目全部展示",
+    "无旧项目",
+    "无 temporary-demo-scene 暴露",
+    "无错误根路径",
+    "所有链接指向在线 App"
+  ],
+  "risks": [
+    "scene.splinecode URL 在源码中可见（Spline 场景 URL，非技术暴露）"
+  ],
+  "nextSuggestedActions": [
+    "视觉诊断：检查 Hero 区域是否高级",
+    "视觉诊断：检查项目卡片是否精致",
+    "视觉诊断：检查整体布局是否产品级"
+  ]
+}

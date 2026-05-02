@@ -1,10 +1,8 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import SplineScene from '../components/visual/SplineScene.astro';
 import { getFeaturedProjects } from '../data/portfolio';
 import { getRecentLearning } from '../data/learning';
 import { getRecentAnalysis } from '../data/analysis';
-import { getSplineSceneUrl } from '../data/splineScenes';
 
 const base = import.meta.env.BASE_URL;
 const baseWithSlash = base.endsWith('/') ? base : `${base}/`;
@@ -14,14 +12,12 @@ const recentLearning = getRecentLearning(3);
 const recentAnalysis = getRecentAnalysis(3);
 
 const techStack = [
-  { name: 'Astro', desc: '静态站点生成' },
+  { name: 'Astro', desc: '静态站点' },
   { name: 'React', desc: 'UI 组件' },
-  { name: 'Node.js', desc: '后端运行时' },
   { name: 'Fastify', desc: 'API 框架' },
-  { name: 'Supabase', desc: '数据库 & RAG' },
+  { name: 'Supabase', desc: '数据库' },
   { name: 'Render', desc: 'API 部署' },
   { name: 'Playwright', desc: 'E2E 测试' },
-  { name: 'OpenCode', desc: '多 Agent 开发' },
 ];
 ---
 
@@ -29,27 +25,62 @@ const techStack = [
   {/* Hero Section */}
   <section class="hero-section">
     <div class="container">
-      <div class="hero-content">
-        <div class="hero-badge">
-          <span class="badge-dot"></span>
-          <span>全栈工程师 / AI 工程师</span>
+      <div class="hero-grid">
+        <div class="hero-content">
+          <div class="hero-badge">
+            <span class="badge-dot"></span>
+            <span>全栈工程师 / AI 工程师</span>
+          </div>
+          <h1 class="hero-title">
+            <span class="title-main">MIMO</span>
+            <span class="title-sub">个人工程工具生态</span>
+          </h1>
+          <p class="hero-description">
+            6 个独立完整产品，拥有自己的前后端、数据库、测试和部署方案。
+            专注于 AI 应用、全栈开发、RAG 检索、DevOps 工具和多 Agent 工作流。
+          </p>
+          <div class="hero-stats">
+            <div class="stat">
+              <div class="stat-value">6</div>
+              <div class="stat-label">旗舰项目</div>
+            </div>
+            <div class="stat">
+              <div class="stat-value">10+</div>
+              <div class="stat-label">API 端点</div>
+            </div>
+            <div class="stat">
+              <div class="stat-value">100%</div>
+              <div class="stat-label">开源</div>
+            </div>
+          </div>
+          <div class="hero-actions">
+            <a href={`${baseWithSlash}projects`} class="btn btn-primary">
+              查看项目
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="btn-icon">
+                <path d="M5 12h14" />
+                <path d="m12 5 7 7-7 7" />
+              </svg>
+            </a>
+            <a href={`${baseWithSlash}learning`} class="btn btn-secondary">学习资料</a>
+            <a href="https://github.com/falses00" target="_blank" rel="noopener noreferrer" class="btn btn-ghost">GitHub</a>
+          </div>
         </div>
-        <h1 class="hero-title">
-          MIMO
-          <span class="hero-subtitle">个人工程工具生态</span>
-        </h1>
-        <p class="hero-description">
-          专注于 AI 应用、全栈开发、RAG 检索、DevOps 工具和多 Agent 工作流。
-          每个旗舰项目都是独立完整产品，拥有自己的前后端、数据库、测试和部署方案。
-        </p>
-        <div class="hero-actions">
-          <a href={`${baseWithSlash}projects`} class="btn btn-primary">查看项目</a>
-          <a href={`${baseWithSlash}learning`} class="btn btn-secondary">学习资料</a>
-          <a href={`${baseWithSlash}analysis`} class="btn btn-secondary">分析总结</a>
-          <a href="https://github.com/falses00" target="_blank" rel="noopener noreferrer" class="btn btn-ghost">GitHub</a>
-        </div>
-        <div class="hero-scene">
-          <SplineScene sceneKey="portfolio" sceneUrl={getSplineSceneUrl('portfolio')} title="Portfolio Hub 3D Scene" height="360px" />
+        <div class="hero-visual">
+          <div class="visual-card">
+            <div class="visual-icon">🚀</div>
+            <div class="visual-title">独立完整产品</div>
+            <div class="visual-desc">每个项目都有自己的前后端、API、数据库策略和部署方案</div>
+          </div>
+          <div class="visual-card">
+            <div class="visual-icon">🤖</div>
+            <div class="visual-title">AI 增强</div>
+            <div class="visual-desc">RAG 检索、自然语言处理、智能分析</div>
+          </div>
+          <div class="visual-card">
+            <div class="visual-icon">⚡</div>
+            <div class="visual-title">全栈能力</div>
+            <div class="visual-desc">前端 + 后端 + 数据库 + 部署 + 测试</div>
+          </div>
         </div>
       </div>
     </div>
@@ -59,13 +90,18 @@ const techStack = [
   <section class="section">
     <div class="container">
       <div class="section-header">
-        <h2 class="section-title">🚀 旗舰项目</h2>
-        <p class="section-desc">独立完整产品，拥有自己的前后端、数据库、测试和部署</p>
+        <h2 class="section-title">旗舰项目</h2>
+        <p class="section-desc">每个项目都是独立完整产品，点击即可访问在线应用</p>
       </div>
       <div class="projects-grid">
         {featuredProjects.map(project => (
-          <a href={project.demoUrl || project.githubUrl || `${baseWithSlash}projects`} class="project-card">
-            <div class="project-icon">{project.icon}</div>
+          <a href={project.demoUrl || `${baseWithSlash}projects`} class="project-card">
+            <div class="project-header">
+              <div class="project-icon">{project.icon}</div>
+              <span class:list={['badge', project.status === 'production' ? 'badge-success' : 'badge-gold']}>
+                {project.status === 'production' ? '已上线' : '开发中'}
+              </span>
+            </div>
             <h3 class="project-name">{project.name}</h3>
             <p class="project-tagline">{project.tagline}</p>
             <div class="project-tags">
@@ -73,9 +109,13 @@ const techStack = [
                 <span class="tag">{tech}</span>
               ))}
             </div>
-            <span class:list={['badge', project.status === 'production' ? 'badge-success' : 'badge-gold']}>
-              {project.status === 'production' ? '已上线' : '开发中'}
-            </span>
+            <div class="project-cta">
+              <span class="cta-text">打开在线应用</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 12h14" />
+                <path d="m12 5 7 7-7 7" />
+              </svg>
+            </div>
           </a>
         ))}
       </div>
@@ -85,57 +125,11 @@ const techStack = [
     </div>
   </section>
 
-  {/* Recent Learning */}
-  <section class="section section-alt">
-    <div class="container">
-      <div class="section-header">
-        <h2 class="section-title">📚 最新学习资料</h2>
-        <p class="section-desc">前端、后端、AI、RAG、部署、多 Agent 开发和项目复盘</p>
-      </div>
-      <div class="articles-grid">
-        {recentLearning.map(article => (
-          <a href={`${baseWithSlash}learning/${article.slug}`} class="article-card">
-            <span class="badge badge-gold">{article.category}</span>
-            <h3 class="article-title">{article.title}</h3>
-            <p class="article-desc">{article.description}</p>
-            <span class="article-meta">{article.date} · {article.readingTime}</span>
-          </a>
-        ))}
-      </div>
-      <div class="section-footer">
-        <a href={`${baseWithSlash}learning`} class="btn btn-secondary">查看所有学习资料</a>
-      </div>
-    </div>
-  </section>
-
-  {/* Recent Analysis */}
-  <section class="section">
-    <div class="container">
-      <div class="section-header">
-        <h2 class="section-title">📊 最新分析总结</h2>
-        <p class="section-desc">竞品分析、技术选型、架构复盘、安全审查</p>
-      </div>
-      <div class="articles-grid">
-        {recentAnalysis.map(report => (
-          <a href={`${baseWithSlash}analysis/${report.slug}`} class="article-card">
-            <span class="badge badge-gold">{report.category}</span>
-            <h3 class="article-title">{report.title}</h3>
-            <p class="article-desc">{report.description}</p>
-            <div class="article-conclusion">{report.conclusion}</div>
-          </a>
-        ))}
-      </div>
-      <div class="section-footer">
-        <a href={`${baseWithSlash}analysis`} class="btn btn-secondary">查看所有分析总结</a>
-      </div>
-    </div>
-  </section>
-
   {/* Tech Stack */}
   <section class="section section-alt">
     <div class="container">
       <div class="section-header">
-        <h2 class="section-title">⚙️ 技术栈</h2>
+        <h2 class="section-title">技术栈</h2>
         <p class="section-desc">当前项目使用的核心技术</p>
       </div>
       <div class="tech-grid">
@@ -153,7 +147,7 @@ const techStack = [
   <section class="section">
     <div class="container">
       <div class="about-cta">
-        <h2 class="section-title">👋 关于我</h2>
+        <h2 class="section-title">关于我</h2>
         <p class="section-desc">全栈工程师 / AI 工程师，专注于 AI 应用、全栈开发和多 Agent 工作流</p>
         <a href={`${baseWithSlash}about`} class="btn btn-primary">了解更多</a>
       </div>
@@ -162,39 +156,303 @@ const techStack = [
 </Layout>
 
 <style>
-  .hero-section { padding: 8rem 0 4rem; text-align: center; background: linear-gradient(180deg, var(--bg-page) 0%, var(--bg-section) 100%); }
-  .hero-badge { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; border-radius: 9999px; background: var(--gold-subtle); border: 1px solid var(--gold-border); font-size: 0.75rem; font-weight: 600; color: var(--gold); margin-bottom: 2rem; }
-  .badge-dot { width: 0.5rem; height: 0.5rem; border-radius: 50%; background: var(--gold); animation: pulse 2s infinite; }
-  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-  .hero-title { font-size: 4rem; font-weight: 800; margin-bottom: 1.5rem; background: linear-gradient(135deg, var(--gold) 0%, var(--gold-soft) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-  .hero-subtitle { display: block; font-size: 2rem; margin-top: 0.5rem; }
-  .hero-description { font-size: 1.125rem; color: var(--text-secondary); max-width: 600px; margin: 0 auto 2rem; line-height: 1.6; }
-  .hero-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; }
-  .hero-scene { max-width: 880px; margin: 3rem auto 0; position: relative; z-index: 0; }
-  .section { padding: 4rem 0; }
-  .section-alt { background: var(--bg-section); }
-  .section-header { text-align: center; margin-bottom: 3rem; }
-  .section-title { font-size: 2rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem; }
-  .section-desc { color: var(--text-muted); }
-  .section-footer { text-align: center; margin-top: 2rem; }
-  .projects-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; }
-  .project-card { display: block; padding: 1.5rem; border-radius: 1rem; background: var(--bg-card); border: 1px solid var(--border-subtle); transition: all 0.2s; }
-  .project-card:hover { border-color: var(--gold-border); transform: translateY(-2px); box-shadow: var(--shadow-gold); }
-  .project-icon { font-size: 2rem; margin-bottom: 1rem; }
-  .project-name { font-size: 1.25rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.25rem; }
-  .project-tagline { font-size: 0.875rem; color: var(--text-muted); margin-bottom: 1rem; }
-  .project-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
-  .tag { padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.75rem; background: var(--bg-elevated); color: var(--text-muted); }
-  .articles-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; }
-  .article-card { display: block; padding: 1.5rem; border-radius: 1rem; background: var(--bg-card); border: 1px solid var(--border-subtle); transition: all 0.2s; }
-  .article-card:hover { border-color: var(--gold-border); }
-  .article-title { font-size: 1.125rem; font-weight: 600; color: var(--text-primary); margin: 0.75rem 0 0.5rem; }
-  .article-desc { font-size: 0.875rem; color: var(--text-muted); margin-bottom: 0.75rem; }
-  .article-meta { font-size: 0.75rem; color: var(--text-muted); }
-  .article-conclusion { padding: 0.75rem; border-radius: 0.5rem; background: var(--bg-elevated); font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.75rem; }
-  .tech-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1rem; }
-  .tech-card { padding: 1rem; border-radius: 0.75rem; background: var(--bg-card); border: 1px solid var(--border-subtle); text-align: center; }
-  .tech-name { font-weight: 600; color: var(--text-primary); margin-bottom: 0.25rem; }
-  .tech-desc { font-size: 0.75rem; color: var(--text-muted); }
-  .about-cta { text-align: center; padding: 3rem; border-radius: 1rem; background: var(--bg-card); border: 1px solid var(--gold-border); }
+  /* Hero Section */
+  .hero-section {
+    padding: 6rem 0 4rem;
+    background: linear-gradient(180deg, var(--bg-page) 0%, var(--bg-section) 100%);
+  }
+  
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+  }
+  
+  @media (max-width: 1024px) {
+    .hero-grid {
+      grid-template-columns: 1fr;
+      gap: 3rem;
+    }
+  }
+  
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 9999px;
+    background: var(--gold-subtle);
+    border: 1px solid var(--gold-border);
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--gold);
+    margin-bottom: 1.5rem;
+  }
+  
+  .badge-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: var(--gold);
+    animation: pulse 2s infinite;
+  }
+  
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+  
+  .hero-title {
+    margin-bottom: 1.5rem;
+  }
+  
+  .title-main {
+    display: block;
+    font-size: 4rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--gold) 0%, var(--gold-soft) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .title-sub {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-top: 0.5rem;
+  }
+  
+  .hero-description {
+    font-size: 1.125rem;
+    color: var(--text-muted);
+    line-height: 1.7;
+    margin-bottom: 2rem;
+  }
+  
+  .hero-stats {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 2rem;
+  }
+  
+  .stat {
+    text-align: center;
+  }
+  
+  .stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--gold);
+  }
+  
+  .stat-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 0.25rem;
+  }
+  
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  
+  .btn-icon {
+    margin-left: 0.5rem;
+    transition: transform 0.2s;
+  }
+  
+  .btn-primary:hover .btn-icon {
+    transform: translateX(4px);
+  }
+  
+  /* Hero Visual */
+  .hero-visual {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .visual-card {
+    padding: 1.5rem;
+    border-radius: 1rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: all 0.2s;
+  }
+  
+  .visual-card:hover {
+    border-color: var(--gold-border);
+    transform: translateX(4px);
+  }
+  
+  .visual-icon {
+    font-size: 2rem;
+    flex-shrink: 0;
+  }
+  
+  .visual-title {
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+  
+  .visual-desc {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+  }
+  
+  /* Sections */
+  .section {
+    padding: 4rem 0;
+  }
+  
+  .section-alt {
+    background: var(--bg-section);
+  }
+  
+  .section-header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+  
+  .section-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+  }
+  
+  .section-desc {
+    color: var(--text-muted);
+  }
+  
+  .section-footer {
+    text-align: center;
+    margin-top: 2rem;
+  }
+  
+  /* Projects Grid */
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+  
+  .project-card {
+    display: block;
+    padding: 1.5rem;
+    border-radius: 1rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    transition: all 0.2s;
+    text-decoration: none;
+  }
+  
+  .project-card:hover {
+    border-color: var(--gold-border);
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-gold);
+  }
+  
+  .project-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+  }
+  
+  .project-icon {
+    font-size: 2rem;
+  }
+  
+  .project-name {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+  }
+  
+  .project-tagline {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+  }
+  
+  .project-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .tag {
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    background: var(--bg-elevated);
+    color: var(--text-muted);
+  }
+  
+  .project-cta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--gold);
+    opacity: 0;
+    transform: translateX(-10px);
+    transition: all 0.2s;
+  }
+  
+  .project-card:hover .project-cta {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  
+  /* Tech Grid */
+  .tech-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1rem;
+  }
+  
+  .tech-card {
+    padding: 1rem;
+    border-radius: 0.75rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    text-align: center;
+    transition: all 0.2s;
+  }
+  
+  .tech-card:hover {
+    border-color: var(--gold-border);
+  }
+  
+  .tech-name {
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+  }
+  
+  .tech-desc {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+  
+  /* About CTA */
+  .about-cta {
+    text-align: center;
+    padding: 3rem;
+    border-radius: 1rem;
+    background: var(--bg-card);
+    border: 1px solid var(--gold-border);
+  }
 </style>

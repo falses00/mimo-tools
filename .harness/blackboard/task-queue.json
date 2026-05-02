@@ -1,9 +1,86 @@
 [
-  {"id": "G4-T1", "gate": "gate-4-lifepilot", "agent": "master-planner-agent", "status": "in-progress", "title": "读取 mimo-lifepilot scaffold 并制定独立化计划"},
-  {"id": "G4-T2", "gate": "gate-4-lifepilot", "agent": "frontend-agent", "status": "pending", "title": "实现独立 apps/web LifePilot 前端"},
-  {"id": "G4-T3", "gate": "gate-4-lifepilot", "agent": "backend-agent", "status": "pending", "title": "实现独立 apps/api LifePilot 后端"},
-  {"id": "G4-T4", "gate": "gate-4-lifepilot", "agent": "frontend-agent", "status": "pending", "title": "接入 SplineScene 或 fallback 视觉系统"},
-  {"id": "G4-T5", "gate": "gate-4-lifepilot", "agent": "qa-agent", "status": "pending", "title": "添加并运行 API/前端测试"},
-  {"id": "G4-T6", "gate": "gate-4-lifepilot", "agent": "release-agent", "status": "pending", "title": "commit/push mimo-lifepilot 并更新 Portfolio Hub"},
-  {"id": "G4-T7", "gate": "gate-4-lifepilot", "agent": "harness-controller-agent", "status": "pending", "title": "更新 Gate 4 evidence 和 STATUS"}
+  {
+    "id": "G13-0",
+    "project": "system",
+    "agent": "swarm-master",
+    "status": "done",
+    "title": "修正 OpenCode agents skills permissions harness runloop"
+  },
+  {
+    "id": "G13-1A",
+    "project": "portfolio-hub",
+    "agent": "qa-agent",
+    "status": "in-progress",
+    "title": "验证 Portfolio Hub 当前线上状态并诊断问题"
+  },
+  {
+    "id": "G13-1B",
+    "project": "portfolio-hub",
+    "agent": "visual-director-agent",
+    "status": "pending",
+    "title": "诊断 Portfolio Hub 视觉问题并制定重建方案"
+  },
+  {
+    "id": "G13-1C",
+    "project": "portfolio-hub",
+    "agent": "frontend-agent",
+    "status": "pending",
+    "title": "重建 Portfolio Hub 首页 Hero 和项目卡片视觉"
+  },
+  {
+    "id": "G13-1D",
+    "project": "portfolio-hub",
+    "agent": "qa-agent",
+    "status": "pending",
+    "title": "部署并线上验证 Portfolio Hub"
+  },
+  {
+    "id": "G13-1E",
+    "project": "portfolio-hub",
+    "agent": "critic-agent",
+    "status": "pending",
+    "title": "Portfolio Hub gate approval"
+  },
+  {
+    "id": "G13-2A",
+    "project": "lifepilot",
+    "agent": "qa-agent",
+    "status": "blocked",
+    "title": "LifePilot 产品级重建"
+  },
+  {
+    "id": "G13-3A",
+    "project": "repopilot",
+    "agent": "qa-agent",
+    "status": "blocked",
+    "title": "RepoPilot 产品级重建"
+  },
+  {
+    "id": "G13-4A",
+    "project": "interviewpilot",
+    "agent": "qa-agent",
+    "status": "blocked",
+    "title": "InterviewPilot 产品级重建"
+  },
+  {
+    "id": "G13-5A",
+    "project": "knowledgepilot",
+    "agent": "qa-agent",
+    "status": "blocked",
+    "title": "KnowledgePilot 产品级重建"
+  },
+  {
+    "id": "G13-6A",
+    "project": "opspilot",
+    "agent": "qa-agent",
+    "status": "blocked",
+    "title": "OpsPilot 产品级重建"
+  },
+  {
+    "id": "G13-7A",
+    "project": "utilities",
+    "agent": "qa-agent",
+    "status": "blocked",
+    "title": "MIMO Utilities 产品级重建"
+  }
 ]

@@ -1,12 +1,13 @@
 {
-  "phase": "product-grade-visual-rebuild",
-  "activeGate": "gate-13-product-grade-visual-rebuild",
+  "phase": "gate-13-product-grade-rebuild",
+  "activeGate": "gate-13",
+  "currentProject": "portfolio-hub",
   "blocked": false,
   "blockers": [],
-  "next": "start portfolio hub visual rebuild",
+  "next": "execute task queue from G13-0",
   "status": {
-    "gate-12": "rejected",
-    "gate-11": "needs-rework",
-    "reason": "online pages load but are not product-grade; Spline rendering is broken; standalone apps are shallow shells"
+    "gate-13": "in_progress",
+    "previous_report": "rejected",
+    "reason": "progress report lacks screenshots, visual scores, and true product-grade validation"
   }
 }
